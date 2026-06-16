@@ -1,0 +1,174 @@
+[
+  {
+    "path": "backgrounds/atlas-grid.svg",
+    "purpose": "backgrounds"
+  },
+  {
+    "path": "backgrounds/dark-stone.svg",
+    "purpose": "backgrounds"
+  },
+  {
+    "path": "backgrounds/panel-grain.svg",
+    "purpose": "backgrounds"
+  },
+  {
+    "path": "decor/corner-ornament.svg",
+    "purpose": "decor"
+  },
+  {
+    "path": "decor/divider-rune.svg",
+    "purpose": "decor"
+  },
+  {
+    "path": "decor/socket-cluster.svg",
+    "purpose": "decor"
+  },
+  {
+    "path": "frames/button-frame.svg",
+    "purpose": "frames"
+  },
+  {
+    "path": "frames/header-plaque.svg",
+    "purpose": "frames"
+  },
+  {
+    "path": "frames/input-frame.svg",
+    "purpose": "frames"
+  },
+  {
+    "path": "frames/panel-frame.svg",
+    "purpose": "frames"
+  },
+  {
+    "path": "frames/skill-slot.svg",
+    "purpose": "frames"
+  },
+  {
+    "path": "icons/armour.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/atlas.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/attack.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/chaos.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/check.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/corruption.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/craft.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/currency.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/elemental.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/essence.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/export.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/filter.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/life.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/mana.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/pin.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/prefix.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/search.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/settings.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/simulate.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/socket-blue.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/socket-green.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/socket-purple.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/socket-red.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/socket-white.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/socket.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/suffix.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/warning.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "icons/waystone.svg",
+    "purpose": "icons"
+  },
+  {
+    "path": "nodes/keystone-node.svg",
+    "purpose": "nodes"
+  },
+  {
+    "path": "nodes/node-link.svg",
+    "purpose": "nodes"
+  },
+  {
+    "path": "nodes/notable-node.svg",
+    "purpose": "nodes"
+  },
+  {
+    "path": "nodes/passive-node.svg",
+    "purpose": "nodes"
+  }
+]
