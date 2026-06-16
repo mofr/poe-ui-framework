@@ -1,7 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { PoeApp, PoeHeader, PoeTabs, PoeFrame, PoeSegmentBar, ModifierTable, Inspector, ActionBar, sampleRows } from './components/PoeUI.jsx';
-import { PoeDivider, PoeNodePreview } from './components/PoeAssets.jsx';
+import { ActionBar, Inspector, ModifierTable, PoeApp, PoeDivider, PoeFrame, PoeHeader, PoeNodePreview, PoeSegmentBar, PoeTabs, sampleRows } from './components';
 
 function Demo(){
  const tabs=[{label:'STR Armour',count:550},{label:'DEX Armour',count:543},{label:'INT Armour',count:540},{label:'Axes',count:243},{label:'Rings',count:240},{label:'Waystones',count:58}];
