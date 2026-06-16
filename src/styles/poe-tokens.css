@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IM+Fell+English+SC&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@500;600;700&display=swap');
+
 :root {
   color-scheme: dark;
   --poe-bg-0:#090807; --poe-bg-1:#0f0d0c; --poe-bg-2:#171310; --poe-bg-3:#211a15;
@@ -7,8 +9,11 @@
   --poe-red:#d05248; --poe-green:#53bf62; --poe-blue:#4b8dff; --poe-purple:#9b5eff; --poe-amber:#efbd4e;
   --poe-danger:#cf312d; --poe-border:rgba(201,162,94,.65); --poe-border-dim:rgba(154,116,56,.35);
   --poe-radius:4px; --poe-gap:12px;
-  --poe-font-title:Cinzel, Marcellus SC, Georgia, serif;
+  --poe-font-display:'IM Fell English SC', Cinzel, Georgia, serif;
+  --poe-font-title:Cinzel, 'IM Fell English SC', Georgia, serif;
   --poe-font-ui:Inter, IBM Plex Sans, Segoe UI, Arial, sans-serif;
+  --poe-font-number:'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+  --poe-font-rune:'JetBrains Mono', Cinzel, ui-monospace, monospace;
   --poe-shadow:0 12px 32px rgba(0,0,0,.45), inset 0 1px rgba(255,231,174,.08), inset 0 -1px rgba(0,0,0,.8);
   --poe-glow-gold:0 0 18px rgba(201,162,94,.18);
   --poe-glow-blue:0 0 18px rgba(75,141,255,.22);
