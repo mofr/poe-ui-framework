@@ -32,7 +32,9 @@ Important demo capabilities:
 
 Build a component kit first, not a final application shell.
 
-Prioritize:
+The first framework milestone should optimize for visual fidelity and cohesion. A Craft-of-Exile-like experience is useful as a dense crafting-tool reference, but it should not dictate the framework's structure or layout decisions. The first concrete application pressure test is a POE2 modifier browser: category selectors, prefix/suffix groups, dense modifier rows, tags, numeric metadata, and responsive columns.
+
+Prioritize over the life of the framework:
 
 - reusable frames, panels, buttons, inputs, tabs, lists, tables, badges, tags, stat cards, progress bars, and action slots;
 - visual variants such as stone, metal, parchment, inset, magic, danger, selected, active, disabled, and compact;
@@ -49,6 +51,54 @@ Deprioritize for now:
 - a polished final dashboard layout;
 - GitHub-specific structures;
 - layout assumptions that only fit one app.
+
+## Framework Foundation Direction
+
+The initial foundation should be a small cohesive slice rather than a broad set of shallow components. Prioritize:
+
+- `PoeFrame` as the anchor component for stone, metal, parchment, inset, active, and selected surfaces;
+- explicit typography roles for display titles, panel headings, labels, dense body text, numeric values, and rune/meta accents;
+- `PoeButton`, `PoeTabs` or compact mode switching, `PoeTag`, `PoeBadge`, dense table/list rows, and compact action tiles;
+- semantic states for hover, focus, selected, required, blocked, warning, danger, disabled, magic, and corruption;
+- a mod-browser-style showcase that proves the components work under real data density.
+
+`PoeInput` is not a first-iteration priority unless search/filter styling blocks the showcase. It can remain CSS-only until the foundational surfaces and dense data components reach the visual bar.
+
+## Visual Language
+
+Use a disciplined hybrid material language:
+
+- stone and aged metal for durable UI chrome, frames, headers, buttons, action slots, and structural affordances;
+- parchment for readability-heavy content such as dense tables, descriptions, modifier details, tooltips, and docs-like panels;
+- arcane atlas motifs for semantic emphasis such as active, selected, magical, linked, rare, warning, corrupted, or inspectable states.
+
+Glow should communicate state, not act as generic decoration. Ornament belongs in borders, headers, dividers, icons, and selection states while dense data remains readable.
+
+## Typography Direction
+
+Typography is part of the component API, not a final polish pass. Components should use shared font tokens and text-role classes instead of arbitrary inline font choices.
+
+Important roles:
+
+- display/title text for fantasy identity and ceremonial labels;
+- panel heading text for compact uppercase or small-caps plaques;
+- UI/body text for dense readable rows, controls, and descriptions;
+- label/meta text for subordinate captions, categories, and counts;
+- numeric text for tiers, item levels, weights, hotkeys, progress values, and aligned counts;
+- rune/accent text for badges, sockets, hotkeys, and magical metadata.
+
+Path-of-Exile-like typography should be researched before finalizing the stack. Community references often mention Fontin / Fontin SmallCaps, but licensing and availability must be verified before use. If unsuitable, use free alternatives that capture the same old-style serif and small-caps character while preserving readability. Current candidates include `Cinzel`, `IM Fell English SC`, `Inter`, and `JetBrains Mono`.
+
+## Visual Review Bar
+
+Before asking for manual review, compare implementation work against the references in `inspiration/`:
+
+- `perfect-fantasy-rpg-font-lists-buttons-icons-progressbars-frames.jpg` for dense framed UI, compact rows, action slots, meters, icon color, and typography variety;
+- `warcraft-related.webp` for heavy carved frames, side panels, and readable dark panels;
+- `nice-paper-background.webp` for parchment surfaces inside dark/metal chrome;
+- `not-bad-poe-atlas.webp` for atlas/glow motifs, ornate action plaques, node relationships, and magical active states.
+
+Review criteria should include border depth, typography hierarchy, numeric alignment, parchment restraint, semantic glow usage, dense-row readability, asset integration, and overall cohesion. If the result is clearly below the visual bar, iterate before requesting manual review.
 
 Responsiveness should be possible but lightweight. Prefer panels that can stack, tables that can scroll horizontally, controls that can wrap, and CSS such as `minmax()`, `clamp()`, and a few media queries. Do not spend major effort on mobile-first redesign until the component vocabulary is stronger.
 
