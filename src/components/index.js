@@ -6,6 +6,7 @@ export * from './primitives/PoeButton.jsx';
 export * from './primitives/PoeFrame.jsx';
 export * from './primitives/PoeSegmentBar.jsx';
 export * from './primitives/PoeTabs.jsx';
+export * from './primitives/PoeActionTile.jsx';
 export * from './primitives/PoeTag.jsx';
 export * from './domain/Inspector.jsx';
 export * from './domain/ModifierTable.jsx';
