@@ -35,7 +35,7 @@
   --poe-amber:#efbd4e;
   --poe-danger:#cf312d;
   --poe-corruption:#8f1f2c;
-  --poe-magic:#4b8dff;
+  --poe-magic:var(--poe-blue);
   --poe-rare:#f0d35a;
   --poe-border:rgba(201,162,94,.65);
   --poe-border-dim:rgba(154,116,56,.35);
