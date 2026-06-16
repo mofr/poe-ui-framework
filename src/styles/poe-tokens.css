@@ -1,0 +1,15 @@
+:root {
+  color-scheme: dark;
+  --poe-bg-0:#090807; --poe-bg-1:#0f0d0c; --poe-bg-2:#171310; --poe-bg-3:#211a15;
+  --poe-panel:#14110f; --poe-panel-2:#1b1612; --poe-inset:#080706;
+  --poe-gold-1:#6f5127; --poe-gold-2:#9a7438; --poe-gold-3:#c9a25e; --poe-gold-4:#f0d89a;
+  --poe-text:#eadcc0; --poe-text-soft:#bda277; --poe-text-muted:#7b6a51;
+  --poe-red:#d05248; --poe-green:#53bf62; --poe-blue:#4b8dff; --poe-purple:#9b5eff; --poe-amber:#efbd4e;
+  --poe-danger:#cf312d; --poe-border:rgba(201,162,94,.65); --poe-border-dim:rgba(154,116,56,.35);
+  --poe-radius:4px; --poe-gap:12px;
+  --poe-font-title:Cinzel, Marcellus SC, Georgia, serif;
+  --poe-font-ui:Inter, IBM Plex Sans, Segoe UI, Arial, sans-serif;
+  --poe-shadow:0 12px 32px rgba(0,0,0,.45), inset 0 1px rgba(255,231,174,.08), inset 0 -1px rgba(0,0,0,.8);
+  --poe-glow-gold:0 0 18px rgba(201,162,94,.18);
+  --poe-glow-blue:0 0 18px rgba(75,141,255,.22);
+}
