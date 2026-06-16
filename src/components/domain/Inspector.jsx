@@ -14,21 +14,23 @@ export function Inspector() {
   ];
 
   return (
-    <PoeFrame title="Selected Modifier" meta="Inspector">
+    <PoeFrame title="Selected Modifier" meta="Inspector" material="metal" active>
       <h2 className="poe-inspector-title">+(70-149) to Maximum Life</h2>
-      <div>
+      <p className="poe-text-body poe-inspector-copy">A high-weight life prefix used as the selected state benchmark for dense modifier browsing.</p>
+      <div className="poe-tag-row">
         <PoeTag type="life">Life</PoeTag>
         <PoeTag type="defence">Defence</PoeTag>
+        <PoeTag type="elemental" state="required">Required</PoeTag>
       </div>
-      <div style={{ marginTop: 12 }}>
+      <div className="poe-stat-stack">
         {stats.map(([label, value]) => (
           <div className="poe-statline" key={label}>
-            <span className="poe-subtle">{label}</span>
+            <span className="poe-text-label">{label}</span>
             <strong>{value}</strong>
           </div>
         ))}
       </div>
-      <PoeButton style={{ marginTop: 12, width: '100%' }}><Sparkles size={15} /> Show related crafting paths</PoeButton>
+      <PoeButton variant="magic" style={{ marginTop: 12, width: '100%' }}><Sparkles size={15} /> Show related paths</PoeButton>
     </PoeFrame>
   );
 }
