@@ -2,19 +2,63 @@
 
 :root {
   color-scheme: dark;
-  --poe-bg-0:#090807; --poe-bg-1:#0f0d0c; --poe-bg-2:#171310; --poe-bg-3:#211a15;
-  --poe-panel:#14110f; --poe-panel-2:#1b1612; --poe-inset:#080706;
-  --poe-gold-1:#6f5127; --poe-gold-2:#9a7438; --poe-gold-3:#c9a25e; --poe-gold-4:#f0d89a;
-  --poe-text:#eadcc0; --poe-text-soft:#bda277; --poe-text-muted:#7b6a51;
-  --poe-red:#d05248; --poe-green:#53bf62; --poe-blue:#4b8dff; --poe-purple:#9b5eff; --poe-amber:#efbd4e;
-  --poe-danger:#cf312d; --poe-border:rgba(201,162,94,.65); --poe-border-dim:rgba(154,116,56,.35);
-  --poe-radius:4px; --poe-gap:12px;
+
+  --poe-bg-0:#070605;
+  --poe-bg-1:#0d0b09;
+  --poe-bg-2:#15110e;
+  --poe-bg-3:#211913;
+  --poe-stone-0:#080807;
+  --poe-stone-1:#11100d;
+  --poe-stone-2:#1d1914;
+  --poe-metal-0:#0b0b0a;
+  --poe-metal-1:#171513;
+  --poe-metal-2:#2a2219;
+  --poe-parchment-0:#2f2418;
+  --poe-parchment-1:#d7bd86;
+  --poe-parchment-2:#ead7a7;
+  --poe-panel:#14110f;
+  --poe-panel-2:#1b1612;
+  --poe-inset:#080706;
+
+  --poe-gold-1:#6f5127;
+  --poe-gold-2:#9a7438;
+  --poe-gold-3:#c9a25e;
+  --poe-gold-4:#f0d89a;
+  --poe-text:#eadcc0;
+  --poe-text-soft:#bda277;
+  --poe-text-muted:#7b6a51;
+  --poe-text-dark:#21170d;
+  --poe-red:#d05248;
+  --poe-green:#53bf62;
+  --poe-blue:#4b8dff;
+  --poe-purple:#9b5eff;
+  --poe-amber:#efbd4e;
+  --poe-danger:#cf312d;
+  --poe-corruption:#8f1f2c;
+  --poe-magic:#4b8dff;
+  --poe-rare:#f0d35a;
+  --poe-border:rgba(201,162,94,.65);
+  --poe-border-dim:rgba(154,116,56,.35);
+  --poe-border-cold:rgba(114,161,255,.55);
+
+  --poe-radius:4px;
+  --poe-gap:12px;
+  --poe-row-height:34px;
+  --poe-control-height:32px;
+  --poe-pad-1:6px;
+  --poe-pad-2:10px;
+  --poe-pad-3:14px;
+
   --poe-font-display:'IM Fell English SC', Cinzel, Georgia, serif;
   --poe-font-title:Cinzel, 'IM Fell English SC', Georgia, serif;
   --poe-font-ui:Inter, IBM Plex Sans, Segoe UI, Arial, sans-serif;
   --poe-font-number:'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --poe-font-rune:'JetBrains Mono', Cinzel, ui-monospace, monospace;
+
   --poe-shadow:0 12px 32px rgba(0,0,0,.45), inset 0 1px rgba(255,231,174,.08), inset 0 -1px rgba(0,0,0,.8);
+  --poe-shadow-inset:inset 0 2px 10px rgba(0,0,0,.72), inset 0 1px rgba(255,231,174,.06);
+  --poe-shadow-raised:0 10px 20px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.08);
   --poe-glow-gold:0 0 18px rgba(201,162,94,.18);
   --poe-glow-blue:0 0 18px rgba(75,141,255,.22);
+  --poe-glow-red:0 0 18px rgba(207,49,45,.2);
 }
