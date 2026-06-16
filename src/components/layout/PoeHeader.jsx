@@ -6,7 +6,7 @@ export function PoeHeader({ title = 'PoE2 Modifier Browser', subtitle = 'Arcane 
   return (
     <header className="poe-frame poe-header">
       <div>
-        <h1 className="poe-title" style={{ margin: 0, fontSize: 22 }}>{title}</h1>
+        <h1 className="poe-title" style={{ margin: 0, fontSize: 30, lineHeight: 1.05 }}>{title}</h1>
         <div className="poe-subtle">{subtitle}</div>
       </div>
       <div style={{ flex: 1 }}>
