@@ -10,5 +10,6 @@ export * from './primitives/PoeActionTile.jsx';
 export * from './primitives/PoeTag.jsx';
 export * from './domain/Inspector.jsx';
 export * from './domain/ModifierTable.jsx';
+export * from './domain/ModifierGroup.jsx';
 export * from './PoeAssets.jsx';
 export * from './sampleData.js';

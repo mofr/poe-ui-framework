@@ -17,7 +17,7 @@ export function ModifierTable({ title = 'Prefix', meta = '135 mods', rows = [] }
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={index} data-selected={index === 1 || undefined}>
+            <tr key={index} data-selected={row.state === 'selected' || undefined} data-state={row.state || undefined}>
               <td>
                 {row.badge && <PoeBadge type={row.badgeType}>{row.badge}</PoeBadge>} {row.mod}{' '}
                 {row.tags?.map((tag) => <PoeTag key={tag} type={tagType(tag)}>{tag}</PoeTag>)}
