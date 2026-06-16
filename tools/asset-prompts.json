@@ -1,0 +1,21 @@
+{
+  "_style": "Match the provided reference (inspiration/perfect-fantasy-rpg-...jpg) as EXACT style law: carved gold-and-dark-iron UI chrome, ornamentation density, bevels, rivets, near-black + warm-gold palette with restrained blue accents. Head-on orthographic flat game-UI asset.",
+  "_rules": "Every asset is a single isolated component on a fully transparent background (no scene, no shadow, no text, no extra elements), centered, symmetric.",
+  "reference": "inspiration/crops/panel.png",
+  "assets": [
+    {
+      "name": "panel-frame",
+      "category": "frames",
+      "size": "1024x1024",
+      "quality": "high",
+      "prompt": "Using the provided reference image as the EXACT style guide, create a single isolated rectangular UI panel frame — BORDER ONLY. Reproduce the reference's panel-border art faithfully: the same carved gold-and-dark-iron material, ornamentation density, beveled molding, corner rivets/bosses, thin bright gold inner lip, and color palette. The CENTER MUST BE COMPLETELY HOLLOW and fully transparent — only the frame border exists, the entire middle is transparent (no fill). Perfectly symmetric on all four sides. Head-on orthographic flat view. Fully transparent background, no scene, no shadow, no text, no extra elements, isolated, centered."
+    },
+    {
+      "name": "button",
+      "category": "buttons",
+      "size": "1536x1024",
+      "quality": "high",
+      "prompt": "Using the provided reference image as the EXACT style guide, create a single isolated horizontal UI button plate in the reference's exact style: a beveled dark-iron slab with an aged-gold rim and gold corner caps, soft warm top highlight, matching the reference's buttons in material, ornamentation, and palette. Empty center for a label. Head-on orthographic flat view. Fully transparent background, no scene, no shadow, no text, no extra elements, isolated, centered."
+    }
+  ]
+}

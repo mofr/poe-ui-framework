@@ -3,3 +3,8 @@ dist/
 .worktrees/
 *:Zone.Identifier
 .shot.mjs
+
+*storybook.log
+storybook-static
+.env
+assets-staging/
