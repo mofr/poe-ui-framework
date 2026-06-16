@@ -2,3 +2,4 @@ node_modules/
 dist/
 .worktrees/
 *:Zone.Identifier
+.shot.mjs
