@@ -12,21 +12,21 @@ Typography is a first-class part of the design. Headings, labels, buttons, table
 
 ## First Demo Milestone
 
-The first meaningful demo app should replicate the important interaction and information structure of Craft of Exile for PoE 2, using our own beautiful component system:
-
-https://www.craftofexile.com/?game=poe2&b=41&ob=both&v=d&a=x&l=a&lg=20&bp=y&as=1&hb=0&bld={}&im={}&ggt=|&ccp={}&gvc={%22limit%22:88}&gns={}
-
-This does not mean copying Craft of Exile visually. It means building a comparable crafting/modifier exploration experience with a stronger fantasy RPG interface.
+The first meaningful demo should be a POE2 modifier-browser-style playground, because that is the first real application target for the framework. The playground should prove that the component kit can handle dense data while remaining ornate, readable, and cohesive.
 
 Important demo capabilities:
 
-- Select game, item base, item level, influence/context, and crafting options.
-- Browse prefixes and suffixes with tiers, weights, tags, item-level requirements, and modifier families.
-- Filter/search modifiers quickly without losing data density.
+- Browse prefix and suffix groups with tiers, weights, tags, item-level requirements, and modifier families.
+- Show spawn/category selectors, grouped sections, compact headers, and responsive columns.
+- Filter/search modifiers quickly without losing data density, even if a dedicated `PoeInput` component is deferred.
 - Inspect a selected modifier or group in detail.
-- Show related crafting information, probabilities, weights, constraints, or paths where useful.
-- Present dense tables and controls in an ornate but readable way.
+- Represent selected, required, blocked, warning, magic, corruption, and disabled states consistently.
+- Present dense tables, rows, tags, badges, and action affordances in an ornate but readable way.
 - Demonstrate the component kit across real UI pressure, not just isolated cards.
+
+Craft of Exile for PoE 2 remains a useful secondary reference for dense crafting-tool interaction patterns, but it is not the first layout target and should not dictate framework structure:
+
+https://www.craftofexile.com/?game=poe2&b=41&ob=both&v=d&a=x&l=a&lg=20&bp=y&as=1&hb=0&bld={}&im={}&ggt=|&ccp={}&gvc={%22limit%22:88}&gns={}
 
 ## Product Direction
 
