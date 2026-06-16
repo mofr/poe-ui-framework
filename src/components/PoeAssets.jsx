@@ -14,9 +14,6 @@ export const PoeAssetPaths = {
   nodes: {
     passive: '/src/assets/nodes/passive-node.svg', notable: '/src/assets/nodes/notable-node.svg', keystone: '/src/assets/nodes/keystone-node.svg', link: '/src/assets/nodes/node-link.svg'
   },
-  decor: {
-    divider: '/src/assets/decor/divider-rune.svg', corner: '/src/assets/decor/corner-ornament.svg', sockets: '/src/assets/decor/socket-cluster.svg'
-  }
 };
 
 export function PoeAssetIcon({name, group='icons', size='', alt=''}) {
@@ -25,13 +22,10 @@ export function PoeAssetIcon({name, group='icons', size='', alt=''}) {
   return <img className={`poe-asset-icon ${size}`} src={src} alt={alt || name} loading="lazy" />;
 }
 
-export function PoeDivider(){ return <div className="poe-divider" aria-hidden="true"/>; }
-
 export function PoeNodePreview(){
   return <div className="poe-node-preview">
     <div className="poe-node-tile"><PoeAssetIcon group="nodes" name="passive" size="xl"/></div>
     <div className="poe-node-tile"><PoeAssetIcon group="nodes" name="notable" size="xl"/></div>
     <div className="poe-node-tile"><PoeAssetIcon group="nodes" name="keystone" size="xl"/></div>
-    <div className="poe-node-tile"><img src={PoeAssetPaths.decor.sockets} alt="socket cluster" style={{maxWidth:'100%'}}/></div>
   </div>;
 }

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "panel-frame",
+    "category": "frames",
+    "file": "frames/panel-frame.png",
+    "width": 695,
+    "height": 374,
+    "slice": {
+      "left": 52,
+      "right": 50,
+      "top": 66,
+      "bottom": 55
+    }
+  },
+  {
+    "name": "button",
+    "category": "buttons",
+    "file": "buttons/button.png",
+    "width": 923,
+    "height": 227
+  }
+]

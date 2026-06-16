@@ -5,6 +5,7 @@ export function PoeFrame({
   meta,
   children,
   className = '',
+  style,
   material = 'stone',
   compact = false,
   selected = false,
@@ -24,7 +25,7 @@ export function PoeFrame({
   ].filter(Boolean).join(' ');
 
   return (
-    <Component className={classes} data-selected={selected || undefined} data-active={active || undefined}>
+    <Component className={classes} style={style} data-selected={selected || undefined} data-active={active || undefined}>
       {(title || meta) && (
         <header className="poe-panel-header">
           {title && <span>{title}</span>}
