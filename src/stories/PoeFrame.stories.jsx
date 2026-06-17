@@ -58,3 +58,20 @@ export const FrameC = {
     </div>
   ),
 };
+
+// --ov (outward overhang) demo: the same frame pushed progressively past the panel edge.
+// Set it per frame to match how much "outer part" the source art carries.
+export const Overhang = {
+  render: () => (
+    <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap' }}>
+      {[0, 20, 40].map((ov) => (
+        <div key={ov}>
+          <div className="poe-text-meta" style={{ fontFamily: 'var(--poe-font-number)', fontSize: 11, marginBottom: 6 }}>--ov: {ov}px</div>
+          <div style={{ width: 300, height: 200 }}>
+            <PoeFrame style={{ ...solid, '--ov': `${ov}px` }} />
+          </div>
+        </div>
+      ))}
+    </div>
+  ),
+};

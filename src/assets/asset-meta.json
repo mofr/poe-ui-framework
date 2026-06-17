@@ -3,26 +3,26 @@
     "name": "panel-frame",
     "category": "frames",
     "file": "frames/panel-frame.png",
-    "width": 1448,
-    "height": 1086,
+    "width": 723,
+    "height": 399,
     "slice": {
-      "left": 99,
-      "right": 99,
-      "top": 107,
-      "bottom": 100
+      "left": 55,
+      "right": 52,
+      "top": 63,
+      "bottom": 64
     }
   },
   {
     "name": "panel-frame-2",
     "category": "frames",
     "file": "frames/panel-frame-2.png",
-    "width": 1254,
-    "height": 1253,
+    "width": 1317,
+    "height": 917,
     "slice": {
-      "left": 139,
-      "right": 139,
-      "top": 140,
-      "bottom": 139
+      "left": 59,
+      "right": 59,
+      "top": 43,
+      "bottom": 43
     }
   },
   {
