@@ -16,14 +16,31 @@ mkdirSync(OUT, { recursive: true });
 const { data, info } = await sharp(resolve(ROOT, inPath)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
 const { width: w, height: h, channels: c } = info;
 
-// Key out the light, desaturated checkerboard → alpha 0. Dark stone / saturated
-// gold / blue trim are kept. opaque[i] = 1 means "part of a component".
+// Auto-detect the background from the corner pixel: a MAGENTA chroma-key (clean, preferred)
+// or the old light checkerboard. Build the keyed RGBA buffer here too.
+const magentaBG = data[0] > 150 && data[2] > 140 && data[1] < 0.55 * Math.min(data[0], data[2]);
+console.log(`  background: ${magentaBG ? 'magenta chroma-key (soft alpha + despill)' : 'light checkerboard'}`);
+
+// Magenta soft key: spill = magenta-ness ((R+B)/2 - G). Low spill = real art (opaque),
+// high spill = magenta (transparent), in-between = anti-aliased edge → FRACTIONAL alpha
+// (so no hard halo). Despill pulls R,B back toward G to remove the residual pink tint.
+const SPILL_LO = 24, SPILL_HI = 110;
 const opaque = new Uint8Array(w * h);
+const keyed = Buffer.from(data);
 for (let i = 0; i < w * h; i++) {
   const r = data[i * c], g = data[i * c + 1], b = data[i * c + 2];
-  const mn = Math.min(r, g, b), mx = Math.max(r, g, b);
-  const isChecker = mn > 200 && mx - mn < 24; // light + desaturated
-  opaque[i] = isChecker ? 0 : 1;
+  if (magentaBG) {
+    const spill = (r + b) / 2 - g;
+    const a = spill <= SPILL_LO ? 1 : spill >= SPILL_HI ? 0 : 1 - (spill - SPILL_LO) / (SPILL_HI - SPILL_LO);
+    opaque[i] = a > 0.5 ? 1 : 0;
+    keyed[i * c + (c - 1)] = Math.round(a * 255);
+    if (spill > 0) { keyed[i * c] = Math.max(0, r - spill * 0.92); keyed[i * c + 2] = Math.max(0, b - spill * 0.92); }
+  } else {
+    const mn = Math.min(r, g, b), mx = Math.max(r, g, b);
+    const bg = mn > 200 && mx - mn < 24;
+    opaque[i] = bg ? 0 : 1;
+    if (bg) keyed[i * c + (c - 1)] = 0;
+  }
 }
 
 // Connected components (4-neighbour flood fill) → bounding boxes.
@@ -46,9 +63,7 @@ for (let s = 0; s < w * h; s++) {
 }
 regions.sort((a, b) => (b.maxX - b.minX) * (b.maxY - b.minY) - (a.maxX - a.minX) * (a.maxY - a.minY));
 
-// Build a keyed RGBA buffer (checker → transparent) once, then crop each region.
-const keyed = Buffer.from(data);
-for (let i = 0; i < w * h; i++) if (!opaque[i]) keyed[i * c + (c - 1)] = 0;
+// (keyed RGBA buffer was built above during background detection)
 
 let idx = 0;
 for (const r of regions) {

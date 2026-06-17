@@ -18,6 +18,13 @@
       "prompt": "(integration slot for a provided frame asset)"
     },
     {
+      "name": "panel-frame-3",
+      "category": "frames",
+      "size": "1024x1024",
+      "quality": "high",
+      "prompt": "(integration slot for a provided pimp-less frame asset)"
+    },
+    {
       "name": "button",
       "category": "buttons",
       "size": "1536x1024",
