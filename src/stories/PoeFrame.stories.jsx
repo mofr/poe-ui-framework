@@ -50,3 +50,11 @@ export const FrameB = {
     </div>
   ),
 };
+
+export const FrameC = {
+  render: () => (
+    <div style={box(720, 460)}>
+      <PoeFrame className="poe-frame--ornate3" style={solid} />
+    </div>
+  ),
+};

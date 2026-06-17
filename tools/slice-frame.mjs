@@ -22,11 +22,15 @@ const PLEN = Math.round(b * 1.5);  // centre-ornament extent along its edge
 const OVER = Math.round(b * 0.3);  // px the ornament/edge reaches inward past the molding band
 const cx = Math.round(w / 2), cy = Math.round(h / 2);
 
+// Edge tiles are taken from the MIDDLE of the plain region between the corner and the
+// centre ornament (60% of that span), so they never capture a corner spike or the pimp.
+const exC = (C + (w / 2 - PLEN / 2)) / 2, exW = Math.max(24, Math.round(((w / 2 - PLEN / 2) - C) * 0.6));
+const eyC = (C + (h / 2 - PLEN / 2)) / 2, eyW = Math.max(24, Math.round(((h / 2 - PLEN / 2) - C) * 0.6));
+
 const cuts = {
   tl: [0, 0, C, C], tr: [w - C, 0, C, C], bl: [0, h - C, C, C], br: [w - C, h - C, C, C],
-  // plain edge tiles, taken just past the corner (clean molding band only, no ornament)
-  et: [C + 16, 0, TILE, s.top], eb: [C + 16, h - s.bottom, TILE, s.bottom],
-  el: [0, C + 16, s.left, TILE], er: [w - s.right, C + 16, s.right, TILE],
+  et: [exC - exW / 2, 0, exW, s.top], eb: [exC - exW / 2, h - s.bottom, exW, s.bottom],
+  el: [0, eyC - eyW / 2, s.left, eyW], er: [w - s.right, eyC - eyW / 2, s.right, eyW],
   // centre ornaments on every edge, reaching inward
   pt: [cx - PLEN / 2, 0, PLEN, s.top + OVER], pb: [cx - PLEN / 2, h - s.bottom - OVER, PLEN, s.bottom + OVER],
   pl: [0, cy - PLEN / 2, s.left + OVER, PLEN], pr: [w - s.right - OVER, cy - PLEN / 2, s.right + OVER, PLEN],

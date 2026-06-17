@@ -66,6 +66,10 @@
 .poe-frame--ornate2.poe-ornate{padding:128px;background:#0e0c0a url('../assets/backgrounds/body-leather.png') center / 480px repeat}
 .poe-frame--ornate2.poe-ornate::after{background-image:url('../assets/frames/panel-frame-2-et.png'),url('../assets/frames/panel-frame-2-eb.png'),url('../assets/frames/panel-frame-2-el.png'),url('../assets/frames/panel-frame-2-er.png')}
 .poe-frame--ornate2.poe-ornate::before{background-image:url('../assets/frames/panel-frame-2-pt.png'),url('../assets/frames/panel-frame-2-pb.png'),url('../assets/frames/panel-frame-2-pl.png'),url('../assets/frames/panel-frame-2-pr.png'),url('../assets/frames/panel-frame-2-tl.png'),url('../assets/frames/panel-frame-2-tr.png'),url('../assets/frames/panel-frame-2-bl.png'),url('../assets/frames/panel-frame-2-br.png')}
+/* Third frame variant (panel-frame-3): thin, NO centre pimps — corners + edges only. */
+.poe-frame--ornate3.poe-ornate{padding:24px;background:#0e0c0a url('../assets/backgrounds/body-stone.png') center / 480px repeat}
+.poe-frame--ornate3.poe-ornate::after{background-image:url('../assets/frames/panel-frame-3-et.png'),url('../assets/frames/panel-frame-3-eb.png'),url('../assets/frames/panel-frame-3-el.png'),url('../assets/frames/panel-frame-3-er.png')}
+.poe-frame--ornate3.poe-ornate::before{background-position:top left,top right,bottom left,bottom right;background-image:url('../assets/frames/panel-frame-3-tl.png'),url('../assets/frames/panel-frame-3-tr.png'),url('../assets/frames/panel-frame-3-bl.png'),url('../assets/frames/panel-frame-3-br.png')}
 .poe-frame--inset.poe-ornate{padding:0;border:1px solid rgba(201,162,94,.22);box-shadow:var(--poe-shadow-inset);border-radius:var(--poe-radius)}
 .poe-frame--inset.poe-ornate::after{content:none}
 .poe-frame--inset.poe-ornate::before{content:none}

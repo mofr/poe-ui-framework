@@ -26,6 +26,19 @@
     }
   },
   {
+    "name": "panel-frame-3",
+    "category": "frames",
+    "file": "frames/panel-frame-3.png",
+    "width": 1234,
+    "height": 886,
+    "slice": {
+      "left": 27,
+      "right": 27,
+      "top": 27,
+      "bottom": 27
+    }
+  },
+  {
     "name": "button",
     "category": "buttons",
     "file": "buttons/button.png",
