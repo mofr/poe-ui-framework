@@ -11,6 +11,13 @@
       "prompt": "Using the provided reference image as the EXACT style guide, create a single isolated rectangular UI panel frame — BORDER ONLY. Reproduce the reference's panel-border art faithfully: the same carved gold-and-dark-iron material, ornamentation density, beveled molding, corner rivets/bosses, thin bright gold inner lip, and color palette. The CENTER MUST BE COMPLETELY HOLLOW and fully transparent — only the frame border exists, the entire middle is transparent (no fill). Perfectly symmetric on all four sides. Head-on orthographic flat view. Fully transparent background, no scene, no shadow, no text, no extra elements, isolated, centered."
     },
     {
+      "name": "panel-frame-2",
+      "category": "frames",
+      "size": "1024x1024",
+      "quality": "high",
+      "prompt": "(integration slot for a provided frame asset)"
+    },
+    {
       "name": "button",
       "category": "buttons",
       "size": "1536x1024",

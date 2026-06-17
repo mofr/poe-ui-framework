@@ -18,6 +18,19 @@ export default {
 
 export const Playground = {};
 
+export const Ornate = {
+  render: () => (
+    <Stack gap={14}>
+      <Caption>asset-backed plate (border-image fill, scaled)</Caption>
+      <Row gap={14}>
+        <PoeButton ornate>Craft Item</PoeButton>
+        <PoeButton ornate>Simulate</PoeButton>
+        <PoeButton ornate style={{ minWidth: 220 }}>Show Related Paths</PoeButton>
+      </Row>
+    </Stack>
+  ),
+};
+
 export const Variants = {
   render: () => (
     <Row>
