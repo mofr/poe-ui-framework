@@ -16,7 +16,7 @@ const SRC = resolve(ROOT, 'src/assets/frames', `${name}.png`);
 const { width: w, height: h, slice: s } = meta;
 const b = Math.max(s.top, s.right, s.bottom, s.left); // nominal border thickness
 
-const C = Math.round(b * 2.4);     // corner sprite box (generous so the ornament isn't cropped)
+const C = Math.max(Math.round(b * 2.6), 140); // corner sprite box (floor so thin frames aren't cropped)
 const TILE = Math.round(b * 2.6);  // plain-edge tile length (bigger ⇒ less obvious repeat)
 const PLEN = Math.round(b * 1.5);  // centre-ornament extent along its edge
 const OVER = Math.round(b * 0.3);  // px the ornament/edge reaches inward past the molding band
