@@ -2,6 +2,11 @@
 
 Authoritative guide for continuing this project. Read this first.
 
+> **STATUS (not done): the asset pipeline is NOT established yet, and the reference style in
+> `inspiration/perfect-fantasy-rpg-...jpg` is NOT reached yet.** We are making progress (clean
+> magenta transparency, sprite-composed frames, overhang model) but this milestone is unfinished.
+> Treat the steps below as the current best approach, not a settled pipeline.
+
 ## What this is
 A dark-fantasy (Path of Exile–style) React + CSS UI kit whose visual fidelity comes from
 **generated raster art**, not hand-drawn SVG/CSS. **Storybook is the review surface**
