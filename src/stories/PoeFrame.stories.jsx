@@ -15,15 +15,14 @@ export default {
 
 // Resizable container so the 9-slice can be checked at any size; the frame body is the
 // asset's own texture so the ornate border/corners read clearly with no content noise.
+// overflow visible + margin so an overhanging frame (--ov) isn't clipped. The dotted outline
+// marks the panel box (content area); the frame can ride outside it.
 const box = (w, h) => ({
-  resize: 'both',
-  overflow: 'hidden',
-  border: '1px dashed rgba(255,255,255,0.12)',
+  outline: '1px dotted rgba(255,255,255,0.18)',
   width: w,
   height: h,
-  minWidth: 260,
-  minHeight: 220,
-  marginBottom: 24,
+  margin: 72,
+  overflow: 'visible',
 });
 const solid = { width: '100%', height: '100%' };
 
