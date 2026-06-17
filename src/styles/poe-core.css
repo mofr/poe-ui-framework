@@ -58,10 +58,10 @@
    ::after (z3) = PLAIN molding edge tiles, repeated — no corner bits, no centre ornament.
    ::before (z4) = corner ornaments + per-edge centre "pimps", each drawn ONCE on top, free
    to overflow inward over the body and along the edges. */
-.poe-frame.poe-ornate{position:relative;border:0;padding:58px 44px 49px 46px;overflow:visible}
+.poe-frame.poe-ornate{position:relative;border:0;padding:90px;overflow:visible;background:#0e0c0a url('../assets/backgrounds/body-stone.png') center/cover}
 .poe-frame.poe-ornate>*{position:relative;z-index:2}
 .poe-frame.poe-ornate::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;background-repeat:repeat-x,repeat-x,repeat-y,repeat-y;background-position:top,bottom,left,right;background-image:url('../assets/frames/panel-frame-et.png'),url('../assets/frames/panel-frame-eb.png'),url('../assets/frames/panel-frame-el.png'),url('../assets/frames/panel-frame-er.png')}
-.poe-frame.poe-ornate::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:4;box-shadow:none;background-repeat:no-repeat;background-position:top left,top right,bottom left,bottom right,top center,bottom center;background-image:url('../assets/frames/panel-frame-tl.png'),url('../assets/frames/panel-frame-tr.png'),url('../assets/frames/panel-frame-bl.png'),url('../assets/frames/panel-frame-br.png'),url('../assets/frames/panel-frame-pt.png'),url('../assets/frames/panel-frame-pb.png')}
+.poe-frame.poe-ornate::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:4;box-shadow:none;background-repeat:no-repeat;background-position:top center,bottom center,left center,right center,top left,top right,bottom left,bottom right;background-image:url('../assets/frames/panel-frame-pt.png'),url('../assets/frames/panel-frame-pb.png'),url('../assets/frames/panel-frame-pl.png'),url('../assets/frames/panel-frame-pr.png'),url('../assets/frames/panel-frame-tl.png'),url('../assets/frames/panel-frame-tr.png'),url('../assets/frames/panel-frame-bl.png'),url('../assets/frames/panel-frame-br.png')}
 .poe-frame--inset.poe-ornate{padding:0;border:1px solid rgba(201,162,94,.22);box-shadow:var(--poe-shadow-inset);border-radius:var(--poe-radius)}
 .poe-frame--inset.poe-ornate::after{content:none}
 .poe-button.poe-button--ornate{border-style:solid;border-color:transparent;border-width:18px 22px;border-image:url('../assets/buttons/button.png') 58 fill / 18px 22px stretch;background:transparent;box-shadow:none;min-height:50px;color:var(--poe-text)}
