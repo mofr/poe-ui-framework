@@ -25,7 +25,7 @@ const box = (w, h) => ({
   minHeight: 160,
   marginBottom: 24,
 });
-const solid = { width: '100%', height: '100%', background: '#3c3a37' };
+const solid = { width: '100%', height: '100%' };
 
 export const Large = {
   render: () => (

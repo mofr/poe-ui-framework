@@ -3,13 +3,13 @@
     "name": "panel-frame",
     "category": "frames",
     "file": "frames/panel-frame.png",
-    "width": 695,
-    "height": 374,
+    "width": 1448,
+    "height": 1086,
     "slice": {
-      "left": 52,
-      "right": 50,
-      "top": 66,
-      "bottom": 55
+      "left": 99,
+      "right": 99,
+      "top": 107,
+      "bottom": 100
     }
   },
   {
