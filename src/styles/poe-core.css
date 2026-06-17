@@ -58,13 +58,20 @@
    ::after (z3) = PLAIN molding edge tiles, repeated — no corner bits, no centre ornament.
    ::before (z4) = corner ornaments + per-edge centre "pimps", each drawn ONCE on top, free
    to overflow inward over the body and along the edges. */
-.poe-frame.poe-ornate{position:relative;border:0;padding:90px;overflow:visible;background:#0e0c0a url('../assets/backgrounds/body-stone.png') center/cover}
+.poe-frame.poe-ornate{position:relative;border:0;padding:90px;overflow:visible;background:#0e0c0a url('../assets/backgrounds/body-stone.png') center / 480px repeat}
 .poe-frame.poe-ornate>*{position:relative;z-index:2}
 .poe-frame.poe-ornate::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;background-repeat:repeat-x,repeat-x,repeat-y,repeat-y;background-position:top,bottom,left,right;background-image:url('../assets/frames/panel-frame-et.png'),url('../assets/frames/panel-frame-eb.png'),url('../assets/frames/panel-frame-el.png'),url('../assets/frames/panel-frame-er.png')}
 .poe-frame.poe-ornate::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:4;box-shadow:none;background-repeat:no-repeat;background-position:top center,bottom center,left center,right center,top left,top right,bottom left,bottom right;background-image:url('../assets/frames/panel-frame-pt.png'),url('../assets/frames/panel-frame-pb.png'),url('../assets/frames/panel-frame-pl.png'),url('../assets/frames/panel-frame-pr.png'),url('../assets/frames/panel-frame-tl.png'),url('../assets/frames/panel-frame-tr.png'),url('../assets/frames/panel-frame-bl.png'),url('../assets/frames/panel-frame-br.png')}
+/* Second frame variant (panel-frame-2): same composition, different sprites + texture. */
+.poe-frame--ornate2.poe-ornate{padding:128px;background:#0e0c0a url('../assets/backgrounds/body-leather.png') center / 480px repeat}
+.poe-frame--ornate2.poe-ornate::after{background-image:url('../assets/frames/panel-frame-2-et.png'),url('../assets/frames/panel-frame-2-eb.png'),url('../assets/frames/panel-frame-2-el.png'),url('../assets/frames/panel-frame-2-er.png')}
+.poe-frame--ornate2.poe-ornate::before{background-image:url('../assets/frames/panel-frame-2-pt.png'),url('../assets/frames/panel-frame-2-pb.png'),url('../assets/frames/panel-frame-2-pl.png'),url('../assets/frames/panel-frame-2-pr.png'),url('../assets/frames/panel-frame-2-tl.png'),url('../assets/frames/panel-frame-2-tr.png'),url('../assets/frames/panel-frame-2-bl.png'),url('../assets/frames/panel-frame-2-br.png')}
 .poe-frame--inset.poe-ornate{padding:0;border:1px solid rgba(201,162,94,.22);box-shadow:var(--poe-shadow-inset);border-radius:var(--poe-radius)}
 .poe-frame--inset.poe-ornate::after{content:none}
-.poe-button.poe-button--ornate{border-style:solid;border-color:transparent;border-width:18px 22px;border-image:url('../assets/buttons/button.png') 58 fill / 18px 22px stretch;background:transparent;box-shadow:none;min-height:50px;color:var(--poe-text)}
+.poe-frame--inset.poe-ornate::before{content:none}
+/* Button plate: small element, so it SCALES (not 1:1) — border-image fill keeps corners
+   undistorted while the dark plate fills the centre. */
+.poe-button.poe-button--ornate{border-style:solid;border-color:transparent;border-width:15px 26px;border-image:url('../assets/buttons/button.png') 90 150 fill / 15px 26px round;background:transparent;box-shadow:none;min-height:44px;padding:6px 22px;color:var(--poe-text)}
 .poe-button.poe-button--ornate:hover:not(:disabled){filter:brightness(1.12)}
 .poe-mod-browser{display:grid;grid-template-columns:240px minmax(560px,1fr) 320px;gap:12px;margin-top:12px;align-items:start}.poe-browser-sidebar,.poe-browser-inspector,.poe-group-stack{display:grid;gap:12px}.poe-mod-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.poe-affix-column{min-width:0}.poe-filter-stack{display:flex;flex-wrap:wrap;gap:6px}.poe-inspector-copy{margin:0 0 10px}.poe-tag-row{display:flex;flex-wrap:wrap;gap:5px}.poe-stat-stack{margin-top:12px}@media(max-width:1100px){.poe-mod-browser{grid-template-columns:220px minmax(0,1fr)}.poe-browser-inspector{grid-column:1/-1}.poe-mod-columns{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){.poe-mod-browser{grid-template-columns:1fr}.poe-mod-columns{grid-template-columns:1fr}.poe-kbdbar{grid-template-columns:repeat(5,1fr)}}
 .poe-asset-icon{width:1.25em;height:1.25em;vertical-align:-.25em;object-fit:contain;filter:drop-shadow(0 0 4px rgba(0,0,0,.65))}.poe-asset-icon.lg{width:32px;height:32px}.poe-asset-icon.xl{width:52px;height:52px}

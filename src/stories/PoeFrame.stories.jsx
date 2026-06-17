@@ -13,40 +13,40 @@ export default {
   ],
 };
 
-// Resizable container so the 9-slice can be checked at any size. The frame body is a
-// flat solid colour so the ornate border/corners read clearly with no content noise.
+// Resizable container so the 9-slice can be checked at any size; the frame body is the
+// asset's own texture so the ornate border/corners read clearly with no content noise.
 const box = (w, h) => ({
   resize: 'both',
   overflow: 'hidden',
-  border: '1px dashed rgba(255,255,255,0.15)',
+  border: '1px dashed rgba(255,255,255,0.12)',
   width: w,
   height: h,
-  minWidth: 220,
-  minHeight: 160,
+  minWidth: 260,
+  minHeight: 220,
   marginBottom: 24,
 });
 const solid = { width: '100%', height: '100%' };
 
-export const Large = {
+export const FrameA = {
   render: () => (
-    <div style={box(820, 480)}>
+    <div style={box(860, 520)}>
       <PoeFrame style={solid} />
     </div>
   ),
 };
 
-export const Medium = {
+export const FrameAMedium = {
   render: () => (
-    <div style={box(440, 280)}>
+    <div style={box(520, 340)}>
       <PoeFrame style={solid} />
     </div>
   ),
 };
 
-export const WithHeader = {
+export const FrameB = {
   render: () => (
-    <div style={box(680, 380)}>
-      <PoeFrame title="Panel" meta="header" style={solid} />
+    <div style={box(760, 620)}>
+      <PoeFrame className="poe-frame--ornate2" style={solid} />
     </div>
   ),
 };

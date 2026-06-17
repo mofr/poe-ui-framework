@@ -13,10 +13,23 @@
     }
   },
   {
+    "name": "panel-frame-2",
+    "category": "frames",
+    "file": "frames/panel-frame-2.png",
+    "width": 1254,
+    "height": 1253,
+    "slice": {
+      "left": 139,
+      "right": 139,
+      "top": 140,
+      "bottom": 139
+    }
+  },
+  {
     "name": "button",
     "category": "buttons",
     "file": "buttons/button.png",
-    "width": 923,
-    "height": 227
+    "width": 2047,
+    "height": 489
   }
 ]
