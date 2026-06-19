@@ -62,12 +62,13 @@ export function PoePanel({
     ...style,
   } as React.CSSProperties;
 
-  const accents: Array<['t' | 'r' | 'b' | 'l', Accent, number]> = [
-    ['t', accentTop, accentTopScale],
-    ['r', accentRight, accentRightScale],
-    ['b', accentBottom, accentBottomScale],
-    ['l', accentLeft, accentLeftScale],
-  ];
+  const accent = (edge: 't' | 'r' | 'b' | 'l', choice: Accent, scale: number) =>
+    choice === 'none' ? null : (
+      <span
+        className={`poe-panel__accent poe-panel__accent--${edge}`}
+        style={{ '--accent-scale': scale } as React.CSSProperties}
+      />
+    );
 
   return (
     <div
@@ -83,15 +84,10 @@ export function PoePanel({
       <div className="poe-panel__integration-specular" />        {/* C1 integration (screen) */}
       <div className="poe-panel__content">{children}</div>       {/* B  content */}
       <div className="poe-panel__frame" />                       {/* A3 frame */}
-      {accents.map(([e, choice, scale]) =>
-        choice !== 'none' ? (
-          <span
-            key={e}
-            className={`poe-panel__accent poe-panel__accent--${e}`}
-            style={{ '--accent-scale': scale } as React.CSSProperties}
-          />
-        ) : null
-      )}
+      {accent('t', accentTop, accentTopScale)}
+      {accent('r', accentRight, accentRightScale)}
+      {accent('b', accentBottom, accentBottomScale)}
+      {accent('l', accentLeft, accentLeftScale)}
     </div>
   );
 }
