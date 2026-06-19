@@ -20,8 +20,8 @@ export interface PoePanelProps {
   surface?: Surface;
   /** Scales the surface texture tile (1 = native px). */
   surfaceScale?: number;
-  /** Inner-shadow strength, 0–1 (0 = none). */
-  surfaceShadow?: number;
+  /** Inner-shadow strength, 0–1 (0 = none) — the shadow that seats the surface into the frame. */
+  innerShadow?: number;
   /** Shadow + specular that blend the frame into the page (raster-driven). */
   integration?: Integration;
   accentTop?: Accent;
@@ -42,7 +42,7 @@ export function PoePanel({
   frameScale = 1,
   surface = 'debug',
   surfaceScale = 1,
-  surfaceShadow = 0.55,
+  innerShadow = 0.55,
   integration = 'debug',
   accentTop = 'none',
   accentRight = 'none',
@@ -58,7 +58,7 @@ export function PoePanel({
   const vars = {
     '--frame-scale': frameScale,
     '--surface-scale': surfaceScale,
-    '--surface-shadow': surfaceShadow,
+    '--inner-shadow': innerShadow,
     ...style,
   } as React.CSSProperties;
 
@@ -77,12 +77,12 @@ export function PoePanel({
       data-integration={integration}
       style={vars}
     >
-      <div className="poe-panel__surface" />               {/* D  surface */}
-      <div className="poe-panel__recess" />                {/* inner shadow — seats the surface */}
-      <div className="poe-panel__shadow" />                {/* C2 integration */}
-      <div className="poe-panel__specular" />              {/* C1 integration (screen) */}
-      <div className="poe-panel__content">{children}</div> {/* B  content */}
-      <div className="poe-panel__art" />                   {/* A3 frame */}
+      <div className="poe-panel__surface" />                     {/* D  surface */}
+      <div className="poe-panel__inner-shadow" />                {/* inner shadow — seats the surface */}
+      <div className="poe-panel__integration-shadow" />          {/* C2 integration */}
+      <div className="poe-panel__integration-specular" />        {/* C1 integration (screen) */}
+      <div className="poe-panel__content">{children}</div>       {/* B  content */}
+      <div className="poe-panel__frame" />                       {/* A3 frame */}
       {accents.map(([e, choice, scale]) =>
         choice !== 'none' ? (
           <span
