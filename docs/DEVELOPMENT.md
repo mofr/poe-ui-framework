@@ -2,17 +2,18 @@
 
 Authoritative guide for continuing this project. Read this first.
 
-> **STATUS (2026-06-18): API self-serve route now REACHES the reference bar for frames.**
-> `gpt-image-1.5` via `tools/gen-assets.mjs` (reference crop + a material-forward, grim-palette
-> prompt) produces reference-grade frames with **clean RGBA transparency directly** (hollow
-> centre, transparent outside — no desheet/magenta needed). Proven end-to-end: gen → process →
-> slice-frame → CSS renders a frame indistinguishable in quality from the reference REPO OVERVIEW
-> panel (see `panel-frame` / story `FrameA`). The ChatGPT-app + magenta-desheet route below
-> remains for hand-authored sheets, but is no longer the only path. Still open: full kit coverage
-> (alt frames, buttons, bars, icons) and palette/material consistency across the set.
+> **STATUS (2026-06-19): reference-style fidelity is NOT yet reached — work in progress.**
+> The technical pipeline (transparency, 9-slice, layered CSS) works; the open problem is matching
+> the reference's *feel* at native scale. **`docs/FRAME-FIDELITY.md` is the source of truth** for
+> the fidelity plan, the methods ledger, and the current state — read it before touching art.
+> Hard rule (see that doc): **the user judges fidelity; Claude never declares an asset
+> "reference-grade".** Present candidates rendered at UI scale beside the reference and let the
+> user rate them. The asset commands below are how art is *produced*; whether a given output
+> clears the bar is always the user's call.
 
-### The winning prompt formula (what flipped the API from "not good enough" to reference-grade)
-Earlier API attempts gave generic **thin gold picture-frames**. Three prompt levers fix it:
+### Frame prompt levers (for `gpt-image-1.5` generation)
+Generic API attempts give thin gold picture-frames. Three prompt levers steer it toward the grim,
+material look (they make outputs *plausible*, not automatically good — the user still rates them):
 1. **Material over ornament** — "THICK heavy near-black DARK-IRON border, NOT a thin painting
    frame"; name the carved gold *inlay* as secondary.
 2. **Grim, desaturated palette** — "cold near-BLACK gunmetal grey (NOT warm brown/bronze), muted
@@ -32,9 +33,14 @@ A dark-fantasy (Path of Exile–style) React + CSS UI kit whose visual fidelity 
 **Preferred (self-serve API):** `node tools/gen-assets.mjs <name> [--tag=X --force]` →
 `gpt-image-1.5` with the reference crop + the material-forward prompt returns a clean RGBA asset
 straight into `assets-staging/<name>.png` (no desheet step — alpha is already real). Then jump to
-step 2 below (`process-assets`), then `slice-frame` for frames. Iterate the prompt in
+step 2 below (`process-assets`) to trim + measure the 9-slice. Iterate the prompt in
 `tools/asset-prompts.json`, regenerate with a `--tag` to A/B, then promote the winner by copying
 it to `assets-staging/<name>.png`.
+
+> NOTE: `PoePanel` consumes a **whole frame PNG via `border-image`** (9-slice), so steps stop at
+> `process-assets` for it. `tools/slice-frame.mjs` (step 3 below) decomposes a frame into corner /
+> edge / centre *sprites* — that fed the **removed** sprite-composed `PoeFrame`; it is not part of
+> the `PoePanel` path and is kept only as a tool.
 
 **Alternative (hand-authored sheets from the ChatGPT app):** when you want to draw/curate art by
 hand, export each asset on a **pure magenta `#ff00ff` background** (single frame or a sheet) and
@@ -53,42 +59,54 @@ recover alpha with `desheet.mjs`:
 
 Staging dirs (`assets-staging/`, `.env`, `.shot.mjs`) are gitignored. Magenta > checkerboard.
 
-## Frame CSS model (`src/styles/poe-core.css`)
-Frames are **sprite-composed** (not `border-image`, which can't overhang or scale ornate corners):
-- `::after` (z3) = plain edge tiles, repeated at 1:1.
-- `::before` (z4) = corners (+ centre pimps), each drawn once, **on top of** the edges so the
-  ornament overflows inward over the body and along the edges. Pimps listed before corners.
-- Everything **1:1 native scale** — nothing stretched (rich art distorts otherwise).
-- Body texture is clipped to the **content box** (the opening) over a dark base, so it never
-  bleeds past the opaque frame.
+## Panel CSS model — `PoePanel` (`src/components/primitives/PoePanel.tsx`, `src/styles/poe-panel.css`)
+The live framed-surface component is **`PoePanel`** — a *layered* panel, NOT one baked image.
+(The earlier sprite-composed `PoeFrame` / `.poe-frame--ornate2/3` system and its
+`PoeFrame.stories.jsx` were removed; if you read references to them in old notes, they are
+historical.) The full layer contract lives in **`docs/FRAME-FIDELITY.md` → "LOCKED LAYER
+ARCHITECTURE"**; the short version:
 
-**Two knobs per frame** (see `.poe-frame--ornate2/3`):
-- `--bt` = border thickness (from the slice).
-- `--ov` = outward overhang — how many px of the frame ornament rides OUTSIDE the panel box.
-  Keep it **small (0–~15px)**; it is NOT the border thickness. Edges overhang perpendicular only;
-  corners overhang diagonally. `padding = bt − ov` is automatic, so the opening always meets the
-  body (no dark gap).
-- Pimp-less frames: override `::before` to list only the 4 corners with corner positions.
-- Buttons SCALE (not 1:1): `border-image … fill` (`.poe-button--ornate`).
+- The **panel** is the whole component; the **frame** is just one layer. Layout is only the box
+  (size + padding + margin); every visual layer is decoration (`position:absolute; inset:0`,
+  out of flow), so panels compose over varying content/backgrounds.
+- Layers (back→front): `__surface` (interior fill) → `__recess` (inner shadow seating the
+  surface) → `__shadow` + `__specular` (integration — blend the frame into the page) →
+  `__content` (children) → `__art` (the frame) → `__accent--{t,r,b,l}` (per-edge medallions).
+- The frame is a `border-image` 9-slice at NATIVE slice (corners pixel-exact, no scaling). The
+  surface is a tiled background + CSS `border-radius` (kept decoupled from the frame geometry on
+  purpose — a uniform tile has no distinct corners to 9-slice).
+- All `*Scale` props are **1 = native pixel (1:1)**. Knobs: `frame`, `frameScale`, `surface`,
+  `surfaceScale`, `surfaceShadow`, `integration`, `accent{Top,Right,Bottom,Left}` (+ scales),
+  and `--overhang` (frame↔box distance; `-1`/auto = half the band). See `PoePanelProps`.
 
-### Add a frame, end to end
-1. Get art on magenta → `desheet` → `process` → `slice-frame` (above), naming it e.g. `panel-frame-N`.
-2. Add a variant class `.poe-frame--ornateN.poe-ornate` (+ `::after`/`::before`) listing its sprites,
-   set `--bt` (≈ measured slice) and `--ov` (small), pick a body texture.
-3. Add a Storybook story in `src/stories/PoeFrame.stories.jsx` (`className="poe-frame--ornateN"`).
-4. Screenshot: `node .shot.mjs "<storyId>:WxH"` → `/tmp/shots/`, then view against the reference.
+`PoeHeader` still uses the base `.poe-frame` class in `poe-core.css` (a simple frame, not the
+removed ornate sprite system).
 
 ## Tooling
 - `.shot.mjs` (gitignored) drives headless Chromium against `/iframe.html?id=<storyId>&viewMode=story`.
 - Reference bar: `inspiration/perfect-fantasy-rpg-...jpg` (primary). Match style + high fidelity +
-  proper transparency + clean 9-slice-to-CSS.
+  proper transparency + clean 9-slice-to-CSS. **The user rates fidelity — see `FRAME-FIDELITY.md`.**
+
+## Testing
+- `npx vitest run` runs the suite headlessly (Chromium via Playwright). The
+  `@storybook/addon-vitest` integration turns **every story into a smoke test** (it must render
+  without throwing) and runs any story `play` function as an interaction test.
+- Behavioral assertions live in `play` functions using `storybook/test`
+  (`within`, `userEvent`, `expect`, `fn`) — e.g. `PoeTabs` selection, `PoeButton` click /
+  disabled, and `PoePanel`'s layer contract. Add tests by giving a story a `play`; tag a
+  test-only story `tags: ['!dev']` to keep it out of the sidebar while still running in CI.
+- If a run fails with *"Failed to fetch dynamically imported module … sb-vitest/deps/…"* after you
+  add or change an `import`, the Vite dep-optimizer cache is stale: `rm -rf
+  node_modules/.cache/storybook node_modules/.vite` and re-run.
 
 ## Open questions / future work
-- **Frame ↔ content positioning model.** `--ov` currently pushes the frame OUTWARD past the panel
-  box. Consider the inverse — pushing frame CONTENTS inward — or supporting BOTH as independent
-  knobs (outward overhang + inner content inset). This ties into upcoming layout work
-  (margins/paddings/grid) so framed panels compose cleanly and don't overlap neighbours or fight
-  the layout. Decide this model before building composite/multi-panel layouts.
-- Per-frame CSS is hand-written; once the look is locked, auto-generate the variant classes from
-  the sprite set + `asset-meta.json`.
-- Reconcile material variants (stone/metal/parchment) with the body-texture system.
+- **Reach the fidelity bar for one real frame** (the live blocker — see `FRAME-FIDELITY.md`).
+- **Panel ↔ content positioning model.** `--overhang` is the frame↔box distance (outward). The
+  inner content inset is coupled to the band today; consider exposing both as independent knobs.
+  This ties into upcoming layout work (margins/paddings/grid) so framed panels compose cleanly and
+  don't overlap neighbours or fight the layout. Decide before building composite/multi-panel layouts.
+- Per-frame slice/band values are hand-set in `poe-panel.css`; once the look is locked, drive them
+  from `asset-meta.json` instead.
+- `asset-meta.json` still has stale entries for the removed frame A / sprite slices (harmless
+  pipeline metadata); clean when the asset pipeline is next revisited.
+- Reconcile material variants (stone/metal/parchment) with the surface-texture system.

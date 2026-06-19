@@ -1,4 +1,5 @@
 import React from 'react';
+import { expect } from 'storybook/test';
 import { PoePanel } from '../components/primitives/PoePanel.tsx';
 import grid from '../assets/backgrounds/blueprint-grid.png';
 
@@ -154,5 +155,33 @@ export const Playground = {
     const style = { width, height };
     if (overhang >= 0) style['--overhang'] = `${overhang}px`;
     return <PoePanel style={style} {...args}>{content}</PoePanel>;
+  },
+};
+
+// ============================================================================================
+// LayerContract — guards the layered-panel structure (docs/FRAME-FIDELITY.md): chosen part
+// variants land on data-* hooks, every decoration layer is emitted, and accents render one
+// span per requested edge. No new sidebar noise — hidden from the dev sidebar, runs in tests.
+// ============================================================================================
+export const LayerContract = {
+  tags: ['!dev'],
+  args: { frame: 'frame-b', surface: 'stone', integration: 'none', accentTop: 'debug', accentBottom: 'debug' },
+  render: (args) => <PoePanel {...args} style={{ width: 300, height: 200 }}>Body</PoePanel>,
+  play: async ({ canvasElement }) => {
+    const panel = canvasElement.querySelector('.poe-panel');
+    await expect(panel).not.toBeNull();
+    await expect(panel).toHaveAttribute('data-frame', 'frame-b');
+    await expect(panel).toHaveAttribute('data-surface', 'stone');
+    await expect(panel).toHaveAttribute('data-integration', 'none');
+
+    for (const layer of ['surface', 'recess', 'shadow', 'specular', 'content', 'art']) {
+      await expect(panel.querySelector(`.poe-panel__${layer}`)).not.toBeNull();
+    }
+
+    // Two edges requested → exactly two accent spans, on the right edges.
+    await expect(panel.querySelectorAll('.poe-panel__accent')).toHaveLength(2);
+    await expect(panel.querySelector('.poe-panel__accent--t')).not.toBeNull();
+    await expect(panel.querySelector('.poe-panel__accent--b')).not.toBeNull();
+    await expect(panel.querySelector('.poe-panel__accent--l')).toBeNull();
   },
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Sparkles, Skull } from 'lucide-react';
+import { within, userEvent, expect, fn } from 'storybook/test';
 import { PoeButton } from '../components';
 import { Row, Stack, Caption } from './_layout.jsx';
 
@@ -17,6 +18,47 @@ export default {
 };
 
 export const Playground = {};
+
+// Pass-through props (onClick, etc.) reach the underlying <button>, and `selected`
+// surfaces as both the is-selected class and a data-selected hook.
+export const ClickBehavior = {
+  args: { children: 'Craft Item', selected: true, onClick: fn() },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', { name: /Craft Item/ });
+
+    await expect(button).toHaveClass('poe-button', 'is-selected');
+    await expect(button).toHaveAttribute('data-selected', 'true');
+    // Defaults to type="button" so it never submits a surrounding <form> by accident.
+    await expect(button).toHaveAttribute('type', 'button');
+
+    await userEvent.click(button);
+    await expect(args.onClick).toHaveBeenCalledTimes(1);
+  },
+};
+
+// The default type="button" is overridable via props.
+export const SubmitTypeOverride = {
+  tags: ['!dev'],
+  args: { children: 'Submit', type: 'submit' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('button', { name: /Submit/ })).toHaveAttribute('type', 'submit');
+  },
+};
+
+// A disabled button must not fire onClick.
+export const DisabledNoClick = {
+  args: { children: 'Disabled', disabled: true, onClick: fn() },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByRole('button', { name: /Disabled/ });
+
+    await expect(button).toBeDisabled();
+    await userEvent.click(button);
+    await expect(args.onClick).not.toHaveBeenCalled();
+  },
+};
 
 export const Ornate = {
   render: () => (

@@ -10,5 +10,7 @@ export function PoeButton({ children, className = '', ornate = false, variant = 
     className,
   ].filter(Boolean).join(' ');
 
-  return <button className={classes} data-selected={selected || undefined} {...props}>{children}</button>;
+  // Default to type="button" so a PoeButton inside a <form> never submits by accident;
+  // callers can still override via props (e.g. type="submit").
+  return <button type="button" className={classes} data-selected={selected || undefined} {...props}>{children}</button>;
 }
