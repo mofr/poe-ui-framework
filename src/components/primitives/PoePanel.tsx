@@ -20,8 +20,16 @@ export interface PoePanelProps {
   surface?: Surface;
   /** Scales the surface texture tile (1 = native px). */
   surfaceScale?: number;
-  /** Inner-shadow strength, 0–1 (0 = none) — the shadow that seats the surface into the frame. */
+  /** Inner-shadow intensity (alpha), 0–1 (0 = none) — the shadow that seats the surface into the frame. */
   innerShadow?: number;
+  /** Inner-shadow blur radius in px (default 16). */
+  innerShadowSize?: number;
+  /** Inner-shadow colour as an RGB triplet, e.g. '0, 0, 0' (alpha comes from `innerShadow`). */
+  innerShadowColor?: string;
+  /** Frame spill past the box edge in px; omit or negative = auto (half the scaled band). */
+  overhang?: number;
+  /** Content inset from the box edge in px; omit or negative = auto (frame thickness × scale). */
+  contentPad?: number;
   /** Shadow + specular that blend the frame into the page (raster-driven). */
   integration?: Integration;
   accentTop?: Accent;
@@ -43,6 +51,10 @@ export function PoePanel({
   surface = 'debug',
   surfaceScale = 1,
   innerShadow = 0.55,
+  innerShadowSize,
+  innerShadowColor,
+  overhang,
+  contentPad,
   integration = 'debug',
   accentTop = 'none',
   accentRight = 'none',
@@ -59,6 +71,10 @@ export function PoePanel({
     '--frame-scale': frameScale,
     '--surface-scale': surfaceScale,
     '--inner-shadow': innerShadow,
+    ...(innerShadowSize != null ? { '--inner-shadow-size': `${innerShadowSize}px` } : {}),
+    ...(innerShadowColor != null ? { '--inner-shadow-color': innerShadowColor } : {}),
+    ...(overhang != null && overhang >= 0 ? { '--overhang': `${overhang}px` } : {}),
+    ...(contentPad != null && contentPad >= 0 ? { '--content-pad': `${contentPad}px` } : {}),
     ...style,
   } as React.CSSProperties;
 
