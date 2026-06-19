@@ -84,7 +84,6 @@ export function SvgRpgText({
         fontSize={size}
         fontWeight={600}
         letterSpacing={letterSpacing}
-        textTransform="uppercase"
         fill={`url(#${gradientId})`}
         stroke={palette.stroke}
         strokeWidth="1.05"

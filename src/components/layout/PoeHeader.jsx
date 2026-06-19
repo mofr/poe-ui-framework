@@ -10,7 +10,12 @@ export function PoeHeader({ title = 'PoE2 Modifier Browser', subtitle = 'Arcane 
         <div className="poe-subtle">{subtitle}</div>
       </div>
       <div style={{ flex: 1 }}>
-        <input className="poe-search poe-search--ornate" placeholder="Search modifiers, tags, item classes..." />
+        <input
+          type="search"
+          className="poe-search poe-search--ornate"
+          aria-label="Search modifiers, tags, item classes"
+          placeholder="Search modifiers, tags, item classes..."
+        />
       </div>
       <PoeButton ornate><Settings size={15} /> Settings</PoeButton>
     </header>

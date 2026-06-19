@@ -17,10 +17,12 @@ export const PoeAssetPaths = {
   },
 };
 
-export function PoeAssetIcon({name, group='icons', size='', alt=''}) {
+export function PoeAssetIcon({name, group='icons', size='', alt}) {
   const src = PoeAssetPaths[group]?.[name];
   if (!src) return null;
-  return <img className={`poe-asset-icon ${size}`} src={src} alt={alt || name} loading="lazy" />;
+  // `??` (not `||`) so an explicit alt="" (decorative icon beside a text label) is honoured
+  // and not replaced by the icon name; only an omitted alt falls back to the name.
+  return <img className={`poe-asset-icon ${size}`} src={src} alt={alt ?? name} loading="lazy" />;
 }
 
 export function PoeNodePreview(){
