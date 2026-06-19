@@ -115,20 +115,28 @@ export const Gallery = {
 };
 
 // ============================================================================================
-// Playground — tweak the panel live. (slice/repeat are intrinsic to the frame raster, not controls.)
+// Playground — tweak the panel live. PUBLIC props (frame/scales/surface/innerShadow*/overhang/
+// contentPad/accents…) pass straight to PoePanel. A separate "Raster alignment" group
+// (slice/band/surfaceRadius/edgeRepeat + bring-your-own srcFrame) is injected as CSS vars via
+// `style` — these are raster-INTRINSIC dev knobs, NOT component props; each name matches its CSS var
+// so a tuned value copies straight into the frame's data-frame rule in poe-panel.css.
 // ============================================================================================
 const SCALE = { control: { type: 'range', min: 0.25, max: 2, step: 0.05 } };
 const ACCENT = { control: 'inline-radio', options: ['none', 'debug'] };
+const ALIGN = 'Raster alignment';
+const ALIGN_NUM = (desc) => ({ control: { type: 'number', min: -1 }, table: { category: ALIGN }, description: desc });
 
 export const Playground = {
   decorators: [onBlueprint],
   args: {
     frame: 'debug-r8', frameScale: 1,
-    surface: 'debug', surfaceScale: 1, innerShadow: 0.55,
+    surface: 'debug', surfaceScale: 1,
+    innerShadow: 0.55, innerShadowSize: 16, innerShadowColor: '0, 0, 0',
     integration: 'debug',
     accentTop: 'none', accentRight: 'none', accentBottom: 'none', accentLeft: 'none',
     accentTopScale: 1, accentRightScale: 1, accentBottomScale: 1, accentLeftScale: 1,
-    overhang: -1,
+    overhang: -1, contentPad: -1,
+    slice: -1, band: -1, surfaceRadius: -1, edgeRepeat: 'auto', srcFrame: '',
     width: 340, height: 240,
     content: 'Tweak me with the Controls panel →',
   },
@@ -141,19 +149,34 @@ export const Playground = {
     frameScale: SCALE,
     surface: { control: 'inline-radio', options: ['none', 'debug', 'stone', 'leather'] },
     surfaceScale: SCALE,
-    innerShadow: { control: { type: 'range', min: 0, max: 1, step: 0.05 } },
+    innerShadow: { control: { type: 'range', min: 0, max: 1, step: 0.05 }, description: 'Inner-shadow intensity (alpha).' },
+    innerShadowSize: { control: { type: 'range', min: 0, max: 60, step: 1 }, description: 'Inner-shadow blur radius (px).' },
+    innerShadowColor: { control: 'text', description: "Inner-shadow colour as an RGB triplet, e.g. '0, 0, 0' (alpha = innerShadow)." },
     integration: { control: 'inline-radio', options: ['none', 'debug'] },
     accentTop: ACCENT, accentRight: ACCENT, accentBottom: ACCENT, accentLeft: ACCENT,
     accentTopScale: SCALE, accentRightScale: SCALE, accentBottomScale: SCALE, accentLeftScale: SCALE,
-    overhang: { control: { type: 'range', min: -1, max: 80, step: 1 }, description: '-1 = auto (half band); frame↔box distance (overhang)' },
+    overhang: { control: { type: 'range', min: -1, max: 80, step: 1 }, description: '-1 = auto (half the scaled band). Frame spill past the box edge.' },
+    contentPad: { control: { type: 'number', min: -1 }, description: '-1 = auto (frame thickness × scale, so content clears the frame). Content inset from the box edge in px.' },
+    slice: ALIGN_NUM('-1 = auto (frame default). border-image-slice — where to cut the source corners (source px).'),
+    band: ALIGN_NUM('-1 = auto. Rendered frame thickness in px (border-image-width). If band ≠ slice the art SCALES: band < slice shrinks the ornament, band > slice enlarges it; band == slice ⇒ 1:1 native. Normally left to the frame; use frameScale to resize.'),
+    surfaceRadius: ALIGN_NUM('-1 = auto. Surface + inner-shadow corner radius in px (match the frame opening).'),
+    edgeRepeat: { control: 'inline-radio', options: ['auto', 'round', 'stretch', 'repeat', 'space'], table: { category: ALIGN }, description: 'auto = frame default. How the EDGE slices tile (corners never repeat): round/stretch suit continuous bars, repeat/space suit small motifs.' },
+    srcFrame: { control: 'text', table: { category: ALIGN }, description: 'Bring-your-own art: a URL for --src-frame (overrides the frame raster, no prop needed).' },
     width: { control: { type: 'range', min: 160, max: 1400, step: 10 } },
     height: { control: { type: 'range', min: 120, max: 960, step: 10 } },
     content: { control: 'text' },
   },
   parameters: { controls: { exclude: ['className', 'style', 'children'] } },
-  render: ({ width, height, content, overhang, ...args }) => {
+  render: ({ width, height, content, slice, band, surfaceRadius, edgeRepeat, srcFrame, ...args }) => {
+    // Raster-INTRINSIC dev knobs are injected as CSS vars (not props); only set when not "auto" (-1)
+    // so the frame's own data-frame rule wins otherwise. The rest (overhang/contentPad/innerShadow*/…)
+    // are real props and flow through {...args}.
     const style = { width, height };
-    if (overhang >= 0) style['--overhang'] = `${overhang}px`;
+    if (slice >= 0) style['--slice'] = slice;
+    if (band >= 0) style['--band'] = `${band}px`;
+    if (surfaceRadius >= 0) style['--surface-radius'] = `${surfaceRadius}px`;
+    if (edgeRepeat !== 'auto') style['--edge-repeat'] = edgeRepeat;
+    if (srcFrame) style['--src-frame'] = `url('${srcFrame}')`;
     return <PoePanel style={style} {...args}>{content}</PoePanel>;
   },
 };
