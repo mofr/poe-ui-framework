@@ -26,9 +26,9 @@ export interface PoePanelProps {
   innerShadowSize?: number;
   /** Inner-shadow colour as an RGB triplet, e.g. '0, 0, 0' (alpha comes from `innerShadow`). */
   innerShadowColor?: string;
-  /** Frame spill past the box edge in px; omit or negative = auto (half the scaled band). */
+  /** Frame spill past the box edge, in px at frameScale 1 (scales with frameScale); omit or negative = auto (half the band). */
   overhang?: number;
-  /** Content inset from the box edge in px; omit or negative = auto (frame thickness × scale). */
+  /** Content inset from the box edge, in px at frameScale 1 (scales with frameScale); omit or negative = auto (= frame thickness). */
   contentPad?: number;
   /** Shadow + specular that blend the frame into the page (raster-driven). */
   integration?: Integration;
@@ -73,8 +73,10 @@ export function PoePanel({
     '--inner-shadow': innerShadow,
     ...(innerShadowSize != null ? { '--inner-shadow-size': `${innerShadowSize}px` } : {}),
     ...(innerShadowColor != null ? { '--inner-shadow-color': innerShadowColor } : {}),
-    ...(overhang != null && overhang >= 0 ? { '--overhang': `${overhang}px` } : {}),
-    ...(contentPad != null && contentPad >= 0 ? { '--content-pad': `${contentPad}px` } : {}),
+    // Explicit overhang/content-pad are "px at frameScale 1" and scale with the frame, matching the
+    // auto defaults — so frameScale stays a uniform zoom even when these are non-zero.
+    ...(overhang != null && overhang >= 0 ? { '--overhang': `calc(${overhang}px * var(--frame-scale))` } : {}),
+    ...(contentPad != null && contentPad >= 0 ? { '--content-pad': `calc(${contentPad}px * var(--frame-scale))` } : {}),
     ...style,
   } as React.CSSProperties;
 
