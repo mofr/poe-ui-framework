@@ -71,10 +71,10 @@ export const Debug = {
         <Cell surface="leather" surfaceScale={0.2} label="leather (scale 0.2)" />
       </Section>
 
-      <Section title="SURFACE SHADOW — inner shadow strength (0 = none)">
-        <Cell innerShadow={0} label="0" />
-        <Cell innerShadow={0.55} label="0.55 (default)" />
-        <Cell innerShadow={0.9} label="0.9" />
+      <Section title="INNER SHADOW — colour incl. opacity (transparent = none)">
+        <Cell innerShadowColor="rgba(0,0,0,0)" label="transparent" />
+        <Cell innerShadowColor="rgba(0,0,0,0.55)" label="black 0.55 (default)" />
+        <Cell innerShadowColor="rgba(0,0,0,0.9)" label="black 0.9" />
       </Section>
 
       <Section title="INTEGRATION — raster-driven (on/off; styles would be different rasters)">
@@ -131,7 +131,7 @@ export const Playground = {
   args: {
     frame: 'debug-r8', frameScale: 1,
     surface: 'debug', surfaceScale: 1,
-    innerShadow: 0.55, innerShadowSize: 16, innerShadowColor: '0, 0, 0',
+    innerShadowSize: 16, innerShadowColor: 'rgba(0, 0, 0, 0.55)',
     integration: 'debug',
     accentTop: 'none', accentRight: 'none', accentBottom: 'none', accentLeft: 'none',
     accentTopScale: 1, accentRightScale: 1, accentBottomScale: 1, accentLeftScale: 1,
@@ -149,9 +149,8 @@ export const Playground = {
     frameScale: SCALE,
     surface: { control: 'inline-radio', options: ['none', 'debug', 'stone', 'leather'] },
     surfaceScale: SCALE,
-    innerShadow: { control: { type: 'range', min: 0, max: 1, step: 0.05 }, description: 'Inner-shadow intensity (alpha).' },
     innerShadowSize: { control: { type: 'range', min: 0, max: 60, step: 1 }, description: 'Inner-shadow blur radius (px).' },
-    innerShadowColor: { control: 'text', description: "Inner-shadow colour as an RGB triplet, e.g. '0, 0, 0' (alpha = innerShadow)." },
+    innerShadowColor: { control: 'color', description: 'Inner-shadow colour incl. opacity (opacity = intensity).' },
     integration: { control: 'inline-radio', options: ['none', 'debug'] },
     accentTop: ACCENT, accentRight: ACCENT, accentBottom: ACCENT, accentLeft: ACCENT,
     accentTopScale: SCALE, accentRightScale: SCALE, accentBottomScale: SCALE, accentLeftScale: SCALE,

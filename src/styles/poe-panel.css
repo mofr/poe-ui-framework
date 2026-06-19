@@ -19,9 +19,8 @@
   --frame-scale: 1;                     /* scales the frame + integration render (1 = native px) */
   --surface-scale: 1;                   /* scales the surface texture tile (1 = native px) */
   --accent-scale: 1;                    /* per-accent (set inline per medallion; 1 = native px) */
-  --inner-shadow: 0.55;                 /* inner-shadow INTENSITY = alpha, 0–1 (0 = none) */
-  --inner-shadow-size: 16px;            /* inner-shadow blur radius */
-  --inner-shadow-color: 0, 0, 0;        /* inner-shadow RGB triplet (alpha comes from --inner-shadow) */
+  --inner-shadow-size: 16px;                /* inner-shadow blur radius */
+  --inner-shadow-color: rgba(0, 0, 0, .55); /* inner-shadow colour incl. opacity (= intensity) */
   --overhang: calc(var(--band) * var(--frame-scale) / 2);    /* frame spill past the box edge — tracks scale */
   --content-pad: calc(var(--band) * var(--frame-scale));     /* content inset — defaults to frame thickness ×
                                            scale so content clears the (scaled) frame; per-frame/instance overridable */
@@ -73,7 +72,7 @@
 .poe-panel__inner-shadow {
   position: absolute; inset: 0; z-index: 2; pointer-events: none;
   border-radius: var(--surface-radius);
-  box-shadow: inset 0 0 var(--inner-shadow-size) 3px rgba(var(--inner-shadow-color), var(--inner-shadow));
+  box-shadow: inset 0 0 var(--inner-shadow-size) 3px var(--inner-shadow-color);
 }
 
 /* surface — material fill, corner radius --surface-radius. Tile scaled by --surface-scale. */
