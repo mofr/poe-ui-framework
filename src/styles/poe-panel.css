@@ -43,9 +43,9 @@
 /* real frames — full 1:1 raster (band = slice = native corner inset). Rectangular opening ⇒ radius 0.
    Edges are continuous bars (one big tile), so they STRETCH, not tile. (slice/repeat belong to the
    frame raster; they're set here per frame, not exposed as user controls.) */
-.poe-panel[data-frame='frame-a'] { --band: 160px; --slice: 160; --content-pad: calc(40px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(36px * var(--frame-scale));
+.poe-panel[data-frame='frame-a'] { --band: 80px; --slice: 80; --content-pad: calc(20px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(18px * var(--frame-scale));
   --src-frame: url('../assets/panels/panel-frame-2.png'); --src-integration-shadow: none; --src-integration-specular: none; }
-.poe-panel[data-frame='frame-b'] { --band: 114px; --slice: 114; --content-pad: calc(28px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(22px * var(--frame-scale));
+.poe-panel[data-frame='frame-b'] { --band: 57px; --slice: 57; --content-pad: calc(14px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(11px * var(--frame-scale));
   --src-frame: url('../assets/panels/panel-frame-3.png'); --src-integration-shadow: none; --src-integration-specular: none; }
 
 /* Every 9-slice layer shares EXACTLY this geometry — only source/z/blend differ. */
