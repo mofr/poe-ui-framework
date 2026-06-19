@@ -209,9 +209,9 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
 - **Step 3 — Converge.** Iterate the winning method one variable per round (silhouette/proportion →
   palette → material → ornament density → corner/edge detail), each rendered for the user's rating,
   until 4–5/5.
-- **Step 4 — Integrate & lock.** `tools/process-assets.mjs <name>` → `tools/slice-frame.mjs <name>`
-  (frames) → wire variant in `src/styles/poe-core.css` → story in `src/stories/` → `.shot.mjs`
-  screenshot → user's final sign-off → commit.
+- **Step 4 — Integrate & lock.** `tools/process-assets.mjs <name>` (trims + prints the 9-slice
+  inset) → add a `data-frame` rule in `src/styles/poe-panel.css` with the measured `--slice`/`--band`
+  → story in `src/stories/` → `.shot.mjs` screenshot → user's final sign-off → commit.
 - **Step 5 — Scale.** Only after the frame is locked: repeat per component, consistent palette.
 
 ## Methods ledger (NEVER silently drop a row — update status, don't delete)

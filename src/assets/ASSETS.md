@@ -16,10 +16,6 @@ the project's core visual-fidelity work (see `docs/FRAME-FIDELITY.md`).
 - `icons/` — small SVG domain/action glyphs for tags, buttons, tables, and tabs.
 - `nodes/` — SVG passive-tree / atlas node elements.
 
-`asset-meta.json` records pipeline metadata (trim + measured 9-slice insets) for processed raster
-assets. (It still carries stale entries for the removed sprite-`PoeFrame` art — harmless; clean
-when the asset pipeline is next revisited.)
-
 ## Usage rules
 - Put ornament on frames, headers, dividers, and selected states.
 - Keep dense data tables clean. Use icons only as compact semantic hints.
