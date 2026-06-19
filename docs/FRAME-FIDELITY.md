@@ -22,8 +22,8 @@ by the user, not Claude.
    (hard, user-judged) vs **transparency/cleanup** (solved mechanic — magenta key, bg removal). A
    model that nails feel but returns opaque (e.g. `gpt-image-2`) stays a candidate; route it through
    magenta keying. Revisit failed approaches as mechanics improve.
-6. **Review images live in the repo (`review/`, tracked), NEVER `/tmp`.** The user must be able to see
-   every candidate, and nothing should be lost while we converge. Index in `review/README.md`.
+6. **Review images live in the repo (`asset-review/`, tracked), NEVER `/tmp`.** The user must be able to see
+   every candidate, and nothing should be lost while we converge. Index in `asset-review/README.md`.
 
 ## Aesthetic law (what makes the reference good — user, 2026-06-18)
 The reference's quality is **integration + restraint**, not ornamentation:
@@ -221,8 +221,8 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
 | `gpt-image-2` / `-2026-04-21` | untested by user | opaque ✗ | REVISIT via magenta keying — may win on feel |
 | `chatgpt-image-latest` | untested | unknown | blocked on OpenAI org verification |
 | ChatGPT app (manual, user-steered) | > API but "not the feeling" | manual magenta export | candidate B |
-| Direct extraction — mirror-assembled tiles | ≤3/5 (user) | by source bg | `review/B-extracted-mirrored-*`: good local pixel crisp; BAD: corner captured whole composition (shadows/neighbor), corner→edge transition "just cut" (rough seams), vertical-flip inverts light. Superseded by ring method. |
-| Direct extraction — REAL continuous panel border ring | **0/5 (user, neutral)** — DORMANT, keep | by source bg | `review/B2-*`: 9-slice the actual Repo Overview panel border. CLEAN header+top-corners but bottom edges/corners bleed map. User verdict: "it's just not a frame — the original is a composition of many little things, simple cropping is impossible." Approach parked, NOT discarded (may revisit). |
+| Direct extraction — mirror-assembled tiles | ≤3/5 (user) | by source bg | `asset-review/B-extracted-mirrored-*`: good local pixel crisp; BAD: corner captured whole composition (shadows/neighbor), corner→edge transition "just cut" (rough seams), vertical-flip inverts light. Superseded by ring method. |
+| Direct extraction — REAL continuous panel border ring | **0/5 (user, neutral)** — DORMANT, keep | by source bg | `asset-review/B2-*`: 9-slice the actual Repo Overview panel border. CLEAN header+top-corners but bottom edges/corners bleed map. User verdict: "it's just not a frame — the original is a composition of many little things, simple cropping is impossible." Approach parked, NOT discarded (may revisit). |
 | **USER-CLEANED reference → AI/direct** (NEW, to try) | untried | n/a | User manually conceals non-relevant elements (map, title text, icons, +/- buttons, neighbors, inter-panel shadow) in an editor → clean isolated frame on magenta/transparent. Then: (a) direct process/slice by Claude, AND (b) img2img anchor for gpt-image-1.5 to sharpen/complete keeping the feel. Removes the entanglement that blocked everything. "Try all options." |
 | **HYBRID (recommended next):** extract authentic CORNERS + header from ref; SYNTHESIZE thin edges + stone body; compose as layered component | untried | clean by construction | Plays to strengths: extraction for the rich hard-to-fake pieces (clean), generation/procedural for the simple repeatable thin edges + body where extraction fails. Distinct real corners → asymmetry. + separate shadow layer for integration. |
 | `gpt-image-1.5` IMG2IMG anchored on real panel + SUBTLE-target prompt | awaiting user rating | clean | `assets-staging/frame-img2img-subtle.png` — looks far closer to ref's restrained style; header text baked in. |
@@ -262,13 +262,13 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   before buying. All engine options still open.
 - 2026-06-18: TRIED extraction (mirror tiles) → user ≤3/5: good local crisp; bad corner-captures-
   composition + rough "just cut" seams. Also: don't upscale (pixel-perfect art → show native 1:1).
-- 2026-06-18: Extraction v2 = REAL continuous panel-border RING (`review/B2-*`). Fixes seams (real
+- 2026-06-18: Extraction v2 = REAL continuous panel-border RING (`asset-review/B2-*`). Fixes seams (real
   contiguous corners/edges) + asymmetry. Finding: CLEAN for header+top-corners (rich parts), BLOCKED
   for thin edges+bottom-corners (content bleeds to the few-px frame). Pure extraction can't make a
   full clean frame here.
 - 2026-06-18: → Proposed HYBRID: extract authentic corners+header from ref, synthesize thin edges +
   stone body, compose layered (w/ shadow layer). AWAITING USER GO/feedback.
-- Workflow fix: all review images now in repo `review/` (tracked), 1:1 native (no upscaling).
+- Workflow fix: all review images now in repo `asset-review/` (tracked), 1:1 native (no upscaling).
 - 2026-06-18: Extraction RING rated 0/5 (neutral) — "not a frame, original is a composition, cropping
   impossible." Parked as dormant (kept in ledger). NEW idea from user: hand-clean the reference frame
   (conceal map/text/icons/buttons/neighbors) → feed cleaned frame to AI (img2img) AND/OR direct process.
@@ -282,7 +282,7 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   (`border-radius`) so no hard square fights the frame's corner — replaces the clip-path chamfer.
   Layout now crystal-clear: ONE element per layer (A2/A1 pimp · A3 art · B content · C1 specular ·
   C2 shadow · recess · D body). Variants = restyle of recess depth + ring opacity (same textures).
-  Screenshots `review/layout/pfl-{nine-slice,decorated,variants}.png`. AWAITING user judgment.
+  Screenshots `asset-review/layout/pfl-{nine-slice,decorated,variants}.png`. AWAITING user judgment.
 - 2026-06-18: User: frame shows distinct corners, integration didn't. Two fixes: (1) GEOMETRY — the
   integration layers had reached the opening (specular bled inside as a flat cyan band); reshaped them
   into a proper HALO around the frame (outside + under the band's outer few px, never into the opening).
@@ -304,7 +304,7 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   Code is intended to READ as the model (header comment in `src/styles/poe-frame-layered.css`). Debug
   textures regenerated as a CO-DESIGNED set (frame ornament mid-band, integration just outside on the
   page side, distinct corners). Resolves the overhang-vs-inset open question: padding = content-inset
-  knob, outset = overhang knob, independent. Screenshots `review/layout/pfl-*.png`. AWAITING user code
+  knob, outset = overhang knob, independent. Screenshots `asset-review/layout/pfl-*.png`. AWAITING user code
   review + judgment.
 - 2026-06-18: TERMINOLOGY pinned (user asked to be corrected): what we call "bevel" is a CORNER RADIUS
   (`border-radius`, circular rounding); a flat 45° cut is a CHAMFER; a true bevel is a slanted/3-D edge.
@@ -317,7 +317,7 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   (data-corner picks the set + matching `--bevel`); sources are CSS vars (`--src-frame/-shadow/-specular`).
   Stories consolidated to ONE `Debug — all variations` story (radius sets · integration variants ·
   decoration+resize · radius-coupling). debug body/pimp/glow stay in `src/assets/debug/` (different asset
-  types, not frames). Screenshot `review/layout/pfl-debug.png`. AWAITING user code review + judgment.
+  types, not frames). Screenshot `asset-review/layout/pfl-debug.png`. AWAITING user code review + judgment.
 - 2026-06-18: MILESTONE polish (user reviews in Storybook, not screenshots). UNIFIED TERMINOLOGY (now
   canonical in the CSS header comment): PANEL = whole component; BOX = its layout rectangle (size +
   padding + margin, the only thing affecting layout — we say "box", not "rect"); FRAME = ornamental
@@ -331,7 +331,7 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   variations` (radius sets · variants · layers-in-isolation · decoration+resize · with-content ·
   coupling) on a NEW blueprint grid bg; a `Playground` with native Storybook Controls (args/argTypes)
   to tweak live; a TEMPORARY `Migration` story (PoeFrame → PoeFrameLayered, with prop mapping) on the
-  stone bg. Stone bg KEPT for future artistic iteration. Debug screenshot residue (review/layout/)
+  stone bg. Stone bg KEPT for future artistic iteration. Debug screenshot residue (asset-review/layout/)
   removed. AWAITING user review in Storybook.
 - 2026-06-18: RENAMED component `PoeFrameLayered` → `PoePanel` (the PANEL is the whole component; the
   FRAME is one part). Files now `src/components/primitives/PoePanel.jsx` + `src/styles/poe-panel.css`
@@ -424,7 +424,7 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   (poe-panel.css, asset-meta.json, tools/slice-*.mjs). NOTE: asset-meta.json still has stale entries for
   the deleted frame A / slices — harmless (pipeline metadata, not runtime); clean when the asset pipeline
   is revisited. All PoePanel stories render clean.
-- 2026-06-18: USER delivered hand-cleaned QUEST LOG frame (`review/C-user-cleaned-quest-log.png`,
+- 2026-06-18: USER delivered hand-cleaned QUEST LOG frame (`asset-review/C-user-cleaned-quest-log.png`,
   307×263, real pixels, leftovers: title/?/bottom-button). Ran both: (a) direct interior-cut keeps
   authentic grit+scale but leftovers remain (`C-direct-on-body-native.png`); (b) gpt-image-1.5 cleaned
   leftovers + hollow but UPRES SMOOTHED the grit / genericized border (`C-img2img-cleaned.png`).
@@ -439,34 +439,34 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
 - 2026-06-18: User chose local Real-ESRGAN. SET UP: bootstrapped pip (was missing), installed
   torch 2.12+cu130 + spandrel on the RTX 4070 (CUDA True). Tool: `tools/upscale.py` (spandrel loader,
   not basicsr). Weights `assets-staging/sr-models/RealESRGAN_x4plus.pth` (anime_6B URL 404'd, TODO).
-  RAN on Quest Log frame → `review/C-sr-x4plus-native307.png` + `-4x.png`. Sharper, STYLE PRESERVED
+  RAN on Quest Log frame → `asset-review/C-sr-x4plus-native307.png` + `-4x.png`. Sharper, STYLE PRESERVED
   (no restyle, unlike img2img). Leftovers (title/?/button) remain (SR sharpens only). AWAITING user
   rating: does style-preserving deblur clear the bar / is this the right direction?
 - 2026-06-18: User: "feel something good about this upscaling step"; ref is blurred AND resized. Added
   TILING to `tools/upscale.py`; SR'd the FULL reference 4x → `assets-staging/sources/ref-sr-x4.png`
-  (5760×3240). Comparison crops `review/D-cmp-*` show clear style-preserving deblur on real panels.
+  (5760×3240). Comparison crops `asset-review/D-cmp-*` show clear style-preserving deblur on real panels.
   PROCESS DECIDED: SR is a one-time pre-process; all frame work now uses the sharp master (panels
   ~1100px not ~275px). NEXT options: (a) try anime_6B model for crisper; (b) rebuild Quest Log frame
   from the sharp master + native-res leftover cloning.
 - 2026-06-18: User wants the FULL reference (no crop) downscaled to many sizes to find where the crisp
   pixel-art-1:1 feeling lives (high-res reads smooth). Decision: WORK at high-res, FINALIZE components
-  at the user-chosen target size. Rendered `review/sizes/ref-w0360..2400.png` from the SR master.
+  at the user-chosen target size. Rendered `asset-review/sizes/ref-w0360..2400.png` from the SR master.
   AWAITING user's pick of the target native size (will render more around it if needed).
 - 2026-06-18: Size sweep 1200-2400 (80px). User: **1680 is crispest** — both higher AND lower give
   blurrier lines; 1680 has very crisp thin 1px lines. = pixel-grid ALIGNMENT (ref's 1px lines land 1:1
   on output pixels at 1680; straddle/anti-alias elsewhere). Implies art's true native res ≈1680 (the
-  1440 source was itself slightly downscaled). PROVISIONAL MASTER SIZE = **1680** (`review/sizes/ref-w1680.png`).
+  1440 source was itself slightly downscaled). PROVISIONAL MASTER SIZE = **1680** (`asset-review/sizes/ref-w1680.png`).
   Caveat: full-dashboard resonance; per-component optimum may differ slightly. VALIDATE on a real frame.
   Workflow: work at high-res SR master (5760), finalize each component at ~1680-equivalent (grid-aligned).
 - 2026-06-18: Locked 1680 PROVISIONAL master → `assets-staging/sources/ref-master-w1680.png`. VALIDATED
-  on a real frame: Quest Log panel cropped from it (`review/E-questlog-sharp-1680.png`, ~368×~290, bottom
+  on a real frame: Quest Log panel cropped from it (`asset-review/E-questlog-sharp-1680.png`, ~368×~290, bottom
   bound TBD — long list) is crisp (header/border/ornaments). Pipeline now: SR full ref → 5760 master →
   1680 honest master → crop frames sharp. NEXT: turn Quest Log into a component (remove interior content
   + leftovers title/?/View-All-Quests button). DECISION PENDING: cleanup via user hand-clean vs Claude
   native-res cloning vs both; confirm 1680.
 - 2026-06-18: 1680 APPROVED as provisional+rerunnable (SR master is the fixed artifact; re-slice any size later).
   User: hand-cleaning hard because "the composition mixes everything" (blend/entanglement, not blur).
-  Tried crude clone-clean (`review/E-questlog-cleaned-*`) → ROUGH (header column-clone smears; edges catch
+  Tried crude clone-clean (`asset-review/E-questlog-cleaned-*`) → ROUGH (header column-clone smears; edges catch
   neighbor/action-bar). CONCLUSION: content-removal from the entangled composition is the remaining hard
   problem (blur is solved). PIVOT: **LaMa inpainting** (local, GPU, native-res object removal + plausible
   fill, keeps real pixels, NO restyle — unlike OpenAI edits which resample to 1024 & re-smooth). Workflow:
@@ -474,7 +474,7 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   Real-ESRGAN. NEXT: set up IOPaint/LaMa (pending user nod) vs user hand-clean the now-sharp source.
 - 2026-06-18: User nodded. SET UP LaMa via `simple-lama-inpainting` (swapped opencv→opencv-python-headless
   for libGL). Tool: `tools/inpaint.py <img> <mask> <out>` (white mask = remove). RAN on Quest Log panel
-  (`assets-staging/sources/ql-panel.png` from 1680 master + `ql-mask.png`) → `review/E-questlog-FRAME-clean-1680.png`.
+  (`assets-staging/sources/ql-panel.png` from 1680 master + `ql-mask.png`) → `asset-review/E-questlog-FRAME-clean-1680.png`.
   RESULT: clean frame — REAL sharp gritty border/corners/header band; content (list/title/?/button) removed;
   interior = LaMa smooth fill (replace w/ our body); bottom-frame center reconstructed (corners real). FIRST
   clean frame from the real reference at native size. AWAITING user judgment on border quality → then

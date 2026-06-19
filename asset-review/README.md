@@ -1,7 +1,7 @@
-# Review images
+# Asset review — candidate images
 
-All candidate/experiment images live here (tracked in git) so they're visible and never lost while
-we're still converging. See `../docs/FRAME-FIDELITY.md` for the plan, methods ledger, and ratings.
+All candidate/experiment asset images live here (tracked in git) so they're visible and never lost
+while we're still converging. See `../docs/FRAME-FIDELITY.md` for the plan, methods ledger, and ratings.
 
 Newest experiments appended; older kept for comparison. **User rates feel 1–5; Claude never declares.**
 
@@ -45,10 +45,10 @@ All shown native 1:1 — no upscaling (pixel-perfect art).
 - `D-cmp-orig-corner.png` vs `D-cmp-sr-corner.png` — frame corner detail recovery.
 - PROCESS: SR is a one-time pre-process; all frame extraction/cleaning/generation now works on the master.
 
-## Candidate D — size sweep (find the crisp pixel-art native size)
-- `sizes/ref-w0360.png` … `ref-w2400.png` — full SR master downscaled (lanczos) to many widths, NO crop.
-- Goal: user picks the width where it reads crisp/pixel-art (high-res is smooth). That = target native size.
-- Build components at high-res, finalize at the chosen size.
+## Candidate D — size sweep (find the crisp pixel-art native size) — DONE, pruned
+- Swept the SR master downscaled to many widths; user picked **1680** as the crispest pixel-art size.
+- Keeper: `../inspiration/reference-1680.png`. The full sweep (sizes/, ~50MB) was removed — regenerable
+  from the SR master (`assets-staging/`, gitignored) via tools/upscale.py if ever needed again.
 
 ## Candidate E — LaMa-cleaned Quest Log frame (the breakthrough)
 - Pipeline: SR full ref → 1680 master → crop panel (`assets-staging/sources/ql-panel.png`) → LaMa
