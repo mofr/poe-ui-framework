@@ -20,11 +20,9 @@ export interface PoePanelProps {
   surface?: Surface;
   /** Scales the surface texture tile (1 = native px). */
   surfaceScale?: number;
-  /** Inner-shadow intensity (alpha), 0–1 (0 = none) — the shadow that seats the surface into the frame. */
-  innerShadow?: number;
-  /** Inner-shadow blur radius in px (default 16). */
+  /** Inner-shadow blur radius in px (default 16) — the shadow that seats the surface into the frame. */
   innerShadowSize?: number;
-  /** Inner-shadow colour as an RGB triplet, e.g. '0, 0, 0' (alpha comes from `innerShadow`). */
+  /** Inner-shadow colour, any CSS colour incl. opacity, e.g. 'rgba(0,0,0,.55)' (opacity = intensity). */
   innerShadowColor?: string;
   /** Frame spill past the box edge, in px at frameScale 1 (scales with frameScale); omit or negative = auto (half the band). */
   overhang?: number;
@@ -50,7 +48,6 @@ export function PoePanel({
   frameScale = 1,
   surface = 'debug',
   surfaceScale = 1,
-  innerShadow = 0.55,
   innerShadowSize,
   innerShadowColor,
   overhang,
@@ -70,7 +67,6 @@ export function PoePanel({
   const vars = {
     '--frame-scale': frameScale,
     '--surface-scale': surfaceScale,
-    '--inner-shadow': innerShadow,
     ...(innerShadowSize != null ? { '--inner-shadow-size': `${innerShadowSize}px` } : {}),
     ...(innerShadowColor != null ? { '--inner-shadow-color': innerShadowColor } : {}),
     // Explicit overhang/content-pad are "px at frameScale 1" and scale with the frame, matching the
