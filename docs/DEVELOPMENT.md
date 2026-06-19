@@ -2,10 +2,26 @@
 
 Authoritative guide for continuing this project. Read this first.
 
-> **STATUS (not done): the asset pipeline is NOT established yet, and the reference style in
-> `inspiration/perfect-fantasy-rpg-...jpg` is NOT reached yet.** We are making progress (clean
-> magenta transparency, sprite-composed frames, overhang model) but this milestone is unfinished.
-> Treat the steps below as the current best approach, not a settled pipeline.
+> **STATUS (2026-06-18): API self-serve route now REACHES the reference bar for frames.**
+> `gpt-image-1.5` via `tools/gen-assets.mjs` (reference crop + a material-forward, grim-palette
+> prompt) produces reference-grade frames with **clean RGBA transparency directly** (hollow
+> centre, transparent outside — no desheet/magenta needed). Proven end-to-end: gen → process →
+> slice-frame → CSS renders a frame indistinguishable in quality from the reference REPO OVERVIEW
+> panel (see `panel-frame` / story `FrameA`). The ChatGPT-app + magenta-desheet route below
+> remains for hand-authored sheets, but is no longer the only path. Still open: full kit coverage
+> (alt frames, buttons, bars, icons) and palette/material consistency across the set.
+
+### The winning prompt formula (what flipped the API from "not good enough" to reference-grade)
+Earlier API attempts gave generic **thin gold picture-frames**. Three prompt levers fix it:
+1. **Material over ornament** — "THICK heavy near-black DARK-IRON border, NOT a thin painting
+   frame"; name the carved gold *inlay* as secondary.
+2. **Grim, desaturated palette** — "cold near-BLACK gunmetal grey (NOT warm brown/bronze), muted
+   TARNISHED gold (NOT bright shiny brass)".
+3. **Explicit corner features** — "raised gold boss set with a faceted glowing BLUE GEMSTONE at
+   each of the four corners".
+Keep "CENTER COMPLETELY HOLLOW + fully transparent" and "isolated, head-on orthographic, no
+scene/shadow/text". The reference crop (`inspiration/crops/panel.png`) is still passed via the
+edits endpoint. Winning prompts live in `tools/asset-prompts.json`.
 
 ## What this is
 A dark-fantasy (Path of Exile–style) React + CSS UI kit whose visual fidelity comes from
@@ -13,9 +29,16 @@ A dark-fantasy (Path of Exile–style) React + CSS UI kit whose visual fidelity 
 (`npm run storybook`, port 6006). `src/App.jsx` was intentionally removed.
 
 ## Asset pipeline (the core workflow)
-Source art is generated in the **ChatGPT app** (far higher fidelity than the OpenAI Images
-API — the API path in `tools/gen-assets.mjs` is a fallback only). Provide each asset on a
-**pure magenta `#ff00ff` background** — a single frame or a sheet of frames.
+**Preferred (self-serve API):** `node tools/gen-assets.mjs <name> [--tag=X --force]` →
+`gpt-image-1.5` with the reference crop + the material-forward prompt returns a clean RGBA asset
+straight into `assets-staging/<name>.png` (no desheet step — alpha is already real). Then jump to
+step 2 below (`process-assets`), then `slice-frame` for frames. Iterate the prompt in
+`tools/asset-prompts.json`, regenerate with a `--tag` to A/B, then promote the winner by copying
+it to `assets-staging/<name>.png`.
+
+**Alternative (hand-authored sheets from the ChatGPT app):** when you want to draw/curate art by
+hand, export each asset on a **pure magenta `#ff00ff` background** (single frame or a sheet) and
+recover alpha with `desheet.mjs`:
 
 1. `node tools/desheet.mjs <image> <tag>` — auto-detects magenta vs the old checkerboard.
    Magenta uses a **soft-alpha chroma key + despill** (fractional alpha on anti-aliased edges,

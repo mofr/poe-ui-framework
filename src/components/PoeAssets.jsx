@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles/poe-core.css';
+import '../styles/rpg-text.css';
 
 export const PoeAssetPaths = {
   icons: {

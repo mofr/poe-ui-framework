@@ -1,0 +1,106 @@
+/* PoePanel — a layered decorative PANEL.  DEBUG skeleton.
+
+   TERMINOLOGY: PANEL = whole component · BOX = its layout rectangle (size+padding+margin) · FRAME =
+   ornamental border · SURFACE = interior background fill · CONTENT = developer content · INTEGRATION =
+   shadow+specular blending frame→page · INNER SHADOW seats the surface · ACCENT = centre-edge medallion.
+   OVERHANG = how far the frame spills OUTSIDE the box edge (vs INSET = pushed inward, e.g. padding).
+
+   MODEL: layout is just the BOX; every layer is decoration (absolute, inset:0, out of flow). One rule
+   for every raster layer: box edge at the raster CENTRE (overhang = half the band). Layers differ only
+   by texture/z/blend. Corner radius + edge-repeat + slice live in the RASTER set (per frame choice).
+   Parts are independent CHOICES (each with a "none") + per-part SCALE knobs. */
+
+.poe-panel {
+  position: relative;
+  isolation: isolate;
+  width: 360px; height: 300px;          /* the BOX — overridden inline in stories */
+  /* default FRAME = debug r8. data-frame swaps the whole matched set (band/slice/radius/repeat/srcs). */
+  --band: 30px; --slice: 30; --radius: 8px; --repeat: round;
+  --frame-scale: 1;                     /* scales the frame + integration render (1 = native px) */
+  --surface-scale: 1;                   /* scales the surface texture tile (1 = native px) */
+  --accent-scale: 1;                    /* per-accent (set inline per medallion; 1 = native px) */
+  --surface-shadow: 0.55;               /* inner-shadow strength (0 = none) — user-controllable */
+  --overhang: calc(var(--band) * var(--frame-scale) / 2);   /* frame spill past the box edge */
+  --src-frame:    url('../assets/panels/debug/frame-r8.png');
+  --src-shadow:   url('../assets/panels/debug/shadow-r8.png');
+  --src-specular: url('../assets/panels/debug/specular-r8.png');
+}
+/* debug frame sets — same band/slice (30), only radius (+ art) differs ... */
+.poe-panel[data-frame='debug-r0'] { --radius: 0px;
+  --src-frame: url('../assets/panels/debug/frame-r0.png'); --src-shadow: url('../assets/panels/debug/shadow-r0.png'); --src-specular: url('../assets/panels/debug/specular-r0.png'); }
+.poe-panel[data-frame='debug-r4'] { --radius: 4px;
+  --src-frame: url('../assets/panels/debug/frame-r4.png'); --src-shadow: url('../assets/panels/debug/shadow-r4.png'); --src-specular: url('../assets/panels/debug/specular-r4.png'); }
+.poe-panel[data-frame='debug-r8'] { --radius: 8px;
+  --src-frame: url('../assets/panels/debug/frame-r8.png'); --src-shadow: url('../assets/panels/debug/shadow-r8.png'); --src-specular: url('../assets/panels/debug/specular-r8.png'); }
+/* ... EXCEPT debug-r24: radius 24 can't fit a 30px corner slice, so its band/slice grow to 48. */
+.poe-panel[data-frame='debug-r24'] { --band: 48px; --slice: 48; --radius: 24px;
+  --src-frame: url('../assets/panels/debug/frame-r24.png'); --src-shadow: url('../assets/panels/debug/shadow-r24.png'); --src-specular: url('../assets/panels/debug/specular-r24.png'); }
+
+/* real frames — full 1:1 raster (band = slice = native corner inset). Rectangular opening ⇒ radius 0.
+   Edges are continuous bars (one big tile), so they STRETCH, not tile. (slice/repeat belong to the
+   frame raster; they're set here per frame, not exposed as user controls.) */
+.poe-panel[data-frame='frame-a'] { --band: 160px; --slice: 160; --radius: 0px; --repeat: repeat;
+  --src-frame: url('../assets/panels/panel-frame-2.png'); --src-shadow: none; --src-specular: none; }
+.poe-panel[data-frame='frame-b'] { --band: 56px; --slice: 56; --radius: 0px; --repeat: repeat;
+  --src-frame: url('../assets/panels/panel-frame-3.png'); --src-shadow: none; --src-specular: none; }
+
+/* Every 9-slice layer shares EXACTLY this geometry — only source/z/blend differ. */
+.poe-panel__art,
+.poe-panel__shadow,
+.poe-panel__specular {
+  position: absolute; inset: 0; pointer-events: none;
+  border: calc(var(--band) * var(--frame-scale)) solid transparent;
+  border-image-slice: var(--slice);
+  border-image-width: calc(var(--band) * var(--frame-scale));
+  border-image-outset: var(--overhang);
+  border-image-repeat: var(--repeat);
+}
+.poe-panel__art      { z-index: 6; border-image-source: var(--src-frame); }
+.poe-panel__specular { z-index: 4; border-image-source: var(--src-specular); mix-blend-mode: screen; }
+.poe-panel__shadow   { z-index: 3; border-image-source: var(--src-shadow); opacity: .8; }
+
+.poe-panel__content {
+  position: absolute; inset: 0; z-index: 5; overflow: auto;
+  padding: var(--band);
+  color: #e8e0cf; font: 12px/1.4 system-ui, sans-serif;
+}
+
+/* inner shadow — symmetric single colour, on the box edge; seats the surface into the frame. */
+.poe-panel__recess {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 16px 3px rgba(0, 0, 0, var(--surface-shadow));
+}
+
+/* surface — material fill, corner radius --radius. Tile scaled by --surface-scale. */
+.poe-panel__surface {
+  position: absolute; inset: 0; z-index: 1;
+  border-radius: var(--radius);
+}
+
+/* accent — centre-edge medallions; rendered per-edge by the component, sized by per-medallion --accent-scale. */
+.poe-panel__accent {
+  position: absolute; z-index: 7; pointer-events: none;
+  width: calc(48px * var(--accent-scale)); height: calc(48px * var(--accent-scale));  /* 48 = native px */
+  background: url('../assets/debug/debug-accent.png') center / contain no-repeat;
+  filter: drop-shadow(0 0 9px rgba(255, 225, 140, .9));
+}
+.poe-panel__accent--t { top: 0;    left: 50%; transform: translate(-50%, -50%); }
+.poe-panel__accent--b { bottom: 0; left: 50%; transform: translate(-50%,  50%); }
+.poe-panel__accent--l { left: 0;   top: 50%;  transform: translate(-50%, -50%); }
+.poe-panel__accent--r { right: 0;  top: 50%;  transform: translate( 50%, -50%); }
+
+/* CHOICES — each part has a "none". */
+.poe-panel[data-frame='none']       .poe-panel__art      { display: none; }
+.poe-panel[data-integration='none'] .poe-panel__shadow,
+.poe-panel[data-integration='none'] .poe-panel__specular { display: none; }
+.poe-panel[data-surface='none']     .poe-panel__surface,
+.poe-panel[data-surface='none']     .poe-panel__recess   { display: none; }
+
+/* surface variants (tile size scaled by --surface-scale) */
+.poe-panel[data-surface='debug'] .poe-panel__surface {
+  background: url('../assets/debug/debug-surface.png') 0 0 / calc(64px * var(--surface-scale)) repeat;
+  box-shadow: 0 0 0 2px rgba(150, 255, 170, .95);   /* DEBUG: solid CSS edge marker (no raster, no 9-slice) */
+}
+.poe-panel[data-surface='stone']   .poe-panel__surface { background: url('../assets/backgrounds/surface-stone.png')   center / calc(1254px * var(--surface-scale)) repeat; }
+.poe-panel[data-surface='leather'] .poe-panel__surface { background: url('../assets/backgrounds/surface-leather.png') center / calc(1254px * var(--surface-scale)) repeat; }

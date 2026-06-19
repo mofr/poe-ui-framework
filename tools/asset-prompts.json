@@ -8,7 +8,7 @@
       "category": "frames",
       "size": "1024x1024",
       "quality": "high",
-      "prompt": "Using the provided reference image as the EXACT style guide, create a single isolated rectangular UI panel frame — BORDER ONLY. Reproduce the reference's panel-border art faithfully: the same carved gold-and-dark-iron material, ornamentation density, beveled molding, corner rivets/bosses, thin bright gold inner lip, and color palette. The CENTER MUST BE COMPLETELY HOLLOW and fully transparent — only the frame border exists, the entire middle is transparent (no fill). Perfectly symmetric on all four sides. Head-on orthographic flat view. Fully transparent background, no scene, no shadow, no text, no extra elements, isolated, centered."
+      "prompt": "Using the provided reference image as the EXACT style guide, create a single isolated rectangular dark-fantasy game UI panel frame — BORDER ONLY (the entire middle COMPLETELY HOLLOW and fully transparent). This is heavy chrome, NOT a thin painting frame: a THICK, wide, weathered near-black DARK-IRON border with a chiselled stone/metal texture, deeply carved aged-GOLD filigree scrollwork inlaid along the band, a hard beveled molding, and a thin bright gold inner lip. At EACH of the four corners place a raised ornate gold boss set with a faceted glowing BLUE GEMSTONE. Path of Exile aesthetic: GRIM and desaturated — the iron is cold near-BLACK gunmetal grey (NOT warm brown or bronze), the gold inlay is muted/aged/tarnished (NOT bright shiny brass), high-contrast, restrained. Slightly weathered and scratched. Perfectly symmetric on all four sides. Head-on orthographic flat view. Fully transparent background, no scene, no shadow, no text, no extra elements, isolated, centered."
     },
     {
       "name": "panel-frame-2",
@@ -29,7 +29,7 @@
       "category": "buttons",
       "size": "1536x1024",
       "quality": "high",
-      "prompt": "Using the provided reference image as the EXACT style guide, create a single isolated horizontal UI button plate in the reference's exact style: a beveled dark-iron slab with an aged-gold rim and gold corner caps, soft warm top highlight, matching the reference's buttons in material, ornamentation, and palette. Empty center for a label. Head-on orthographic flat view. Fully transparent background, no scene, no shadow, no text, no extra elements, isolated, centered."
+      "prompt": "Using the provided reference image as the EXACT style guide, create a single isolated horizontal dark-fantasy game UI button plate: a beveled cold near-BLACK gunmetal-grey iron slab (chiselled stone/metal texture, NOT warm brown), framed by a thin aged/tarnished muted-GOLD rim with small ornate gold corner caps and a soft warm top highlight. Empty center for a label. Path of Exile aesthetic — grim, metallic, high-contrast, restrained. Head-on orthographic flat view. Fully transparent background, no scene, no shadow, no text, no extra elements, isolated, centered."
     }
   ]
 }

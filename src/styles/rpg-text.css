@@ -1,0 +1,292 @@
+/*
+  RPG Text Kit v2
+  Goal: closer to the raster/painterly text look in the reference image.
+
+  Important:
+  - This file does not include font files.
+  - The @import is convenient for Storybook/dev. For production, prefer @fontsource
+    or self-hosted fonts licensed for your project.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --rpg-font-title: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --rpg-font-heading: "Cinzel", "Marcellus SC", Georgia, serif;
+  --rpg-font-body: "Alegreya Sans", system-ui, sans-serif;
+  --rpg-font-mono: "JetBrains Mono", Consolas, monospace;
+
+  --rpg-text-main: #d7c9ad;
+  --rpg-text-bright: #f5eddd;
+  --rpg-text-muted: #8e826b;
+  --rpg-text-dim: #5e5442;
+
+  --rpg-text-gold-top: #fff0a8;
+  --rpg-text-gold-mid: #d2ad59;
+  --rpg-text-gold-low: #7b5b2b;
+  --rpg-text-gold-shadow: #120c04;
+
+  --rpg-text-blue-top: #9ce1ff;
+  --rpg-text-blue-mid: #2e9df7;
+  --rpg-text-blue-low: #0b3b82;
+
+  --rpg-text-green: #68e565;
+  --rpg-text-red: #dc5c52;
+  --rpg-text-purple: #b085ff;
+
+  --rpg-text-outline: rgba(5, 4, 3, 0.96);
+  --rpg-text-hard-shadow: 0 1px 0 rgba(0, 0, 0, 0.95);
+  --rpg-text-soft-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.rpg-text-root,
+.rpg-text-root * {
+  font-kerning: normal;
+  font-feature-settings: "kern" 1, "liga" 1;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.rpg-text {
+  --rpg-text-glow-color: rgba(0, 0, 0, 0);
+  --rpg-text-stroke-color: var(--rpg-text-outline);
+  --rpg-text-fill: var(--rpg-text-main);
+
+  position: relative;
+  display: inline-block;
+  color: var(--rpg-text-fill);
+  font-family: var(--rpg-font-body);
+  line-height: 1.08;
+  vertical-align: baseline;
+  text-shadow: var(--rpg-text-hard-shadow), var(--rpg-text-soft-shadow);
+  isolation: isolate;
+}
+
+/* Duplicate underlay: this gives a much more game-like outline/halo than a flat shadow. */
+.rpg-text[data-rpg-text]::before {
+  content: attr(data-rpg-text);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  color: transparent;
+  -webkit-text-stroke: 1.1px var(--rpg-text-stroke-color);
+  text-shadow:
+    0 1px 0 #000,
+    1px 1px 0 #000,
+    -1px 1px 0 #000,
+    0 0 2px #000,
+    0 0 5px var(--rpg-text-glow-color);
+  opacity: 0.96;
+}
+
+.rpg-text--fx-clean[data-rpg-text]::before {
+  display: none;
+}
+
+.rpg-text--fx-painted {
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.98),
+    0 0 1px rgba(255, 255, 255, 0.18),
+    0 0 4px var(--rpg-text-glow-color);
+}
+
+.rpg-text--fx-painted[data-rpg-text]::before {
+  -webkit-text-stroke-width: 1.25px;
+  filter: blur(0.12px);
+}
+
+.rpg-text--fx-soft {
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.95),
+    0 1px 2px rgba(0, 0, 0, 0.95),
+    0 0 5px var(--rpg-text-glow-color);
+}
+
+.rpg-text--tone-main {
+  --rpg-text-fill: var(--rpg-text-main);
+  --rpg-text-glow-color: rgba(190, 150, 80, 0.14);
+}
+
+.rpg-text--tone-muted {
+  --rpg-text-fill: var(--rpg-text-muted);
+  --rpg-text-glow-color: rgba(190, 150, 80, 0.08);
+}
+
+.rpg-text--tone-white {
+  --rpg-text-fill: var(--rpg-text-bright);
+  --rpg-text-glow-color: rgba(255, 245, 220, 0.18);
+}
+
+.rpg-text--tone-gold {
+  --rpg-text-glow-color: rgba(202, 146, 46, 0.52);
+  --rpg-text-stroke-color: rgba(17, 10, 2, 0.98);
+  color: #d8b762;
+}
+
+.rpg-text--tone-gold.rpg-text--fx-painted {
+  background: linear-gradient(
+    180deg,
+    var(--rpg-text-gold-top) 0%,
+    #f2d681 22%,
+    var(--rpg-text-gold-mid) 55%,
+    var(--rpg-text-gold-low) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.rpg-text--tone-blue {
+  --rpg-text-glow-color: rgba(35, 140, 255, 0.62);
+  --rpg-text-stroke-color: rgba(1, 8, 21, 0.98);
+  color: #56b9ff;
+}
+
+.rpg-text--tone-blue.rpg-text--fx-painted {
+  background: linear-gradient(
+    180deg,
+    var(--rpg-text-blue-top) 0%,
+    var(--rpg-text-blue-mid) 46%,
+    var(--rpg-text-blue-low) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.rpg-text--tone-green {
+  --rpg-text-fill: var(--rpg-text-green);
+  --rpg-text-glow-color: rgba(85, 255, 80, 0.34);
+}
+
+.rpg-text--tone-red {
+  --rpg-text-fill: var(--rpg-text-red);
+  --rpg-text-glow-color: rgba(255, 70, 50, 0.34);
+}
+
+.rpg-text--tone-purple {
+  --rpg-text-fill: var(--rpg-text-purple);
+  --rpg-text-glow-color: rgba(160, 95, 255, 0.42);
+}
+
+.rpg-text--pageTitle {
+  font-family: var(--rpg-font-title);
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0.006em;
+}
+
+.rpg-text--profileName {
+  font-family: var(--rpg-font-title);
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: 0.008em;
+}
+
+.rpg-text--subtitle {
+  font-family: var(--rpg-font-body);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.rpg-text--sectionTitle,
+.rpg-text--panelTitle {
+  font-family: var(--rpg-font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.rpg-text--panelTitle {
+  font-size: 12px;
+  letter-spacing: 0.105em;
+}
+
+.rpg-text--navItem {
+  font-family: var(--rpg-font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.045em;
+}
+
+.rpg-text--bottomAction {
+  font-family: var(--rpg-font-heading);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.rpg-text--body {
+  font-family: var(--rpg-font-body);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.22;
+}
+
+.rpg-text--bodySmall {
+  font-family: var(--rpg-font-body);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.16;
+}
+
+.rpg-text--code {
+  font-family: var(--rpg-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.rpg-text--statNumber {
+  font-family: var(--rpg-font-body);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.rpg-text--badge {
+  font-family: var(--rpg-font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.015em;
+  line-height: 1;
+}
+
+.rpg-text--link {
+  font-family: var(--rpg-font-body);
+  font-size: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.rpg-text--link:hover {
+  filter: brightness(1.18);
+}
+
+.rpg-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  padding: 2px 7px 3px;
+  border: 1px solid rgba(67, 130, 210, 0.45);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(25, 61, 98, 0.65), rgba(5, 14, 28, 0.88)),
+    rgba(4, 13, 24, 0.85);
+  box-shadow:
+    inset 0 1px 0 rgba(150, 210, 255, 0.16),
+    0 1px 1px rgba(0, 0, 0, 0.9);
+}
+
+/* Useful when the text sits on very busy panels. */
+.rpg-readable-text-panel {
+  background: rgba(2, 2, 2, 0.28);
+  border-radius: 3px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0 2px;
+}
