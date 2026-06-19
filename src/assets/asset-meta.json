@@ -1,21 +1,8 @@
 [
   {
-    "name": "panel-frame",
-    "category": "frames",
-    "file": "frames/panel-frame.png",
-    "width": 723,
-    "height": 399,
-    "slice": {
-      "left": 55,
-      "right": 52,
-      "top": 63,
-      "bottom": 64
-    }
-  },
-  {
     "name": "panel-frame-2",
     "category": "frames",
-    "file": "frames/panel-frame-2.png",
+    "file": "panels/panel-frame-2.png",
     "width": 1317,
     "height": 917,
     "slice": {
@@ -28,7 +15,7 @@
   {
     "name": "panel-frame-3",
     "category": "frames",
-    "file": "frames/panel-frame-3.png",
+    "file": "panels/panel-frame-3.png",
     "width": 1234,
     "height": 886,
     "slice": {

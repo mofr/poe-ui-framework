@@ -12,7 +12,7 @@ import sharp from 'sharp';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const name = process.argv[2] || 'panel-frame';
 const meta = JSON.parse(readFileSync(resolve(ROOT, 'src/assets/asset-meta.json'), 'utf8')).find((m) => m.name === name);
-const SRC = resolve(ROOT, 'src/assets/frames', `${name}.png`);
+const SRC = resolve(ROOT, 'src/assets/panels', `${name}.png`);
 const { width: w, height: h, slice: s } = meta;
 const b = Math.max(s.top, s.right, s.bottom, s.left); // nominal border thickness
 
@@ -38,7 +38,7 @@ const cuts = {
 
 for (const [k, [left, top, width, height]] of Object.entries(cuts)) {
   await sharp(SRC).extract({ left: Math.round(left), top: Math.round(top), width: Math.round(width), height: Math.round(height) })
-    .toFile(resolve(ROOT, 'src/assets/frames', `${name}-${k}.png`));
+    .toFile(resolve(ROOT, 'src/assets/panels', `${name}-${k}.png`));
   console.log(`${name}-${k}.png  ${Math.round(width)}x${Math.round(height)}  @${Math.round(left)},${Math.round(top)}`);
 }
 console.log(`\nedge tile=${TILE}px  corner=${C}px  pimp=${PLEN}px  over=${OVER}px`);

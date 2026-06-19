@@ -51,35 +51,6 @@
    Slice = the art's real ornate-band thickness (from asset-meta.json); border-width
    scales that band DOWN to a crisp ~27px UI frame. Hollow center (no `fill`) lets the
    panel material show inside. */
-/* Frame is a TOP overlay (::after, z above content) so the ornate molding and corners
-   overlap the content instead of boxing it in. Content gets padding to sit in the opening
-   and tucks a few px under the molding. */
-/* Sprite-composed frame (all 1:1 native scale, nothing stretched):
-   ::after (z3) = PLAIN molding edge tiles, repeated — no corner bits, no centre ornament.
-   ::before (z4) = corner ornaments + per-edge centre "pimps", each drawn ONCE on top, free
-   to overflow inward over the body and along the edges. */
-/* --ov = outward overhang: the frame layers extend this far PAST the panel edge so corners/
-   edges can hang out (anchor/offset control). Body texture is clipped to the content box (the
-   opening) over a dark base, so it never bleeds past the opaque frame. padding ≈ border thickness. */
-/* --bt = border thickness of the art; --ov = outward overhang (how much of that border rides
-   OUTSIDE the panel). Content inset tracks it: padding = bt - ov, so the opening always meets
-   the body (no dark gap). Edges overhang PERPENDICULAR only (::after stays panel-sized, each edge
-   shifted out by --ov); corners overhang diagonally (::before enlarged by --ov). */
-.poe-frame.poe-ornate{--ov:0px;--bt:56px;position:relative;border:0;padding:calc(var(--bt) - var(--ov));overflow:visible;background:url('../assets/backgrounds/body-stone.png') center / 480px repeat content-box,#0e0c0a}
-.poe-frame.poe-ornate>*{position:relative;z-index:2}
-.poe-frame.poe-ornate::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:3;background-repeat:repeat-x,repeat-x,repeat-y,repeat-y;background-position:center calc(-1 * var(--ov)),center calc(100% + var(--ov)),calc(-1 * var(--ov)) center,calc(100% + var(--ov)) center;background-image:url('../assets/frames/panel-frame-et.png'),url('../assets/frames/panel-frame-eb.png'),url('../assets/frames/panel-frame-el.png'),url('../assets/frames/panel-frame-er.png')}
-.poe-frame.poe-ornate::before{content:"";position:absolute;inset:calc(-1 * var(--ov));pointer-events:none;z-index:4;box-shadow:none;background-repeat:no-repeat;background-position:top center,bottom center,left center,right center,top left,top right,bottom left,bottom right;background-image:url('../assets/frames/panel-frame-pt.png'),url('../assets/frames/panel-frame-pb.png'),url('../assets/frames/panel-frame-pl.png'),url('../assets/frames/panel-frame-pr.png'),url('../assets/frames/panel-frame-tl.png'),url('../assets/frames/panel-frame-tr.png'),url('../assets/frames/panel-frame-bl.png'),url('../assets/frames/panel-frame-br.png')}
-/* Second frame variant (panel-frame-2): same composition, different sprites + texture. */
-.poe-frame--ornate2.poe-ornate{--bt:52px;--ov:10px;background:url('../assets/backgrounds/body-leather.png') center / 480px repeat content-box,#0e0c0a}
-.poe-frame--ornate2.poe-ornate::after{background-image:url('../assets/frames/panel-frame-2-et.png'),url('../assets/frames/panel-frame-2-eb.png'),url('../assets/frames/panel-frame-2-el.png'),url('../assets/frames/panel-frame-2-er.png')}
-.poe-frame--ornate2.poe-ornate::before{background-position:top left,top right,bottom left,bottom right;background-image:url('../assets/frames/panel-frame-2-tl.png'),url('../assets/frames/panel-frame-2-tr.png'),url('../assets/frames/panel-frame-2-bl.png'),url('../assets/frames/panel-frame-2-br.png')}
-/* Third frame variant (panel-frame-3): thin, NO centre pimps — corners + edges only. */
-.poe-frame--ornate3.poe-ornate{--bt:27px;--ov:6px;background:url('../assets/backgrounds/body-stone.png') center / 480px repeat content-box,#0e0c0a}
-.poe-frame--ornate3.poe-ornate::after{background-image:url('../assets/frames/panel-frame-3-et.png'),url('../assets/frames/panel-frame-3-eb.png'),url('../assets/frames/panel-frame-3-el.png'),url('../assets/frames/panel-frame-3-er.png')}
-.poe-frame--ornate3.poe-ornate::before{background-position:top left,top right,bottom left,bottom right;background-image:url('../assets/frames/panel-frame-3-tl.png'),url('../assets/frames/panel-frame-3-tr.png'),url('../assets/frames/panel-frame-3-bl.png'),url('../assets/frames/panel-frame-3-br.png')}
-.poe-frame--inset.poe-ornate{padding:0;border:1px solid rgba(201,162,94,.22);box-shadow:var(--poe-shadow-inset);border-radius:var(--poe-radius)}
-.poe-frame--inset.poe-ornate::after{content:none}
-.poe-frame--inset.poe-ornate::before{content:none}
 /* Button plate: small element, so it SCALES (not 1:1) — border-image fill keeps corners
    undistorted while the dark plate fills the centre. */
 .poe-button.poe-button--ornate{border-style:solid;border-color:transparent;border-width:15px 26px;border-image:url('../assets/buttons/button.png') 90 150 fill / 15px 26px round;background:transparent;box-shadow:none;min-height:44px;padding:6px 22px;color:var(--poe-text)}
