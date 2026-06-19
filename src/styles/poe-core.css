@@ -48,7 +48,7 @@
 .poe-inspector-title{font-size:18px;font-weight:600;letter-spacing:.025em;color:var(--poe-gold-4);margin:0 0 8px;font-family:var(--poe-font-title)}.poe-statline{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.055);padding:7px 0}.poe-statline strong{font-family:var(--poe-font-number);font-variant-numeric:tabular-nums;color:var(--poe-text)}.poe-kbdbar{position:sticky;bottom:0;display:grid;grid-template-columns:repeat(10,1fr);gap:8px;padding:10px;margin-top:12px;background:linear-gradient(180deg,rgba(9,8,7,.2),rgba(9,8,7,.9))}.poe-skill{position:relative;text-align:center;padding:24px 6px 8px;border:1px solid var(--poe-border-dim);background:radial-gradient(circle at 50% 32%,rgba(75,141,255,.18),transparent 28%),linear-gradient(180deg,#2a2119,#0e0c0b);border-radius:5px;font-family:var(--poe-font-title);font-size:11px;font-weight:600;letter-spacing:.045em;text-transform:uppercase}.poe-skill kbd{position:absolute;top:3px;left:50%;transform:translateX(-50%);color:var(--poe-text-muted);font-family:var(--poe-font-number);font-size:11px}.poe-skill:hover{border-color:var(--poe-gold-2);box-shadow:var(--poe-glow-blue)}
 
 /* Raster ornament layer — generated assets wired as 9-slice border-image.
-   Slice = the art's real ornate-band thickness (from asset-meta.json); border-width
+   Slice = the art's real ornate-band thickness (measured by process-assets); border-width
    scales that band DOWN to a crisp ~27px UI frame. Hollow center (no `fill`) lets the
    panel material show inside. */
 /* Button plate: small element, so it SCALES (not 1:1) — border-image fill keeps corners

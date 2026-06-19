@@ -2,8 +2,9 @@
 //  - Trims the transparent margin so border-image-slice maps to the real art.
 //  - For frames, scans the alpha along the center row/col to find where the
 //    ornate border band ends (the hollow center begins) → border-image-slice.
-//  - Writes src/assets/<category>/<name>.png + src/assets/asset-meta.json.
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
+//  - Writes src/assets/<category>/<name>.png and PRINTS the measured 9-slice inset
+//    (copy it into the frame's data-frame rule in poe-panel.css — CSS is the source of truth).
+import { readFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
@@ -57,7 +58,4 @@ const staged = existsSync(STAGING) ? readdirSync(STAGING).filter((f) => f.endsWi
 const todo = assets.filter((a) => staged.includes(a.name));
 if (!todo.length) { console.error('Nothing staged to process. Run gen-assets.mjs first.'); process.exit(1); }
 
-const metas = [];
-for (const a of todo) { const m = await process(a); if (m) metas.push(m); }
-writeFileSync(resolve(OUT, 'asset-meta.json'), JSON.stringify(metas, null, 2) + '\n');
-console.log(`\nWrote src/assets/asset-meta.json (${metas.length} assets)`);
+for (const a of todo) await process(a);

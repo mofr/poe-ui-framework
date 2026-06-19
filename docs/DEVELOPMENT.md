@@ -37,10 +37,8 @@ step 2 below (`process-assets`) to trim + measure the 9-slice. Iterate the promp
 `tools/asset-prompts.json`, regenerate with a `--tag` to A/B, then promote the winner by copying
 it to `assets-staging/<name>.png`.
 
-> NOTE: `PoePanel` consumes a **whole frame PNG via `border-image`** (9-slice), so steps stop at
-> `process-assets` for it. `tools/slice-frame.mjs` (step 3 below) decomposes a frame into corner /
-> edge / centre *sprites* — that fed the **removed** sprite-composed `PoeFrame`; it is not part of
-> the `PoePanel` path and is kept only as a tool.
+> NOTE: `PoePanel` consumes a **whole frame PNG via `border-image`** (9-slice), so the pipeline
+> stops at `process-assets` for it — no per-sprite decomposition step.
 
 **Alternative (hand-authored sheets from the ChatGPT app):** when you want to draw/curate art by
 hand, export each asset on a **pure magenta `#ff00ff` background** (single frame or a sheet) and
@@ -52,10 +50,9 @@ recover alpha with `desheet.mjs`:
    slices the image into `assets-staging/sliced/<tag>-NN.png`.
 2. Pick a piece → `cp` it to `assets-staging/<name>.png`; add `<name>` (category `frames` or
    `buttons`) to `tools/asset-prompts.json`; `node tools/process-assets.mjs <name>` → trims the
-   margin, measures the 9-slice inset, writes `src/assets/<cat>/<name>.png` + `asset-meta.json`.
-3. Frames only: `node tools/slice-frame.mjs <name>` → decomposes into sprites:
-   corners `tl/tr/bl/br`, plain edge tiles `et/eb/el/er` (taken from the MIDDLE of the plain span
-   so they never capture a corner/centre ornament), centre "pimps" `pt/pb/pl/pr`.
+   margin, writes `src/assets/<cat>/<name>.png`, and **prints** the measured 9-slice inset.
+   Copy that inset into the frame's `data-frame` rule in `poe-panel.css` (`--slice`/`--band`) —
+   the CSS is the single source of truth for slice geometry.
 
 Staging dirs (`assets-staging/`, `.env`, `.shot.mjs`) are gitignored. Magenta > checkerboard.
 
@@ -105,8 +102,7 @@ removed ornate sprite system).
   inner content inset is coupled to the band today; consider exposing both as independent knobs.
   This ties into upcoming layout work (margins/paddings/grid) so framed panels compose cleanly and
   don't overlap neighbours or fight the layout. Decide before building composite/multi-panel layouts.
-- Per-frame slice/band values are hand-set in `poe-panel.css`; once the look is locked, drive them
-  from `asset-meta.json` instead.
-- `asset-meta.json` still has stale entries for the removed frame A / sprite slices (harmless
-  pipeline metadata); clean when the asset pipeline is next revisited.
+- Per-frame slice/band values are hand-set in `poe-panel.css` (the single source of truth);
+  `process-assets` prints measured insets to copy in. If this becomes tedious once many frames
+  exist, consider generating the per-frame CSS vars from a measured manifest.
 - Reconcile material variants (stone/metal/parchment) with the surface-texture system.
