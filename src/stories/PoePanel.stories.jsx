@@ -72,9 +72,9 @@ export const Debug = {
       </Section>
 
       <Section title="SURFACE SHADOW — inner shadow strength (0 = none)">
-        <Cell surfaceShadow={0} label="0" />
-        <Cell surfaceShadow={0.55} label="0.55 (default)" />
-        <Cell surfaceShadow={0.9} label="0.9" />
+        <Cell innerShadow={0} label="0" />
+        <Cell innerShadow={0.55} label="0.55 (default)" />
+        <Cell innerShadow={0.9} label="0.9" />
       </Section>
 
       <Section title="INTEGRATION — raster-driven (on/off; styles would be different rasters)">
@@ -104,11 +104,11 @@ export const Gallery = {
   render: () => (
     <div style={{ display: 'flex', gap: 70, flexWrap: 'wrap', alignItems: 'flex-start' }}>
       <Cell color="#cbb" w={320} h={230} label="default state">{questContent}</Cell>
-      <Cell color="#cbb" w={360} h={250} frame="frame-b" integration="none" surface="stone" surfaceScale={0.18}
-        accentTop="debug" accentBottom="debug" label="frame-b · stone">{questContent}</Cell>
-      <Cell color="#cbb" w={360} h={250} frame="frame-b" integration="none" surface="leather" surfaceScale={0.18}
+      <Cell color="#cbb" w={360} h={250} frame="frame-b" integration="none" surface="stone"
+        label="frame-b · stone">{questContent}</Cell>
+      <Cell color="#cbb" w={360} h={250} frame="frame-b" integration="none" surface="leather"
         label="frame-b · leather">{questContent}</Cell>
-      <Cell color="#cbb" w={620} h={420} frame="frame-a" integration="none" surface="stone" surfaceScale={0.22}
+      <Cell color="#cbb" w={620} h={420} frame="frame-a" integration="none" surface="stone"
         label="frame-a · stone (large)">{questContent}</Cell>
     </div>
   ),
@@ -124,7 +124,7 @@ export const Playground = {
   decorators: [onBlueprint],
   args: {
     frame: 'debug-r8', frameScale: 1,
-    surface: 'debug', surfaceScale: 1, surfaceShadow: 0.55,
+    surface: 'debug', surfaceScale: 1, innerShadow: 0.55,
     integration: 'debug',
     accentTop: 'none', accentRight: 'none', accentBottom: 'none', accentLeft: 'none',
     accentTopScale: 1, accentRightScale: 1, accentBottomScale: 1, accentLeftScale: 1,
@@ -141,7 +141,7 @@ export const Playground = {
     frameScale: SCALE,
     surface: { control: 'inline-radio', options: ['none', 'debug', 'stone', 'leather'] },
     surfaceScale: SCALE,
-    surfaceShadow: { control: { type: 'range', min: 0, max: 1, step: 0.05 } },
+    innerShadow: { control: { type: 'range', min: 0, max: 1, step: 0.05 } },
     integration: { control: 'inline-radio', options: ['none', 'debug'] },
     accentTop: ACCENT, accentRight: ACCENT, accentBottom: ACCENT, accentLeft: ACCENT,
     accentTopScale: SCALE, accentRightScale: SCALE, accentBottomScale: SCALE, accentLeftScale: SCALE,
@@ -174,7 +174,7 @@ export const LayerContract = {
     await expect(panel).toHaveAttribute('data-surface', 'stone');
     await expect(panel).toHaveAttribute('data-integration', 'none');
 
-    for (const layer of ['surface', 'recess', 'shadow', 'specular', 'content', 'art']) {
+    for (const layer of ['surface', 'inner-shadow', 'integration-shadow', 'integration-specular', 'content', 'frame']) {
       await expect(panel.querySelector(`.poe-panel__${layer}`)).not.toBeNull();
     }
 

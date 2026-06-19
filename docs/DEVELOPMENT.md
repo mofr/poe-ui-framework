@@ -73,7 +73,7 @@ ARCHITECTURE"**; the short version:
   surface is a tiled background + CSS `border-radius` (kept decoupled from the frame geometry on
   purpose — a uniform tile has no distinct corners to 9-slice).
 - All `*Scale` props are **1 = native pixel (1:1)**. Knobs: `frame`, `frameScale`, `surface`,
-  `surfaceScale`, `surfaceShadow`, `integration`, `accent{Top,Right,Bottom,Left}` (+ scales),
+  `surfaceScale`, `innerShadow`, `integration`, `accent{Top,Right,Bottom,Left}` (+ scales),
   and `--overhang` (frame↔box distance; `-1`/auto = half the band). See `PoePanelProps`.
 
 `PoeHeader` still uses the base `.poe-frame` class in `poe-core.css` (a simple frame, not the
