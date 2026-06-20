@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>mask editor</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 13px/1.4 system-ui, sans-serif; background: #15171b; color: #d7dae0; }
+  #bar { display: flex; gap: 8px; align-items: center; padding: 8px 10px; background: #1d2026; border-bottom: 1px solid #2c313a; flex-wrap: wrap; }
+  #bar label { color: #8b919c; }
+  select, input, button { font: inherit; background: #262a31; color: #d7dae0; border: 1px solid #3a404b; border-radius: 4px; padding: 4px 8px; }
+  button { cursor: pointer; }
+  button:hover { background: #2f343d; }
+  button.primary { background: #2f6b4f; border-color: #3a8a64; }
+  #help { color: #6f7682; flex: 1; min-width: 120px; }
+  .right { margin-left: auto; display: flex; gap: 8px; }
+  #status { padding: 4px 10px; color: #8b919c; background: #1a1d22; border-bottom: 1px solid #2c313a; }
+  #wrap { position: absolute; inset: 0; top: 86px; overflow: hidden; }
+  canvas { display: block; cursor: crosshair; }
+  kbd { background: #2c313a; border-radius: 3px; padding: 0 4px; color: #aeb4bd; }
+  #panel { position: absolute; top: 10px; left: 10px; width: 252px; max-height: calc(100% - 20px); overflow: auto;
+    background: rgba(24,27,32,0.93); border: 1px solid #2c313a; border-radius: 6px; padding: 8px; backdrop-filter: blur(3px); }
+  #phead { display: flex; align-items: center; justify-content: space-between; }
+  #phead h4 { margin: 2px 4px 6px; color: #8b919c; font-weight: 600; }
+  .eye { color: #9aa0aa; cursor: pointer; display: inline-flex; flex: none; }
+  .eye:hover { color: #fff; }
+  .eye.off { color: #555b64; }
+  .crow { display: flex; align-items: center; gap: 6px; padding: 4px 6px; border-radius: 4px; cursor: pointer; }
+  .crow:hover { background: #2a2f38; }
+  .crow.active { background: #2f3a44; }
+  .crow .sw { width: 12px; height: 12px; border-radius: 3px; flex: none; border: 1px solid #0006; }
+  .crow .cname { flex: 1; min-width: 0; padding: 2px 5px; }
+  .crow .pts { color: #6f7682; flex: none; min-width: 16px; text-align: right; }
+  .crow .x { color: #7d8590; padding: 0 4px; border-radius: 3px; flex: none; }
+  .crow .x:hover { background: #5a2a2a; color: #fff; }
+  #addc { width: 100%; margin: 6px 0; }
+  /* GLOBAL config — visually boxed + offset so the whole-mask comment is never confused with a contour note. */
+  #globalcfg { border: 1px solid #3a4250; background: #20252e; border-radius: 6px; padding: 8px 10px; margin-bottom: 12px; }
+  #globalcfg h4 { margin: 0 0 6px; }
+  #globalcfg .scope { color: #6f7682; font-weight: 400; }
+  #globalcfg .cfglabel { display: block; color: #8b919c; margin: 6px 2px 4px; }
+  #comment { width: 100%; resize: vertical; font: inherit; }
+  #details { border-top: 1px solid #2c313a; margin-top: 4px; padding-top: 8px; }
+  #details.hidden { display: none; }
+  .det { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  .det > label { color: #8b919c; width: 46px; flex: none; }
+  .det > select, .det > input[type=text] { flex: 1; min-width: 0; }
+  .det > input[type=range] { flex: 1; min-width: 0; }
+  .det .rv { color: #6f7682; width: 40px; flex: none; text-align: right; }
+</style>
+</head>
+<body>
+<div id="bar">
+  <label>image</label><select id="image"></select>
+  <label>mask</label><select id="maskSel"></select>
+  <input id="name" size="12" placeholder="new name" />
+  <button id="newfile" title="start a new empty mask">new</button>
+  <button id="delfile" title="delete the current mask file">delete</button>
+  <span id="help">click=add point (nearest edge) · drag=move · <kbd>del</kbd>=remove · <kbd>n</kbd>=new contour · set a contour to <b>hole</b> to cut an opening · <kbd>h</kbd> hide overlay · wheel zoom · space-drag pan · <kbd>ctrl+z</kbd> undo</span>
+  <div class="right"><button id="fit">fit <kbd>f</kbd></button><button id="actual" title="100% — 1 image px = 1 screen px (1)">100%</button><button id="save" class="primary">save</button></div>
+</div>
+<div id="status">no image</div>
+<div id="wrap">
+  <canvas id="cv"></canvas>
+  <div id="panel">
+    <div id="globalcfg">
+      <h4>mask config <span class="scope">— whole file</span></h4>
+      <div class="det"><label>build</label><select id="build">
+        <option value="">(unset — required to rebuild)</option>
+        <option value="assemble">assemble · corner+edge frame (gapless)</option>
+        <option value="panel">panel · frame + integration</option>
+        <option value="mask">mask · silhouette / --each</option>
+        <option value="bg">bg · seamless texture tile</option>
+      </select></div>
+      <label class="cfglabel">comment — whole mask</label>
+      <textarea id="comment" rows="2" placeholder="what this mask is / how it's built…"></textarea>
+    </div>
+    <div id="phead"><h4>contours</h4><span id="meye" class="eye" title="show/hide all overlay (h)"></span></div>
+    <div id="clist"></div>
+    <button id="addc">+ contour <kbd>n</kbd></button>
+    <div id="details"></div>
+  </div>
+</div>
+
+<script type="module">
+import { buildPathD } from './path.mjs';
+
+const MAX_ROUND = 0.08;            // max corner fillet, fraction of width (slider is squared → fine low end)
+const $ = id => document.getElementById(id);
+const cv = $('cv'), ctx = cv.getContext('2d');
+const oc = document.createElement('canvas'), octx = oc.getContext('2d');   // offscreen for keep/hole fill
+const wrap = $('wrap');
+let img = null, imgW = 1, imgH = 1;
+let view = { zoom: 1, panX: 0, panY: 0 };
+const blank = () => ({ points: [], name: '', op: 'keep', note: '', round: 0 });
+let contours = [blank()];          // point: {x,y} normalised
+let active = 0, sel = null;        // sel = {ci,pi}
+let drag = null, dragMoved = false;
+let panning = false, panStart = null, space = false;
+let history = [];
+
+const hue = ci => (ci * 55) % 360;
+const stroke = ci => `hsl(${hue(ci)},70%,62%)`;
+let showOverlay = true;            // master eye — display only, never affects the cut
+const EYE = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+const EYE_OFF = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.9 17.9A10 10 0 0 1 12 20C5 20 1 12 1 12a18.5 18.5 0 0 1 5.1-5.9M9.9 4.2A9 9 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.2 3.2m-6.7-1.1a3 3 0 1 1-4.2-4.2"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
+function setMeye() { $('meye').innerHTML = showOverlay ? EYE : EYE_OFF; $('meye').classList.toggle('off', !showOverlay); }
+function toggleOverlay() { showOverlay = !showOverlay; setMeye(); draw(); }
+
+function pushHistory() { history.push(structuredClone(contours)); if (history.length > 100) history.shift(); }
+function undo() {
+  if (!history.length) return;
+  contours = history.pop();
+  active = Math.min(active, contours.length - 1); sel = null;
+  renderList(); draw(); status();
+}
+
+function resize() {
+  cv.width = oc.width = wrap.clientWidth; cv.height = oc.height = wrap.clientHeight;
+  ctx.imageSmoothingEnabled = false;
+  draw();
+}
+window.addEventListener('resize', resize);
+
+function fit() {
+  if (!img) return;
+  const z = Math.min(cv.width / imgW, cv.height / imgH) * 0.95;
+  view = { zoom: z, panX: (cv.width - imgW * z) / 2, panY: (cv.height - imgH * z) / 2 };
+  draw();
+}
+function actualSize() {           // 100% — 1 image px = 1 screen px, centred
+  if (!img) return;
+  view = { zoom: 1, panX: (cv.width - imgW) / 2, panY: (cv.height - imgH) / 2 };
+  draw();
+}
+const toImg = (sx, sy) => ({ x: (sx - view.panX) / view.zoom, y: (sy - view.panY) / view.zoom });
+const toScreen = (nx, ny) => ({ x: nx * imgW * view.zoom + view.panX, y: ny * imgH * view.zoom + view.panY });
+const world = c => c.setTransform(view.zoom, 0, 0, view.zoom, view.panX, view.panY);
+
+function distToSeg(px, py, a, b) {
+  const ax = a.x * imgW, ay = a.y * imgH, bx = b.x * imgW, by = b.y * imgH;
+  const dx = bx - ax, dy = by - ay, L2 = dx * dx + dy * dy;
+  let t = L2 ? ((px - ax) * dx + (py - ay) * dy) / L2 : 0;
+  t = Math.max(0, Math.min(1, t));
+  return Math.hypot(px - (ax + t * dx), py - (ay + t * dy));
+}
+function addPoint(px, py) {
+  const c = contours[active], pt = { x: px / imgW, y: py / imgH };
+  if (c.points.length < 3) { c.points.push(pt); return c.points.length - 1; }
+  let best = Infinity, bi = c.points.length - 1;
+  for (let i = 0; i < c.points.length; i++) {
+    const d = distToSeg(px, py, c.points[i], c.points[(i + 1) % c.points.length]);
+    if (d < best) { best = d; bi = i; }
+  }
+  c.points.splice(bi + 1, 0, pt);
+  return bi + 1;
+}
+
+function draw() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  if (!img) return;
+  ctx.imageSmoothingEnabled = false;
+  world(ctx); ctx.drawImage(img, 0, 0);
+  if (!showOverlay) return;        // master eye off → just the original image
+  // keep/hole fill on the offscreen layer, then composited on top (holes punched out)
+  octx.setTransform(1, 0, 0, 1, 0, 0); octx.clearRect(0, 0, oc.width, oc.height);
+  world(octx);
+  octx.fillStyle = 'rgba(60,200,140,0.30)';
+  const dk = buildPathD(contours.filter(c => !c.hidden && (c.op || 'keep') === 'keep'), imgW, imgH);
+  if (dk) octx.fill(new Path2D(dk));
+  octx.globalCompositeOperation = 'destination-out';
+  const dh = buildPathD(contours.filter(c => !c.hidden && c.op === 'hole'), imgW, imgH);
+  if (dh) octx.fill(new Path2D(dh));
+  octx.globalCompositeOperation = 'source-over';
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(oc, 0, 0); world(ctx);
+  // inpaint regions — to be reconstructed (LaMa), not part of the cut: show as a distinct red wash
+  const di = buildPathD(contours.filter(c => !c.hidden && c.op === 'inpaint'), imgW, imgH);
+  if (di) { ctx.fillStyle = 'rgba(235,90,80,0.35)'; ctx.fill(new Path2D(di)); }
+  // active control polygon (faint) + per-contour outlines + points
+  const ac = contours[active];
+  if (ac && !ac.hidden && ac.points.length > 1) {
+    ctx.lineWidth = 1 / view.zoom; ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.beginPath();
+    ac.points.forEach((p, i) => { const x = p.x * imgW, y = p.y * imgH; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.closePath(); ctx.stroke();
+  }
+  const r = 6 / view.zoom;
+  contours.forEach((c, ci) => {
+    if (c.hidden) return;
+    if (c.points.length > 1) {
+      ctx.lineWidth = (ci === active ? 2.2 : 1.2) / view.zoom;
+      ctx.strokeStyle = stroke(ci);
+      ctx.setLineDash(c.op === 'hole' ? [8 / view.zoom, 5 / view.zoom] : []);
+      ctx.globalAlpha = ci === active ? 1 : 0.55;
+      ctx.stroke(new Path2D(buildPathD([c], imgW, imgH)));
+      ctx.globalAlpha = 1; ctx.setLineDash([]);
+    }
+    c.points.forEach((pt, pi) => {
+      const x = pt.x * imgW, y = pt.y * imgH;
+      ctx.beginPath(); ctx.arc(x, y, r, 0, 7);
+      const isSel = sel && sel.ci === ci && sel.pi === pi;
+      ctx.fillStyle = isSel ? '#ffd24a' : stroke(ci);
+      ctx.globalAlpha = ci === active ? 1 : 0.5;
+      ctx.fill(); ctx.globalAlpha = 1;
+      ctx.lineWidth = 1.5 / view.zoom; ctx.strokeStyle = '#111'; ctx.stroke();
+    });
+  });
+}
+
+function hit(sx, sy) {
+  for (let ci = 0; ci < contours.length; ci++) {
+    if (contours[ci].hidden) continue;               // hidden contours aren't editable
+    for (let pi = 0; pi < contours[ci].points.length; pi++) {
+      const a = toScreen(contours[ci].points[pi].x, contours[ci].points[pi].y);
+      if (Math.hypot(a.x - sx, a.y - sy) < 11) return { ci, pi };
+    }
+  }
+  return null;
+}
+
+cv.addEventListener('mousedown', e => {
+  const sx = e.offsetX, sy = e.offsetY;
+  if (space || e.button === 1) { panning = true; panStart = { x: sx, y: sy, ...view }; return; }
+  const h = hit(sx, sy);
+  if (h) { sel = h; active = h.ci; drag = h; dragMoved = false; }
+  else { pushHistory(); const im = toImg(sx, sy); const pi = addPoint(im.x, im.y); sel = { ci: active, pi }; drag = { ci: active, pi }; dragMoved = true; }
+  renderList(); draw();
+});
+cv.addEventListener('mousemove', e => {
+  const sx = e.offsetX, sy = e.offsetY;
+  if (panning) { view.panX = panStart.panX + (sx - panStart.x); view.panY = panStart.panY + (sy - panStart.y); draw(); return; }
+  if (!drag) return;
+  if (!dragMoved) { pushHistory(); dragMoved = true; }     // snapshot once, at first move
+  const im = toImg(sx, sy), p = contours[drag.ci].points[drag.pi];
+  p.x = im.x / imgW; p.y = im.y / imgH;
+  draw();
+});
+window.addEventListener('mouseup', () => { drag = null; panning = false; });
+cv.addEventListener('contextmenu', e => e.preventDefault());
+cv.addEventListener('wheel', e => {
+  e.preventDefault();
+  const f = e.deltaY < 0 ? 1.12 : 1 / 1.12;
+  const before = toImg(e.offsetX, e.offsetY);
+  view.zoom *= f;
+  view.panX = e.offsetX - before.x * view.zoom;
+  view.panY = e.offsetY - before.y * view.zoom;
+  draw();
+}, { passive: false });
+
+window.addEventListener('keydown', e => {
+  if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;   // don't hijack typing (del/f/n/etc.)
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); undo(); return; }
+  if (e.code === 'Space') { space = true; cv.style.cursor = 'grab'; }
+  else if ((e.key === 'Delete' || e.key === 'Backspace') && sel) {
+    pushHistory(); contours[sel.ci].points.splice(sel.pi, 1); sel = null; renderList(); draw();
+  }
+  else if (e.key === 'n') newContour();
+  else if (e.key === 'f') fit();
+  else if (e.key === '1') actualSize();
+  else if (e.key === 'h') toggleOverlay();
+  status();
+});
+window.addEventListener('keyup', e => { if (e.code === 'Space') { space = false; cv.style.cursor = 'crosshair'; } });
+
+function newContour() { pushHistory(); contours.push(blank()); active = contours.length - 1; sel = null; renderList(); draw(); status(); }
+function deleteContour(ci) {
+  pushHistory();
+  contours.splice(ci, 1);
+  if (!contours.length) contours = [blank()];
+  active = Math.min(active, contours.length - 1); sel = null;
+  renderList(); draw(); status();
+}
+function renderList() {
+  $('clist').innerHTML = '';
+  contours.forEach((c, ci) => {
+    const row = document.createElement('div');
+    row.className = 'crow' + (ci === active ? ' active' : '');
+    row.innerHTML = `<span class="eye cye${c.hidden ? ' off' : ''}" title="show/hide this contour">${c.hidden ? EYE_OFF : EYE}</span>`
+      + `<span class="sw" style="background:${stroke(ci)}"></span>`
+      + `<input class="cname" value="${(c.name || '').replace(/"/g, '&quot;')}" placeholder="name" />`
+      + `<span class="pts">${c.points.length}</span><span class="x" title="delete contour">✕</span>`;
+    row.onclick = () => { active = ci; sel = null; renderList(); draw(); status(); };
+    const eyeEl = row.querySelector('.cye');
+    eyeEl.onclick = ev => { ev.stopPropagation(); c.hidden = !c.hidden; eyeEl.innerHTML = c.hidden ? EYE_OFF : EYE; eyeEl.classList.toggle('off', c.hidden); draw(); };
+    const nameEl = row.querySelector('.cname');
+    nameEl.onclick = ev => ev.stopPropagation();
+    nameEl.oninput = ev => { c.name = ev.target.value; };
+    row.querySelector('.x').onclick = ev => { ev.stopPropagation(); deleteContour(ci); };
+    $('clist').appendChild(row);
+  });
+  renderDetails();
+}
+function renderDetails() {
+  const c = contours[active], d = $('details');
+  if (!c) { d.className = 'hidden'; return; }
+  d.className = '';
+  const sv = Math.sqrt((c.round || 0) / MAX_ROUND);
+  d.innerHTML =
+    `<div class="det"><label>do</label><select id="d-op"><option value="keep">keep (solid)</option><option value="hole">hole (cut out)</option><option value="inpaint">inpaint (reconstruct)</option></select></div>`
+    + `<div class="det"><label>smooth</label><input id="d-smooth" type="range" min="0" max="1" step="0.005"><span class="rv" id="d-rv"></span></div>`
+    + `<div class="det"><label>note</label><input id="d-note" type="text" placeholder="note for THIS contour"></div>`;
+  $('d-op').value = c.op || 'keep';
+  $('d-smooth').value = sv;
+  $('d-note').value = c.note || '';
+  const showRv = () => { $('d-rv').textContent = Math.round((c.round || 0) * imgW) + 'px'; };
+  showRv();
+  $('d-op').onchange = () => { pushHistory(); c.op = $('d-op').value; draw(); };
+  $('d-smooth').addEventListener('pointerdown', pushHistory);
+  $('d-smooth').oninput = () => { const s = parseFloat($('d-smooth').value); c.round = s * s * MAX_ROUND; showRv(); draw(); };
+  $('d-note').oninput = () => { c.note = $('d-note').value; };
+}
+function status() {
+  $('status').textContent = img
+    ? `${$('image').value} · ${imgW}×${imgH} · contours ${contours.length} (active #${active + 1} "${contours[active].name || ''}" ${contours[active].op}, ${contours[active].points.length} pts) · zoom ${view.zoom.toFixed(2)}`
+    : 'no image';
+}
+
+async function loadImage(path) {
+  return new Promise(res => { const i = new Image(); i.onload = () => res(i); i.src = `/img?path=${encodeURIComponent(path)}`; });
+}
+async function setImage(path) {
+  img = await loadImage(path); imgW = img.naturalWidth; imgH = img.naturalHeight; fit(); status();
+}
+async function refreshMaskList(selected) {
+  const masks = await (await fetch('/api/masks')).json();
+  $('maskSel').innerHTML = `<option value="">(new)</option>` + masks.map(m => `<option${m === selected ? ' selected' : ''}>${m}</option>`).join('');
+}
+async function loadMask(name) {
+  const m = await (await fetch(`/api/mask?name=${name}`)).json();
+  if (!m) return;
+  contours = (m.contours && m.contours.length) ? m.contours.map(c => ({ ...blank(), ...c })) : [blank()];
+  active = 0; sel = null; history = [];
+  $('name').value = m.name || name;
+  $('build').value = m.build || '';
+  $('comment').value = m.comment || '';
+  if (m.image && m.image !== $('image').value) { $('image').value = m.image; await setImage(m.image); }
+  renderList(); draw(); status();
+}
+
+$('image').addEventListener('change', () => setImage($('image').value));
+$('maskSel').addEventListener('change', () => { const n = $('maskSel').value; if (n) loadMask(n); else newFile(); });
+$('addc').onclick = newContour;
+$('meye').onclick = toggleOverlay;
+$('fit').onclick = fit;
+$('actual').onclick = actualSize;
+function newFile() {                       // start a fresh empty mask (file is written on save)
+  contours = [blank()]; active = 0; sel = null; history = [];
+  $('name').value = ''; $('maskSel').value = ''; $('build').value = ''; $('comment').value = '';
+  renderList(); draw(); status(); $('name').focus();
+}
+$('newfile').onclick = newFile;
+$('delfile').onclick = async () => {       // delete the current mask file
+  const n = ($('maskSel').value || $('name').value).trim();
+  if (!n) { alert('select or name a saved mask to delete'); return; }
+  if (!confirm(`Delete mask "${n}.json"? This cannot be undone.`)) return;
+  const r = await fetch('/delete', { method: 'POST', body: JSON.stringify({ name: n }) });
+  if (r.ok) { await refreshMaskList(); newFile(); $('status').textContent = `deleted ${n}.json`; }
+  else $('status').textContent = 'delete failed';
+};
+$('save').onclick = async () => {
+  const name = $('name').value.trim();
+  if (!name) { alert('name the mask first'); return; }
+  const body = JSON.stringify({ name, image: $('image').value, build: $('build').value, comment: $('comment').value, contours });
+  const r = await fetch('/save', { method: 'POST', body });
+  if (r.ok) { await refreshMaskList(name); $('status').textContent = `saved tools/masks/${name}.json — rebuild: node tools/build-mask.mjs ${name}`; }
+  else $('status').textContent = 'save failed';
+};
+
+(async function init() {
+  const imgs = await (await fetch('/api/images')).json();
+  $('image').innerHTML = imgs.map(p => `<option${/ref-master-w1680/.test(p) ? ' selected' : ''}>${p}</option>`).join('');
+  await refreshMaskList();
+  setMeye();
+  resize(); renderList();
+  if (imgs.length) await setImage($('image').value);
+})();
+</script>
+</body>
+</html>
