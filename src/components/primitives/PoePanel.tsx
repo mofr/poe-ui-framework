@@ -5,9 +5,11 @@ import '../../styles/poe-panel.css';
 // The PANEL is the whole component; the FRAME is one part. LAYOUT is just the box (size+padding+margin);
 // every layer is decoration (absolute, inset:0, out of flow). All `*Scale` knobs are 1 = native px (1:1).
 
-export type Frame = 'none' | 'debug-r0' | 'debug-r4' | 'debug-r8' | 'debug-r24' | 'frame-a' | 'frame-b';
-export type Surface = 'none' | 'debug' | 'stone' | 'leather';
-export type Integration = 'none' | 'debug';
+export type Frame = 'none' | 'debug-r0' | 'debug-r4' | 'debug-r8' | 'debug-r24' | 'gpt-panel-a' | 'gpt-panel-b' | 'basic-panel-a' | 'basic-panel-b' | 'page-frame';
+export type Surface = 'none' | 'debug' | 'gpt-stone-1' | 'gpt-stone-2' | 'ref-panel' | 'page-stone' | 'big-stone-2';
+// Integration art (contact shadow + specular) is bundled PER FRAME, so this is on/off rather than a
+// palette: 'auto' renders the frame's own integration rasters; 'none' hides them.
+export type Integration = 'none' | 'auto';
 export type Accent = 'none' | 'debug';
 
 export interface PoePanelProps {
@@ -52,7 +54,7 @@ export function PoePanel({
   innerShadowColor,
   overhang,
   contentPad,
-  integration = 'debug',
+  integration = 'auto',
   accentTop = 'none',
   accentRight = 'none',
   accentBottom = 'none',

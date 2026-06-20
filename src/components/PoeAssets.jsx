@@ -1,6 +1,5 @@
 import React from 'react';
 import '../styles/poe-core.css';
-import '../styles/rpg-text.css';
 
 export const PoeAssetPaths = {
   icons: {
@@ -12,9 +11,6 @@ export const PoeAssetPaths = {
     waystone: '/src/assets/icons/waystone.svg', atlas: '/src/assets/icons/atlas.svg', export: '/src/assets/icons/export.svg',
     socketRed: '/src/assets/icons/socket-red.svg', socketGreen: '/src/assets/icons/socket-green.svg', socketBlue: '/src/assets/icons/socket-blue.svg', socketWhite: '/src/assets/icons/socket-white.svg', socketPurple: '/src/assets/icons/socket-purple.svg'
   },
-  nodes: {
-    passive: '/src/assets/nodes/passive-node.svg', notable: '/src/assets/nodes/notable-node.svg', keystone: '/src/assets/nodes/keystone-node.svg', link: '/src/assets/nodes/node-link.svg'
-  },
 };
 
 export function PoeAssetIcon({name, group='icons', size='', alt}) {
@@ -23,12 +19,4 @@ export function PoeAssetIcon({name, group='icons', size='', alt}) {
   // `??` (not `||`) so an explicit alt="" (decorative icon beside a text label) is honoured
   // and not replaced by the icon name; only an omitted alt falls back to the name.
   return <img className={`poe-asset-icon ${size}`} src={src} alt={alt ?? name} loading="lazy" />;
-}
-
-export function PoeNodePreview(){
-  return <div className="poe-node-preview">
-    <div className="poe-node-tile"><PoeAssetIcon group="nodes" name="passive" size="xl"/></div>
-    <div className="poe-node-tile"><PoeAssetIcon group="nodes" name="notable" size="xl"/></div>
-    <div className="poe-node-tile"><PoeAssetIcon group="nodes" name="keystone" size="xl"/></div>
-  </div>;
 }

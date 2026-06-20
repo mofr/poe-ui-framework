@@ -1,0 +1,23 @@
+{
+  // Type-checking only (Vite/esbuild do the transpile). `npm run typecheck` → tsc --noEmit.
+  // Components are mostly .jsx and are NOT checked (checkJs:false); the value is that .tsx STORIES
+  // are checked against typed components like PoePanel.tsx — so e.g. innerShadowSize="64px" (string
+  // vs the declared `number`) is caught at the call site.
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "checkJs": false,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src"]
+}

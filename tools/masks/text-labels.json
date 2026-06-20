@@ -1,0 +1,174 @@
+{
+  "name": "text-labels",
+  "image": "assets-staging/sources/ref-master-w1680.png",
+  "contours": [
+    {
+      "points": [
+        {
+          "x": 0.1150934869713982,
+          "y": 0.025018975278023742
+        },
+        {
+          "x": 0.11463483963240537,
+          "y": 0.051303547483051715
+        },
+        {
+          "x": 0.1731734647434925,
+          "y": 0.0510055425138601
+        },
+        {
+          "x": 0.17274350990418894,
+          "y": 0.025756371112063584
+        }
+      ],
+      "name": "title white",
+      "op": "keep",
+      "note": "says: gaearon",
+      "round": 0
+    },
+    {
+      "points": [
+        {
+          "x": 0.115603142828942,
+          "y": 0.05191589807881833
+        },
+        {
+          "x": 0.11565917170725097,
+          "y": 0.07213609771742792
+        },
+        {
+          "x": 0.20216775981627771,
+          "y": 0.07502469766580072
+        },
+        {
+          "x": 0.20194364430304193,
+          "y": 0.05221471876313276
+        }
+      ],
+      "name": "title subtext",
+      "op": "keep",
+      "note": "says: \"The Interface Mage\". blue, dark shadow + bluish bloom over it",
+      "round": 0
+    },
+    {
+      "points": [
+        {
+          "x": 0.5433407840160515,
+          "y": 0.4901696942724629
+        },
+        {
+          "x": 0.5429927496334287,
+          "y": 0.508731528012346
+        },
+        {
+          "x": 0.6157319356015956,
+          "y": 0.5090408919080107
+        },
+        {
+          "x": 0.6153839012189728,
+          "y": 0.491097785959457
+        }
+      ],
+      "name": "panel header",
+      "op": "keep",
+      "note": "\"Activity Feed\". Rich, non-solid, has shadow",
+      "round": 0
+    },
+    {
+      "points": [
+        {
+          "x": 0.298167082846406,
+          "y": 0.5215167453690556
+        },
+        {
+          "x": 0.2983619821006747,
+          "y": 0.5398805862157132
+        },
+        {
+          "x": 0.43654555337723444,
+          "y": 0.5423059991577246
+        },
+        {
+          "x": 0.43674045263150324,
+          "y": 0.5218632329322
+        }
+      ],
+      "name": "list text regular",
+      "op": "keep",
+      "note": "\"feat: improve server component support\", white, very smooth and clean, has dark shadow/outline",
+      "round": 0
+    },
+    {
+      "points": [
+        {
+          "x": 0.2994017096546694,
+          "y": 0.5433363333758162
+        },
+        {
+          "x": 0.29905367527204657,
+          "y": 0.560041983741711
+        },
+        {
+          "x": 0.41094672928527937,
+          "y": 0.5594232559503814
+        },
+        {
+          "x": 0.4105986949026565,
+          "y": 0.542408241688822
+        }
+      ],
+      "name": "list item secondary line",
+      "op": "keep",
+      "note": "\"gaearon commited 2 hours ago\". gaearon is light bluish, probably a link. other text is a light grey with dark outline/shadow",
+      "round": 0
+    },
+    {
+      "points": [
+        {
+          "x": 0.2378445167538227,
+          "y": 0.16378310488797804
+        },
+        {
+          "x": 0.23762622958904164,
+          "y": 0.19211192805067107
+        },
+        {
+          "x": 0.2799739395565605,
+          "y": 0.19211192805067107
+        },
+        {
+          "x": 0.2804105138861226,
+          "y": 0.16339503881725623
+        }
+      ],
+      "name": "big in-panel title (not in header)",
+      "op": "keep",
+      "note": "\"react\".  almost white, but has very royal slightly yellowish platinum hue shift. dark outline/shadow as usual.. non-uniform coloring.",
+      "round": 0
+    },
+    {
+      "points": [
+        {
+          "x": 0.021133146194373936,
+          "y": 0.5483238962391023
+        },
+        {
+          "x": 0.020696571864811882,
+          "y": 0.5653988033508625
+        },
+        {
+          "x": 0.09775194103251374,
+          "y": 0.5673391337044715
+        },
+        {
+          "x": 0.0975336538677327,
+          "y": 0.5479358301683803
+        }
+      ],
+      "name": "small title",
+      "op": "keep",
+      "note": "\"Active Quests (Issues)\". Very noble white-yellow. seem to be non-solid color.",
+      "round": 0
+    }
+  ]
+}

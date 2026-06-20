@@ -5,11 +5,12 @@ icons & nodes) and **generated raster chrome** (PNG — frames, surfaces, button
 the project's core visual-fidelity work (see `docs/FRAME-FIDELITY.md`).
 
 ## Folders
-- `backgrounds/` — PNG surfaces and overlays: `surface-stone`, `surface-leather` (tileable panel
+- `backgrounds/` — PNG surfaces and overlays: `surface-gpt-stone-1`, `surface-gpt-stone-2` (tileable panel
   interiors) and `blueprint-grid` (grid overlay).
-- `panels/` — PNG frame art for `PoePanel` (9-sliced via `border-image`): `panel-frame-2/3.png`
-  (the `frame-a`/`frame-b` options), plus `panels/debug/` — the debug `frame`/`shadow`/`specular`
-  layer sets at several corner radii (`-r0/-r4/-r8/-r24`).
+- `panels/` — PNG frame art for `PoePanel` (9-sliced via `border-image`): `panel-gpt-panel-a/b.png`
+  (the `gpt-panel-a`/`gpt-panel-b` generated drafts) and `panel-basic-panel-a/b.png` (the
+  `basic-panel-a`/`basic-panel-b` frames extracted from the reference via the mask editor), plus
+  `panels/debug/` — the debug `frame`/`shadow`/`specular` layer sets at several corner radii (`-r0/-r4/-r8/-r24`).
 - `buttons/` — PNG button plate (`button.png`), 9-sliced via `border-image` for `.poe-button--ornate`.
 - `debug/` — PNG debug textures (`debug-surface`, `debug-accent`, `debug-accents`, `debug-glow`)
   used by the `PoePanel` debug skeleton.

@@ -227,6 +227,8 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
 | **HYBRID (recommended next):** extract authentic CORNERS + header from ref; SYNTHESIZE thin edges + stone body; compose as layered component | untried | clean by construction | Plays to strengths: extraction for the rich hard-to-fake pieces (clean), generation/procedural for the simple repeatable thin edges + body where extraction fails. Distinct real corners → asymmetry. + separate shadow layer for integration. |
 | `gpt-image-1.5` IMG2IMG anchored on real panel + SUBTLE-target prompt | awaiting user rating | clean | `assets-staging/frame-img2img-subtle.png` — looks far closer to ref's restrained style; header text baked in. |
 | Asset packs (Moon Tribe, Vill8tion, Nexa, Mytherra) | -99/5 (user) | n/a | REJECTED: bland/cheap, miss the ref's painterly AI-art richness. Dead route. |
+| **VECTOR-PATH MASK (user idea, BUILT 2026-06-19)** | **WORKING — first extracted frames** | clean AA by construction | User traces the frame boundary as polygon contours ONCE (their scarce contribution = spatial truth, not yes/no); stored normalised in `tools/masks/<name>.json`; Claude recuts crisp at ANY resolution. Tooling: `tools/mask-editor/` (clicker, `npm run mask`) + `tools/cut-mask.mjs` (rasterise+apply, op keep/hole) + `tools/inpaint-mask.mjs` (op:inpaint → LaMa). DELIVERED `basic-frame-a` (combat log, button inpainted) + `basic-frame-b` (contribution-health, traced as separate corner+edge contours) as PoePanel frames. Remaining LIMIT: clean polygon edge may read "cookie-cutter" on the gritty OUTER edge → fix via path→trimap→alpha-matting (ViTMatte) if needed. |
+| **ChatGPT-5.5 as a LOCAL AGENT (user trial, 2026-06-19)** | outer crop 4/5; 9-slice 1/5; integration 0/5 (user) | n/a | `gpt-5-5-ref-extract-1` — GPT drove extraction of the common/Activity-Feed panel from `reference-1680.png`. Notes in `asset-review/gpt-5-5-ref-extract-1-notes.md`; kept images in `asset-review/gpt-5-5-ref-extract-1-*`. GPT's own verdict: outer crop close but off a few px; 9-slice edges behaved strangely; separated integration layers worse than the frame. **DO NOT re-add to PoePanel as-is** (GPT). Next attempt: fix outer-crop bounds, then 9-slice geometry, before integration. Contrast: the mask-editor path got a clean frame on the same target — vector cut > GPT auto-9-slice here. |
 
 ## Step 0 recon findings (2026-06-18)
 - The reference ("The Interface Mage", GitHub-as-PoE) is **not a real product** — almost certainly
@@ -479,3 +481,273 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   interior = LaMa smooth fill (replace w/ our body); bottom-frame center reconstructed (corners real). FIRST
   clean frame from the real reference at native size. AWAITING user judgment on border quality → then
   cut interior transparent → 9-slice → integrate as the first component.
+- 2026-06-19: REFRAME (user insight) — "as a judge I only emit yes/no, but I see the whole picture; let me
+  contribute the BOUNDARY itself." Re-derived the vector clipping-path / mask, + the good twist: store the
+  curve NORMALISED in a plain file and recut at any resolution. Verdict: sound, not naive (it's the pro
+  technique). BUILT the in-repo clicker (user chose build-a-tool over Inkscape): `tools/mask-editor/`
+  (`server.mjs` static+save+list, `index.html` zoom/pan canvas: click=add point · drag point to move ·
+  `del` remove · `n` new contour=hole · mask SELECTOR dropdown (`/api/masks`) + CONTOUR LIST panel (per-contour
+  colour swatch, click to activate, ✕ to delete) · save→`tools/masks/<name>.json`. Curve model SIMPLIFIED
+  twice on user feedback: Catmull-Rom (wobbled siblings — non-local) → cubic Bézier w/ handles (local but
+  "too many complex handles") → **straight-segment POLYGON, no handles** (`path.mjs`): simplest, fully local,
+  antialiasing comes from the rasteriser. Points are bigger (zoom for precision). Round 2 of polish (user):
+  clicking INSERTS the point on the nearest edge (not append) once a contour has ≥3 pts; per-contour `round`
+  (0..1 of width) FILLETS corners with arcs (the `smooth` slider) so 1 pt/corner gives a smooth bend — local,
+  bounded by half each edge; per-contour `name` (corner/edge/…) editable in the contour list = first step
+  toward the regions `kind`/`op` meta. Faint control-polygon guide shows points behind the rounding.)
+  Round 3 (user): HOLES are now EXPLICIT per-contour `op: keep|hole` (was even-odd nesting) — frame band =
+  keep outer + hole inner; cut-mask fills keeps white then punches holes black (no nesting/order subtlety),
+  editor previews via an offscreen `destination-out` composite, hole outlines dashed. Per-contour `note`
+  (free text, longer than name). Smooth slider moved INTO a per-contour details panel (op/smooth/note for the
+  active contour) + squared mapping for fine low-end values; `+ contour` button moved into the list panel;
+  `fit` grouped right with `save`; canvas image drawn NEAREST (`imageSmoothingEnabled=false`) so zoomed pixels
+  stay crisp; `ctrl+z` UNDO (history snapshot before each point/contour mutation). Contour shape:
+  `{points,name,op,note,round}` → directly the regions schema minus `kind`.
+  Round 4 (user): VISIBILITY eyes — per-contour eye (toggles `c.hidden`) + master eye in the panel header +
+  `h` shortcut, to check the original image without overlay. DISPLAY-ONLY: cut-mask ignores `hidden` (verified
+  a hidden contour still cuts), so toggling never changes the asset. lucide eye/eye-off SVG icons.
+- 2026-06-19: FIRST FRAME via the mask editor. User traced `combat-log-frame` (tools/masks/combat-log-frame.json:
+  keep outline + 2 holes [interior, a button covering the edge]) on the 1680 master. Cut → trimmed to 454×306
+  (`asset-review/cut-combat-log-frame.png`) → placed `src/assets/panels/panel-combat-log.png` → wired as
+  PoePanel frame `combat-log` (data-frame rule: band/slice 44 = corner ornament extent, surface-radius 0,
+  edge-repeat stretch [thin continuous double-line bar], overhang 0 [raster trimmed to frame outer edge];
+  added to Frame type + Playground options + a Gallery cell). Rendered check (`asset-review/combat-log-in-panel.png`):
+  TOP CORNERS clean — filigree brackets fully contained in the slice, continuous corner→edge transition, no
+  clip/bleed. KNOWN leftover (user said ignore for now): bottom band still has the baked "View Full Log"
+  button+text (stretched) — needs LaMa inpaint or an op:inpaint region. AWAITING user review in Storybook.
+- 2026-06-19: INPAINT op added to the pipeline (user: "the button covering the edge isn't part of the frame,
+  remove it completely" — a hole leaves a gap; reconstructing the edge behind it = inpaint). Third contour
+  intent `op: 'inpaint'` (besides keep/hole). New `tools/inpaint-mask.mjs`: rasterises op:inpaint contours →
+  white mask (grow ~4px for AA edges) → LaMa via tools/inpaint.py → cleaned plate, auto-cropped back to source
+  size (LaMa pads to mult of 8). `cut-mask.mjs` now IGNORES inpaint contours in the silhouette (they're recon
+  instructions, not geometry). Editor: `inpaint` option in the per-contour `do` menu + red wash. Flow:
+  `node tools/inpaint-mask.mjs <mask>` → `node tools/cut-mask.mjs <mask> --src=<cleaned plate>`. Applied to
+  combat-log: button + "View Full Log" text removed, bottom edge reconstructed as a continuous double-line
+  matching the other 3 sides; re-cut → updated `panel-combat-log.png` (452×306). Now a complete closed frame
+  in PoePanel at both aspect ratios (`asset-review/combat-log-in-panel.png`). AWAITING user review in Storybook.
+  + `tools/cut-mask.mjs` (even-odd SVG → AA alpha via sharp, `--width`/`--feather`/`--src`/`--out`, recut
+  any res from the stored normalised mask). `npm run mask`. Smoke-tested both pieces (native + 2x recut,
+  alpha hole/band/outside correct; all server endpoints incl. traversal guard). Division of labour: USER
+  traces boundary once (spatial truth); CLAUDE owns rasterise/apply/recut. NEXT: user traces a real frame →
+  recut → rate the AA edge. Pair with LaMa for on-band content + missing geometry (path cuts, doesn't fill).
+- 2026-06-19: KEY DIRECTION (user, why in-repo tool over Inkscape) — the mask file should be a DECLARATIVE
+  DOCUMENT over the reference that drives the WHOLE pipeline from one source of truth, not just geometry.
+  Target schema (grow INCREMENTALLY, one field as it earns its place — not all up front): wrap contours in
+  `regions`, each `{id, kind: frame|button|surface|text|icon|accent…, op: keep|inpaint, contours:[outer+holes
+  (even-odd)], slice:{top,right,bottom,left,repeat}}`. Then ONE `tools/build-assets.mjs <mask>` would: (1)
+  union every `op:inpaint` region → single LaMa mask → cleaned plate (replaces hand-painting ql-mask.png in
+  GIMP); (2) vector-cut every `op:keep` region FROM the cleaned plate at any res → asset PNGs; (3) emit 9-slice
+  insets into asset-meta.json for CSS. Collapses today's scattered steps (hand-painted masks, separate slice
+  measurement, separate cuts) into one annotated tracing session. `op:keep|inpaint` also encodes the path's
+  limit (content painted ON the band = tag `inpaint`, LaMa clears it). Current `cut-mask.mjs` format already
+  uses contour OBJECTS → forward-compatible; the regions layer is the next increment AFTER a geometry trace
+  validates the UX.
+- 2026-06-20: MILESTONE — first art successfully extracted from the reference (user: "simplest, but a step
+  forward"). RENAMED `combat-log` → `basic-frame-a` (combat-log panel, button inpainted out) and added
+  `basic-frame-b` (wide contribution-health panel; user traced it as SEPARATE per-corner + per-edge keep
+  contours — the cut flattens them into one frame band; a stray full-rectangle `outline` keep was filling the
+  interior, removed). Both wired as PoePanel frames (Frame type + poe-panel.css + Playground options + Gallery
+  cells); `combat-log` wiring + `panel-combat-log.png` dropped. Renders `asset-review/basic-frames-in-panel.png`.
+  basic-frame-a slice 44, basic-frame-b slice 24 (small corners). AWAITING user review in Storybook.
+  GREEN BORDER Q (user): the bright green is the DEBUG surface's OUTER 2px edge-marker
+  (`box-shadow:0 0 0 2px`, non-inset, at the box edge). It's display-only debug; the surface FILL stays under
+  the frame. It peeks out because basic-frame-* use overhang 0 (frame outer edge = box edge), so the 2px ring
+  spills just past it. Real surfaces (stone/leather) have no ring → nothing shows. Not a leak. FIXED per user:
+  changed the debug marker to `box-shadow: inset 0 0 0 2px` → now the INNER 2px of the surface, never spills
+  outside the frame (bright, easy to spot the surface edge when tuning slices).
+  BACKGROUND now SWAPPABLE: moved the blueprint/gallery backdrops into a Storybook toolbar dropdown
+  (`globalTypes.bg` + one global decorator in `.storybook/preview.jsx`: blueprint/dark/stone/plain); removed
+  per-story `onBlueprint`/`onGallery` decorators (Gallery defaults to `dark` via `parameters.bg`). Net less code.
+  GPT-5.5 local-agent trial logged in methods ledger (NOT wired per GPT's own note).
+- 2026-06-20: Iteration. (1) Re-cut `basic-frame-b` from the user's updated mask (corners re-traced; 914×191).
+  (2) RENAMED the generated drafts `frame-a/b` → `draft-frame-a/b` (vs the extracted `basic-frame-a/b`): keys
+  in poe-panel.css, Frame type, story (Gallery cells + Playground options + LayerContract args/assert), asset
+  files `panel-frame-2/3.png` → `panel-draft-frame-a/b.png`, ASSETS.md. (3) Mask editor: added `new` (reset to
+  empty mask) + `delete` (removes the current mask file via new server POST `/delete`) buttons. (4) High-res
+  reference surfaced: editor image dropdown now floats reference-like images (ref-*/master/reference) to the
+  TOP and lists sources before asset-review — so `ref-sr-x4.png` (5760×3240, the SR master, already on disk)
+  is easy to pick for precise tracing (masks are normalised → a trace transfers between 1680 and 5760).
+  NOTE (user-tuned, kept): basic-frame-a/b now surface-radius 4, overhang 2, edge-repeat repeat; basic-frame-b
+  slice 34.
+- 2026-06-20: Storybook/code cull (user): deleted not-properly-implemented components+stories — PoeTabs,
+  PoeActionTile, the Layout/Shell set (PoeHeader, PoeApp, ActionBar) + Layout.stories; dropped PoeNodePreview
+  (+ its node SVG paths) from PoeAssets; removed Foundations stories Colors + Iconography (kept Typography).
+  PRESERVED per user: `.poe-title` text style + the display font (in poe-core.css, untouched). Kept
+  PoeAssetIcon/PoeAssetPaths (PoeTag still uses them). Orphaned now (not deleted): `src/assets/nodes/*.svg`.
+  Mask editor: added `100%` button (+ key `1`) next to `fit` — 1 image px = 1 screen px, centred.
+  PREP for upcoming masks (backgrounds · button frames · panel integrations): pipeline already handles all —
+  cut-mask/inpaint-mask take any mask + `--src`/`--out`; destination dirs exist (src/assets/{panels,buttons,
+  backgrounds}); PoePanel already has per-frame `--src-integration-shadow/-specular` 9-slice slots. Conventions:
+  backgrounds→backgrounds/, button frames→buttons/ (border-image like panels), integration layers→panels/ as
+  `panel-<name>-integration-{shadow,specular}.png` wired in the data-frame rule. CAVEAT: integrations are SOFT
+  gradients, not hard edges — cut with `--feather` (or keep them CSS); a crisp polygon won't suit them.
+- 2026-06-20: REFERENCE RECONSTRUCTION story + multi-region masks. (1) New story `Reference/Reconstruction`
+  (`src/stories/ReferenceReconstruction.stories.jsx`) — rebuilds the Interface-Mage dashboard from OUR
+  framework (header, Repositories/Quest Log, react-stats, Contribution Health [basic-frame-b + green
+  PoeSegmentBar], Coding Energy [blue], Combat Log/Activity Feed [basic-frame-a], Repo Overview, Pinned, ornate
+  action bar). A living scratchpad to judge chrome IN CONTEXT; render `asset-review/reference-reconstruction.png`.
+  (2) cut-mask gained `--each`: one trimmed PNG per KEEP contour (multi-region masks). Also fixed trim to
+  re-decode the PNG so the alpha border is seen. (3) NEW `backgrounds` mask (7 regions: stone slab, foregrounds,
+  panel interiors + a `cracks` inpaint) extracted via inpaint→`--each` to `asset-review/bg/` — small material
+  SWATCHES (97×21…514×29). Left for review, NOT wired (tileable-vs-asis is a user call). (4) Re-cut basic-frame-a
+  (now has integration-bottom-left/right keeps → little contact "feet" baked at the bottom corners; 465×313) +
+  basic-frame-b (914×191). (5) Deleted `src/assets/nodes/*.svg`.
+- 2026-06-20: PANELS + integration layer + tileable backgrounds + mask comments (user batch).
+  • RENAMED `basic-frame-a/b` → `basic-panel-a/b` (masks + `panel-basic-panel-*.png` + CSS keys + Frame type +
+    stories) — a mask with frame+integration is a "panel". • INTEGRATION moved OUT of the frame raster into its
+    own layer: retagged the `integration-*` contours `op:'integration'`; new `tools/cut-panel.mjs` cuts FRAME
+    (keep−hole) and INTEGRATION (op:integration, feathered) to a SHARED union bbox so they align as PoePanel's
+    9-slice layers. basic-panel-a now 475×318 frame + `panel-basic-panel-a-integration-shadow.png` (bottom-corner
+    contact shadows); wired `--src-integration-shadow`. NOTE: frame grew 465→475 incl. the feet area → slice 44
+    may want a re-tune. • Integration PROP value `debug`→`on` (Integration='none'|'on'; it's a real layer now,
+    default 'on'). • RECONSTRUCTION uses ONLY basic-panel-a/b (no draft frames), `integration:on`, surface
+    `ref-panel`, bg `refstone`. • cut-mask `--each` (per-keep-contour) used to extract the 7 `backgrounds`
+    regions; new `tools/make-bg-tiles.mjs` makes each a SEAMLESS 2×2 mirror tile from the inpainted plate →
+    `src/assets/backgrounds/tile-<slug>.png`. Wired the clean ones: page stone → bg selector option `refstone`
+    (`.storybook/preview.jsx`); panel interior → PoePanel surface `ref-panel`. • Mask files gained a top-level
+    `comment` field + the editor has a comment textarea (server /save persists it).
+  CAVEATS for user judgment: several traced bg regions overlapped UI/ornament (the foreground samples grabbed
+  the blue bar; `basic panel background 3` grabbed gold corner art) → those tiles are contaminated, re-trace
+  cleaner patches. CRACKS not yet integrated (deferred — mechanical crack overlay is risky + "sparingly" is a
+  judgment call). Render: `asset-review/reference-reconstruction.png`.
+- 2026-06-20: Fixes + page-frame. • OVERHANG SHIFT FIXED: cut-panel now sizes the frame to the FRAME's own
+  bbox (not the frame∪integration union) — integration extended ~7px below the frame and was inflating the
+  raster/shifting the 9-slice. basic-panel-a back to 452×305; integration cut to that same box (tip past the
+  edge clipped). • `make-bg-tiles` BUG FIXED (user was RIGHT, tracings were clean): it cropped the contour
+  BBOX (spilling into neighbouring UI); now it samples the LARGEST RECTANGLE INSCRIBED IN THE POLYGON
+  (maximal-rectangle/histogram) → always inside the traced material. Regenerated all tiles. • page-frame
+  integrated: the OUTER dashboard border (rounded-rect, full 1680×945, inpaint cleaned). Wired as Frame
+  option `page-frame` (band/slice 40, stretch) + used in Reconstruction as a border-image WRAPPER div (PoePanel
+  is fixed-size; a plain div border-image handles the tall auto-height dashboard). • Gallery basic-panel cells
+  → surface `ref-panel` + integration on. • Reconstruction bg reverted to `dark` (refstone still flat).
+  REF-STONE diagnosis (user: "doesn't look like stone, extremely repetitive"): the page bg is mostly FLAT
+  dark — its stone CHARACTER is the cracks/imperfections, which backgrounds.json INPAINTS OUT; plus the tile
+  is tiny + mirror-tiled (4-fold symmetry). FIX OPTIONS (proposed, not yet done): (A) scatter sparse cracks
+  as a NON-tiling overlay (= user's "cracks sparingly"; restores character + breaks repeat) — recommended
+  quick win; (B) GENERATE a tileable stone (material gen is OK, unlike the ornate frame); (C) offset-heal
+  seamless instead of mirror; (D) large cover + vignette to mask repeat. CRACKS still deferred (ties into A).
+- 2026-06-20: User-batch fixes. (1) Mask-editor HOTKEY GUARD now covers TEXTAREA + contentEditable (was
+  only INPUT/SELECT) → del/f/n no longer fire while typing the comment box. (2) RENAMED `draft-frame-a/b` →
+  `gpt-panel-a/b` (the earlier generated frames; assets + CSS + Frame type + stories). (3) RENAMED surfaces
+  `stone`/`leather` → `gpt-stone-1`/`gpt-stone-2` (assets surface-gpt-stone-1/2.png + CSS + Surface type +
+  stories). (4) INTEGRATION fix: cut-panel now sizes the FRAME to its own bbox (stable overhang, not in the
+  frame raster) and the INTEGRATION to the frame∪integration UNION bbox (shares the frame's top/left/width so
+  it registers, extends lower/wider so the contact feet aren't clipped — keeps position per the mask contour).
+  basic-panel-a frame 452×305, integration 474×318; feet now render at the bottom corners (subtle dark, spills
+  past frame). (5) REF-STONE solid-part refinement: make-bg-tiles now FLATTENS the low-frequency lighting
+  gradient (crop−blur+mean) so the tile is uniform-tone — removes the contrast bands (user: "very contrast
+  patterns"; root = page light falloff baked into the sample, the tone-distance issue). REMAINING: mirror-tile
+  of a tiny thin inscribed sample still shows a repeating motif → needs a bigger clean trace, offset-tiling
+  (no mirror symmetry), or generation. Cracks remain ON HOLD per user (solid part first).
+- 2026-06-20: More fixes. (1) HIDDEN contours no longer editable — `hit()` skips `c.hidden` (was grabbing/
+  moving/deleting hidden points). (2) INTEGRATION now renders OUTSIDE the frame: frame keeps its own bbox
+  (overhang unchanged, not in frame raster), integration cut on the union bbox, and the integration-shadow
+  layer gets its OWN larger outset via `--integration-overhang` (basic-panel-a: 16px) so the contact feet
+  spill past the frame's bottom corners per the contour (verified). (3) REGENERATED all masks: basic-panel-a
+  (frame+integration), basic-panel-b, page-frame, backgrounds tiles; NEW masks cut to asset-review for review
+  — `cut-progress-bar.png`, `buttons/` (1 region), `text-labels/` (7 regions). (4) REF-STONE via GENERATION
+  (user: reference too busy to sample a bigger area): gpt-image-1.5 (edits +ref = the clean flattened stone
+  sample, flat-lighting prompt) → `asset-review/gen-ref-stone.png` (1024², uniform dark grain, nearly tileable
+  — faint seam). Reads as stone, far less repetitive than the tiny mirror tile. AWAITING user judgment; if good,
+  make seamless (offset-heal) + wire as bg/surface.
+- 2026-06-20: Wired extracted button/progress-bar + typography + stone retry. (1) PROGRESS-BAR approved →
+  `src/assets/panels/progress-bar.png` (808×38 thin rail, transparent interior); `.poe-segment-bar` now a
+  9-slice border-image of it (slice 8) wrapping the CSS segments (the segments ARE the live fill — raster is
+  just the rail). (2) BUTTON: hollowed the ornate "Issues" tile centre (kept 16px ornate border) →
+  `button-ornate.png`; `.poe-button--ornate` = 9-slice border-image (slice 16, no fill) + CSS gradient fill
+  behind. (3) TYPOGRAPHY (existing fonts were already Cinzel/IM-Fell/Inter — right family): matched labels —
+  DISPLAY/title roles flipped GOLD→WHITE serif (gaearon/react are white serif, not gold caps); heading
+  letter-spacing .07→.11em to match the wide gold caps "ACTIVITY FEED". First pass; other label roles
+  (small-title, title-subtext, list-item-secondary) not yet individually tuned. (4) REF-STONE retry per user
+  ("0/5, want smooth realistic clay-stone slab"): regenerated with a smooth-clay prompt → `gen-ref-stone-2.png`
+  (smooth warm taupe clay slab, much closer; tile seam to heal). AWAITING judgment. Reconstruction re-rendered
+  (`asset-review/reference-reconstruction.png`): ornate buttons + framed segment bars + white-serif titles.
+- 2026-06-20: Batch. (1) PROGRESS-BAR segments now RASTER: mask has `segment 1/2` + `frame` + interior hole;
+  extracted `segment.png` (28×23, the frame-interior hole was subtracting the segments → cut it WITHOUT the
+  hole) + `progress-bar.png` (rail). PoeSegmentBar = 9-slice rail + `.poe-segment-fill` using the segment as
+  `background-repeat:round` → integer segment count auto-fits width. Segment raster is BLUE; default green =
+  `hue-rotate(-105deg)`, `blue` prop = native. (2) BUTTON: re-cut at 10% (border 9px) → removed the solid inner
+  plate + fully cut interior + dropped the red-medallion smudge; `button-ornate.png` 9-slice (slice 9) + CSS
+  fill. DELETED non-raster buttons (CSS variants primary/magic/danger/ghost/compact gone), REMOVED glow (base
+  :hover/is-selected glow stripped; ornate hover/selected = brightness only). PoeButton = raster-only (ornate),
+  old props swallowed. (3) PAGE-FRAME gap diagnosed: mask has NO `edge-bottom` contour (top/left/right only) →
+  bottom-middle alpha = 0 = the gap. No comments exist in the mask file. USER must trace `edge-bottom`. (4)
+  TYPOGRAPHY (live CSS, not raster): matched labels — display/title WHITE serif (gaearon/react), heading gold
+  Cinzel CAPS wide (.11em), label → gold title-case (was grey uppercase). body/meta/number already matched.
+  First pass; the user's literal-subtraction-diff fitness idea = a focused follow-up for pixel-precise tuning.
+  (5) REF-STONE regen, model in filename (= gpt-image-1.5): `gen-ref-stone-gpt-image-1.5.png` — text-only (no
+  ref, which had biased toward noise/desert), smooth polished clay-stone slab. AWAITING judgment; still needs
+  seamless treatment. Other models (gpt-image-2, chatgpt-image-latest) gated on OpenAI org verification.
+- 2026-06-20: Fixes + typography LOOP. (1) SEGMENTS: half-cut + loose gap fixed — `background-repeat:round`
+  needs an explicit `background-size` (was `auto 100%` → round didn't engage → clipped last segment); now
+  `24px 100%` + `round` = whole segments at every width; `.poe-segment-bar` padding 5/10→2/4 (tighter to rail).
+  (2) PAGE-FRAME edge gaps at large size = `--edge-repeat:repeat` tiling a thin non-tiling line → set to
+  `stretch`. Bottom edge still absent BY DESIGN (no `edge-bottom` contour — user must trace it). (3) TYPOGRAPHY
+  refinement loop BUILT: `tools/font-fit.mjs` — renders each ref label's text in every candidate font/weight
+  headless (our web fonts), binarises + stretches to the ref's box, scores by glyph-shape pixel-diff. RUNS, but
+  the fitness is NOISY (~18–32%, unstable rankings; picks Cinzel even for the sans body line) — naive pixel-diff
+  can't reliably pick a typeface (same wall as auto visual-judgment). Reliable signal = ASPECT (ref text is more
+  condensed than ours → spacing guidance). NOT auto-applied (would regress body→serif); visual roles kept
+  (titles white serif, headers Cinzel gold caps, body sans). Next: better fitness (grayscale/edge diff, baseline
+  align) or human-pick family + auto-fit spacing. (4) OpenAI ORG VERIFICATION = one-time identity check (gov ID
+  via Persona) at platform.openai.com → Settings → Organization → General → Verify; gates the newest models/
+  features. We use `gpt-image-1.5` (in the filename); other image models need the org verified first.
+- 2026-06-20: Batch. (1) SEGMENT padding now `--segment-pad` (default 1px) + PoeSegmentBar `pad` prop. (2)
+  `blue` boolean → `variant` prop (clean choice): assets renamed `progress-bar-blue.png`/`segment-blue.png`;
+  `variant='blue'` = native raster, `variant='green'` = TEMP hue-rotate of blue until its own mask is traced
+  (different frame+segments). (3) TYPOGRAPHY now human-in-the-loop: `tools/font-compare.mjs` renders each ref
+  label beside candidate fonts → `asset-review/type-compare-<label>.png` (5 sheets); USER picks the family per
+  role, then font-fit.mjs auto-fits spacing. Sheets confirm the auto-loop's errors (Cinzel forces caps on the
+  lowercase 'gaearon'; body line is sans not IM-Fell). (4) DROPPED RpgText/SvgRpgText + story (unused) + dead
+  rpg-text.css (+ its PoeAssets import). (5) REF-STONE low-frequency colour field: `stone-lowfreq.png` =
+  central core of the traced stone region, low-passed (8px→512 + blur) → faithful dark-warm page tone, no
+  noise; wired as the `refstone` bg option (cover). (6) PAGE-FRAME gaps: edges measured CONSISTENT (~10px line,
+  offset 0 on top/left/right) → no inpaint needed; gaps were `--edge-repeat:repeat` → now `stretch`. Bottom
+  edge genuinely absent (no `edge-bottom` contour) — user to trace. (7) Reconstruction enlarged to 1680px wide
+  for 1:1 comparison with the reference.
+- 2026-06-20: Batch. (1) USER page bg `chatgpt-page-backgroun-by-user.png` (smooth dark-brown stone, 1254²)
+  → `page-bg-user.png`, wired as bg option `userstone` + reconstruction backdrop. (2) BUTTON: removed the CSS
+  gradient fill (the "inner rect") → `background:transparent`; raster ornate frame only, transparent centre.
+  (3) edge-repeat DEFAULT is now `repeat` everywhere (base + segment bar + page-frame) per user ("default for
+  all frames"). (4) BIG-INPUT extracted → `input-frame.png` (570×42 thin rounded) → `.poe-search--ornate`
+  9-slice; used as the large search in the reconstruction header + a Foundations `Inputs` story. (5) PAGE-FRAME
+  gaps DIAGNOSED: the left edge line has a 56px TRANSPARENT GAP before the bottom corner — the traced edge
+  contours don't reach the corners (edges measured consistent ~10px, so not slice/repeat/inpaint). FIX = extend
+  the edge contours to connect with the corners (user retrace). (6) TYPOGRAPHY per user's sheet picks: display/
+  title/label → IM Fell English (added to the font import; `--poe-font-display` switched off the SC variant);
+  headers → Cinzel `font-variant:small-caps` (all-caps with larger initial, matches the ref); display sizes
+  bumped (gaearon 26, react 24). COLOURS sampled from labels + applied: title #e9e3d2, header #ba9b48, label
+  #8d8464, body #a8a9a6, meta #84898c. body sans kept (user: closest option, not perfect). (7) DROPPED nothing
+  new. Reconstruction reads much closer (`asset-review/reference-reconstruction.png`).
+- 2026-06-20: (1) REF STONE baked into the reconstruction itself (`stoneBackdrop` div, `page-bg-user.png`,
+  1:1 `repeat`, full-bleed via margin -80) — independent of the toolbar Background selector; reconstruction
+  `parameters.bg='plain'`. (2) Background NO LONGER stretched: userstone selector option + reconstruction both
+  use `background-size:auto` + `repeat` (1:1), not `cover`. (3) FONT-SIZE knobs: `--poe-fs-{display,heading,
+  label,body,meta,number}` tokens in poe-tokens.css, applied to the role classes → tweak sizes there globally
+  (stories still override per-instance inline). (4) ANSWERED: node placement = pixel EDGES/boundaries (the
+  rasteriser fills a pixel when the path covers its centre, so trace the gridline between kept/dropped pixels);
+  page-frame gap = drag the corner + edge end-nodes TOWARD each other in the editor until they overlap (no
+  retrace into other content needed); the reconstruction OUTER frame is a plain border-image DIV (not a
+  PoePanel — PoePanel is fixed-size, the dashboard is tall auto-height), inner panels ARE PoePanel.
+- 2026-06-20: (1) PoePanel is now AUTO-HEIGHT — `.poe-panel__content` is `position:relative` (in normal flow,
+  drives height); decoration layers stay `position:absolute;inset:0`. Removed the fixed 360×300 default. So it
+  works as a container; the reconstruction's OUTER page-frame is now a real `<PoePanel frame="page-frame">`
+  (auto-height), and inner panels dropped their fixed heights → size to content. (2) SEMANTIC TYPE: new
+  `PoeText` component (`variant` → .poe-text-* role, `as` for the element); reconstruction uses it everywhere,
+  NO inline font sizes. Sizes come from `--poe-fs-*` tokens (poe-tokens.css). (3) page-bg-user SUPER-RES'd
+  (Real-ESRGAN 4× then back to 1254 via upscale.py) → smoother; applied + bg options 1:1 (`auto`/`repeat`, not
+  `cover`). Stone baked into the reconstruction (`stoneBackdrop`), independent of the selector. (4) PAGE-FRAME
+  GAPS CLOSED via new `tools/assemble-frame.mjs`: corners kept as real pixels in place; each edge REBUILT by
+  stretching its cleanest 1-px line cross-section across the FULL side (overwriting the gap region where
+  unrelated reference content broke the line) → continuous corner-to-corner lines (left-edge gap 56px→0). The
+  "move the parts together" approach. Bottom still open (no `edge-bottom` contour, user-confirmed OK).
+- 2026-06-20: (1) assemble-frame.mjs v2 — edges no longer STRETCHED (ugly/uniform); now TILE the longest
+  CLEAN real run of each edge line across the side (real pixels, natural variation), corners real on top →
+  gapless + natural. (2) Reconstruction: removed the artificial stoneBackdrop div; the page stone is now the
+  OUTER PoePanel's SURFACE (`page-stone`) — proper layer model. New `page-stone` surface option (poe-panel.css
+  + Surface type) using `page-stone-tile.png`. (3) TILING gradient concealed: `page-stone-tile.png` = the
+  super-res'd user stone with its low-frequency gradient/vignette flattened 85% (crop − 0.85·(blur − mean)) →
+  tiles without the periodic vignette (faint hairline seam remains; offset-heal if needed). (4) Inner panels
+  show `ref-panel` surface again (verified — clearly dark-on-stone now). Reconstruction render
+  `asset-review/reference-reconstruction.png` reads cohesive: gapless outer frame + stone surface + ref-panel
+  inner panels + small-caps gold headers + IM Fell titles + raster segments/buttons.

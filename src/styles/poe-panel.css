@@ -13,9 +13,10 @@
 .poe-panel {
   position: relative;
   isolation: isolate;
-  width: 360px; height: 300px;          /* the BOX — overridden inline in stories */
+  /* AUTO-HEIGHT: the content (in normal flow) drives the box; decoration layers are absolute inset:0 and
+     fill it. Set width/height inline to fix a size; omit to grow with content (use as a container). */
   /* default FRAME = debug r8. data-frame swaps the whole matched set (band/slice/surface-radius/edge-repeat/srcs). */
-  --band: 30px; --slice: 30; --surface-radius: 8px; --edge-repeat: round;
+  --band: 30px; --slice: 30; --surface-radius: 8px; --edge-repeat: repeat;
   --frame-scale: 1;                     /* scales the frame + integration render (1 = native px) */
   --surface-scale: 1;                   /* scales the surface texture tile (1 = native px) */
   --accent-scale: 1;                    /* per-accent (set inline per medallion; 1 = native px) */
@@ -39,13 +40,23 @@
 .poe-panel[data-frame='debug-r24'] { --band: 48px; --slice: 48; --surface-radius: 24px;
   --src-frame: url('../assets/panels/debug/frame-r24.png'); --src-integration-shadow: url('../assets/panels/debug/shadow-r24.png'); --src-integration-specular: url('../assets/panels/debug/specular-r24.png'); }
 
-/* real frames — full 1:1 raster (band = slice = native corner inset). Rectangular opening ⇒ radius 0.
-   Edges are continuous bars (one big tile), so they STRETCH, not tile. (slice/repeat belong to the
-   frame raster; they're set here per frame, not exposed as user controls.) */
-.poe-panel[data-frame='frame-a'] { --band: 80px; --slice: 80; --content-pad: calc(20px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(18px * var(--frame-scale));
-  --src-frame: url('../assets/panels/panel-frame-2.png'); --src-integration-shadow: none; --src-integration-specular: none; }
-.poe-panel[data-frame='frame-b'] { --band: 57px; --slice: 57; --content-pad: calc(14px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(11px * var(--frame-scale));
-  --src-frame: url('../assets/panels/panel-frame-3.png'); --src-integration-shadow: none; --src-integration-specular: none; }
+/* draft frames — earlier GENERATED raster drafts (pre-extraction), full 1:1 (band = slice = native corner
+   inset). Rectangular opening ⇒ radius 0. Edges are continuous bars (one big tile), so they STRETCH/repeat. */
+.poe-panel[data-frame='gpt-panel-a'] { --band: 80px; --slice: 80; --content-pad: calc(20px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(18px * var(--frame-scale));
+  --src-frame: url('../assets/panels/panel-gpt-panel-a.png'); --src-integration-shadow: none; --src-integration-specular: none; }
+.poe-panel[data-frame='gpt-panel-b'] { --band: 57px; --slice: 57; --content-pad: calc(14px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(11px * var(--frame-scale));
+  --src-frame: url('../assets/panels/panel-gpt-panel-b.png'); --src-integration-shadow: none; --src-integration-specular: none; }
+/* basic frames — extracted from the 1680 master via the mask editor (tools/masks/basic-panel-*.json).
+   Rasters trimmed to the frame's outer edge ⇒ overhang 0 (frame outer edge = box edge); thin continuous
+   edges ⇒ stretch. basic-panel-a: the Combat Log panel (button inpainted out). basic-panel-b: the wide
+   Contribution Health panel (traced as separate corner+edge contours; small corners ⇒ slice 24). */
+.poe-panel[data-frame='basic-panel-a'] { --band: 44px; --slice: 44; --content-pad: calc(16px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px; --integration-overhang: 16px;
+  --src-frame: url('../assets/panels/panel-basic-panel-a.png'); --src-integration-shadow: url('../assets/panels/panel-basic-panel-a-integration-shadow.png'); --src-integration-specular: none; }
+.poe-panel[data-frame='basic-panel-b'] { --band: 34px; --slice: 34; --content-pad: calc(12px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px;
+  --src-frame: url('../assets/panels/panel-basic-panel-b.png'); --src-integration-shadow: none; --src-integration-specular: none; }
+/* page-frame — the OUTER dashboard border (rounded-rect, thin line); wraps the whole reconstruction. */
+.poe-panel[data-frame='page-frame'] { --band: 120px; --slice: 120; --content-pad: calc(14px * var(--frame-scale)); --surface-radius: 6px; --edge-repeat: repeat; --overhang: 0px;
+  --src-frame: url('../assets/panels/panel-page-frame.png'); --src-integration-shadow: none; --src-integration-specular: none; }
 
 /* Every 9-slice layer shares EXACTLY this geometry — only source/z/blend differ. */
 .poe-panel__frame,
@@ -60,10 +71,11 @@
 }
 .poe-panel__frame                { z-index: 6; border-image-source: var(--src-frame); }
 .poe-panel__integration-specular { z-index: 4; border-image-source: var(--src-integration-specular); mix-blend-mode: screen; }
-.poe-panel__integration-shadow   { z-index: 3; border-image-source: var(--src-integration-shadow); opacity: .8; }
+/* integration sits OUTSIDE the frame — its own (larger) outset pushes the contact shadow past the frame edge. */
+.poe-panel__integration-shadow   { z-index: 3; border-image-source: var(--src-integration-shadow); opacity: .8; border-image-outset: var(--integration-overhang, var(--overhang)); }
 
 .poe-panel__content {
-  position: absolute; inset: 0; z-index: 5; overflow: auto;
+  position: relative; z-index: 5;        /* in normal flow → drives the panel's auto height */
   padding: var(--content-pad);
   color: #e8e0cf; font: 12px/1.4 system-ui, sans-serif;
 }
@@ -93,17 +105,26 @@
 .poe-panel__accent--l { left: 0;   top: 50%;  transform: translate(-50%, -50%); }
 .poe-panel__accent--r { right: 0;  top: 50%;  transform: translate( 50%, -50%); }
 
-/* CHOICES — each part has a "none". */
-.poe-panel[data-frame='none']       .poe-panel__frame                { display: none; }
-.poe-panel[data-integration='none'] .poe-panel__integration-shadow,
-.poe-panel[data-integration='none'] .poe-panel__integration-specular { display: none; }
-.poe-panel[data-surface='none']     .poe-panel__surface,
-.poe-panel[data-surface='none']     .poe-panel__inner-shadow         { display: none; }
+/* CHOICES — each part has a "none". Use the DIRECT-CHILD combinator (>) throughout: a part rule must
+   match only THIS panel's own layer, never a nested panel's (a descendant ` ` leaks the outer panel's
+   surface/integration/frame choice onto every child panel — e.g. an outer surface or integration='none'
+   would override all nested panels). Every layer is a direct child of its panel root, so > is exact. */
+.poe-panel[data-frame='none']       > .poe-panel__frame                { display: none; }
+.poe-panel[data-integration='none'] > .poe-panel__integration-shadow,
+.poe-panel[data-integration='none'] > .poe-panel__integration-specular { display: none; }
+.poe-panel[data-surface='none']     > .poe-panel__surface,
+.poe-panel[data-surface='none']     > .poe-panel__inner-shadow         { display: none; }
 
 /* surface variants (tile size scaled by --surface-scale) */
-.poe-panel[data-surface='debug'] .poe-panel__surface {
+.poe-panel[data-surface='debug'] > .poe-panel__surface {
   background: url('../assets/debug/debug-surface.png') 0 0 / calc(64px * var(--surface-scale)) repeat;
-  box-shadow: 0 0 0 2px rgba(150, 255, 170, .95);   /* DEBUG: solid CSS edge marker (no raster, no 9-slice) */
+  box-shadow: inset 0 0 0 2px rgba(150, 255, 170, .95);   /* DEBUG: inner-2px edge marker (inset, never spills outside the frame) */
 }
-.poe-panel[data-surface='stone']   .poe-panel__surface { background: url('../assets/backgrounds/surface-stone.png')   center / calc(1254px * var(--surface-scale)) repeat; }
-.poe-panel[data-surface='leather'] .poe-panel__surface { background: url('../assets/backgrounds/surface-leather.png') center / calc(1254px * var(--surface-scale)) repeat; }
+.poe-panel[data-surface='gpt-stone-1'] > .poe-panel__surface { background: url('../assets/backgrounds/surface-gpt-stone-1.png')   center / calc(1254px * var(--surface-scale)) repeat; }
+.poe-panel[data-surface='gpt-stone-2'] > .poe-panel__surface { background: url('../assets/backgrounds/surface-gpt-stone-2.png') center / calc(1254px * var(--surface-scale)) repeat; }
+/* ref-panel — dark panel interior tiled from the reference (backgrounds.json "basic panel background") */
+.poe-panel[data-surface='ref-panel'] > .poe-panel__surface { background: url('../assets/backgrounds/tile-basic-panel-background.png') center / calc(431px * var(--surface-scale)) repeat; }
+/* page-stone — the page background (user ChatGPT stone, gradient flattened so it tiles cleanly), 1:1. */
+.poe-panel[data-surface='page-stone'] > .poe-panel__surface { background: url('../assets/backgrounds/page-stone-tile.png') 0 0 / calc(1254px * var(--surface-scale)) repeat; }
+/* big-stone-2 — user texture (assets-staging/big-stone-2.png), tiled 1:1 as-is (seam refinement TBD). */
+.poe-panel[data-surface='big-stone-2'] > .poe-panel__surface { background: url('../assets/backgrounds/surface-big-stone-2.png') center / calc(1024px * var(--surface-scale)) repeat; }
