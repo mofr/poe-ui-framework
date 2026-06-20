@@ -21,7 +21,7 @@ const Heading = ({ children, meta }: { children?: React.ReactNode; meta?: React.
   </div>
 );
 const Panel = ({ frame = 'basic-panel-a', children, style }: { frame?: Frame; children?: React.ReactNode; style?: React.CSSProperties }) => (
-  <PoePanel frame={frame} surface="ref-panel" integration="auto" style={{ width: '100%', ...style }}>{children}</PoePanel>
+  <PoePanel frame={frame} surface="ref-panel" integration="raster" style={{ width: '100%', ...style }}>{children}</PoePanel>
 );
 const Row = ({ children }: { children?: React.ReactNode }) => (
   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, padding: '3px 0' }}>{children}</div>
