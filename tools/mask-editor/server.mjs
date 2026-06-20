@@ -6,6 +6,7 @@ import { createServer } from 'node:http';
 import { readFile, writeFile, mkdir, readdir, unlink } from 'node:fs/promises';
 import { resolve, dirname, extname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFile } from 'node:child_process';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../..');
@@ -42,6 +43,15 @@ createServer(async (req, res) => {
       // GLOBAL config (name/image/build/comment) grouped first, then per-contour data — kept separate.
       await writeFile(resolve(MASKS, `${name}.json`), JSON.stringify({ name, image, build, comment, contours }, null, 2));
       return send(res, 200, 'application/json', JSON.stringify({ ok: true }));
+    }
+    if (req.method === 'POST' && url.pathname === '/build') {
+      // Recut this mask's asset via build-mask.mjs (reads the mask's `build` field, runs inpaint if needed,
+      // then the right cut tool; cut-panel patches --integration-spill into the CSS). Returns the log.
+      const { name } = JSON.parse(await readBody(req));
+      if (!name || !/^[\w-]+$/.test(name)) return send(res, 400, 'text/plain', 'bad name');
+      const out = await new Promise(r => execFile('node', [resolve(ROOT, 'tools/build-mask.mjs'), name],
+        { cwd: ROOT, maxBuffer: 8 << 20 }, (err, so, se) => r({ ok: !err, log: (so || '') + (se || '') })));
+      return send(res, 200, 'application/json', JSON.stringify(out));
     }
     if (req.method === 'POST' && url.pathname === '/delete') {
       const { name } = JSON.parse(await readBody(req));

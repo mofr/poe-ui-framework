@@ -58,7 +58,7 @@
   <button id="newfile" title="start a new empty mask">new</button>
   <button id="delfile" title="delete the current mask file">delete</button>
   <span id="help">click=add point (nearest edge) · drag=move · <kbd>del</kbd>=remove · <kbd>n</kbd>=new contour · set a contour to <b>hole</b> to cut an opening · <kbd>h</kbd> hide overlay · wheel zoom · space-drag pan · <kbd>ctrl+z</kbd> undo</span>
-  <div class="right"><button id="fit">fit <kbd>f</kbd></button><button id="actual" title="100% — 1 image px = 1 screen px (1)">100%</button><button id="save" class="primary">save</button></div>
+  <div class="right"><button id="fit">fit <kbd>f</kbd></button><button id="actual" title="100% — 1 image px = 1 screen px (1)">100%</button><button id="recut" title="rebuild this mask's asset via build-mask (inpaint → cut, patches CSS)">recut</button><button id="save" class="primary">save</button></div>
 </div>
 <div id="status">no image</div>
 <div id="wrap">
@@ -298,7 +298,7 @@ function renderDetails() {
   d.className = '';
   const sv = Math.sqrt((c.round || 0) / MAX_ROUND);
   d.innerHTML =
-    `<div class="det"><label>do</label><select id="d-op"><option value="keep">keep (solid)</option><option value="hole">hole (cut out)</option><option value="inpaint">inpaint (reconstruct)</option></select></div>`
+    `<div class="det"><label>do</label><select id="d-op"><option value="keep">keep (solid)</option><option value="hole">hole (cut out)</option><option value="inpaint">inpaint (reconstruct)</option><option value="integration">integration (contact shadow)</option></select></div>`
     + `<div class="det"><label>smooth</label><input id="d-smooth" type="range" min="0" max="1" step="0.005"><span class="rv" id="d-rv"></span></div>`
     + `<div class="det"><label>note</label><input id="d-note" type="text" placeholder="note for THIS contour"></div>`;
   $('d-op').value = c.op || 'keep';
@@ -366,6 +366,16 @@ $('save').onclick = async () => {
   const r = await fetch('/save', { method: 'POST', body });
   if (r.ok) { await refreshMaskList(name); $('status').textContent = `saved tools/masks/${name}.json — rebuild: node tools/build-mask.mjs ${name}`; }
   else $('status').textContent = 'save failed';
+};
+$('recut').onclick = async () => {
+  const name = ($('maskSel').value || $('name').value).trim();
+  if (!name) { alert('select or name a saved mask to recut'); return; }
+  $('status').textContent = `recutting ${name}…`;
+  const res = await (await fetch('/build', { method: 'POST', body: JSON.stringify({ name }) })).json();
+  // show the last meaningful line of the build log (asset dims / spill / errors)
+  const last = (res.log || '').trim().split('\n').filter(l => l.trim()).pop() || '';
+  $('status').textContent = `${res.ok ? '✓ recut' : '✗ recut failed'} ${name} — ${last}`;
+  if (!res.ok) console.error(res.log);
 };
 
 (async function init() {

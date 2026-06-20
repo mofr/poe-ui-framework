@@ -5,7 +5,7 @@
 // Integration is NOT clipped by the frame — overlap is intentional (frame draws over it at runtime; the
 // integration is made semi-transparent so they mix).
 //   node tools/cut-panel.mjs <maskName> [--src=cleaned-plate] [--feather=N] [--out-dir=src/assets/panels]
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
@@ -89,5 +89,15 @@ console.log(`frame  -> panels/panel-${name}.png  ${frameBox.width}x${frameBox.he
 if (integA) {
   await writeLayer(integA, integBox, `panel-${name}-integration-shadow.png`);
   console.log(`integ. -> panels/panel-${name}-integration-shadow.png  ${integBox.width}x${integBox.height} (fade ${fade})`);
-  console.log(`         spill ${spill}px past the frame → set --integration-spill: ${spill}px (outset = overhang + spill)`);
+  // Write the derived spill straight into the matching CSS rule — no manual copy. Best-effort: only if the
+  // [data-frame='<name>'] rule already declares --integration-spill (so it's a wired frame).
+  const cssPath = resolve(ROOT, 'src/styles/poe-panel.css');
+  const css = await readFile(cssPath, 'utf8');
+  const re = new RegExp(`(\\[data-frame='${name}'\\][^\\n]*--integration-spill:\\s*)\\d+px`);
+  if (re.test(css)) {
+    await writeFile(cssPath, css.replace(re, `$1${spill}px`));
+    console.log(`         --integration-spill: ${spill}px → patched into poe-panel.css`);
+  } else {
+    console.log(`         spill ${spill}px → add --integration-spill: ${spill}px to the [data-frame='${name}'] rule`);
+  }
 }
