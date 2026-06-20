@@ -7,9 +7,10 @@ import '../../styles/poe-panel.css';
 
 export type Frame = 'none' | 'debug-r0' | 'debug-r4' | 'debug-r8' | 'debug-r24' | 'gpt-panel-a' | 'gpt-panel-b' | 'basic-panel-a' | 'basic-panel-b' | 'page-frame';
 export type Surface = 'none' | 'debug' | 'gpt-stone-1' | 'gpt-stone-2' | 'ref-panel' | 'page-stone' | 'big-stone-2';
-// Integration art (contact shadow + specular) is bundled PER FRAME, so this is on/off rather than a
-// palette: 'auto' renders the frame's own integration rasters; 'none' hides them.
-export type Integration = 'none' | 'auto';
+// Integration = the contact shadow blending the frame into the page. Chosen by the component user, because
+// not every frame ships a clean cut: 'raster' = the frame's own integration PNG (when it has one); 'css' =
+// a drop-shadow following the frame silhouette (works for any frame, no asset); 'none' = off.
+export type Integration = 'none' | 'raster' | 'css';
 export type Accent = 'none' | 'debug';
 
 export interface PoePanelProps {
@@ -30,7 +31,7 @@ export interface PoePanelProps {
   overhang?: number;
   /** Content inset from the box edge, in px at frameScale 1 (scales with frameScale); omit or negative = auto (= frame thickness). */
   contentPad?: number;
-  /** Shadow + specular that blend the frame into the page (raster-driven). */
+  /** Contact shadow blending the frame into the page: 'raster' (frame's cut PNG), 'css' (drop-shadow), 'none'. */
   integration?: Integration;
   accentTop?: Accent;
   accentRight?: Accent;
@@ -54,7 +55,7 @@ export function PoePanel({
   innerShadowColor,
   overhang,
   contentPad,
-  integration = 'auto',
+  integration = 'raster',
   accentTop = 'none',
   accentRight = 'none',
   accentBottom = 'none',

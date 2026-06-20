@@ -22,6 +22,7 @@
   --accent-scale: 1;                    /* per-accent (set inline per medallion; 1 = native px) */
   --inner-shadow-size: 16px;                /* inner-shadow blur radius */
   --inner-shadow-color: rgba(0, 0, 0, .55); /* inner-shadow colour incl. opacity (= intensity) */
+  --css-shadow: 0 2px 6px rgba(0, 0, 0, .55); /* integration='css' drop-shadow (x y blur colour) */
   --overhang: calc(var(--band) * var(--frame-scale) / 2);    /* frame spill past the box edge — tracks scale */
   --content-pad: calc(var(--band) * var(--frame-scale));     /* content inset — defaults to frame thickness ×
                                            scale so content clears the (scaled) frame; per-frame/instance overridable */
@@ -50,7 +51,7 @@
    Rasters trimmed to the frame's outer edge ⇒ overhang 0 (frame outer edge = box edge); thin continuous
    edges ⇒ stretch. basic-panel-a: the Combat Log panel (button inpainted out). basic-panel-b: the wide
    Contribution Health panel (traced as separate corner+edge contours; small corners ⇒ slice 24). */
-.poe-panel[data-frame='basic-panel-a'] { --band: 44px; --slice: 44; --content-pad: calc(16px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px; --integration-overhang: 16px;
+.poe-panel[data-frame='basic-panel-a'] { --band: 44px; --slice: 44; --content-pad: calc(16px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px; --integration-spill: 16px;
   --src-frame: url('../assets/panels/panel-basic-panel-a.png'); --src-integration-shadow: url('../assets/panels/panel-basic-panel-a-integration-shadow.png'); --src-integration-specular: none; }
 .poe-panel[data-frame='basic-panel-b'] { --band: 34px; --slice: 34; --content-pad: calc(12px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px;
   --src-frame: url('../assets/panels/panel-basic-panel-b.png'); --src-integration-shadow: none; --src-integration-specular: none; }
@@ -71,8 +72,11 @@
 }
 .poe-panel__frame                { z-index: 6; border-image-source: var(--src-frame); }
 .poe-panel__integration-specular { z-index: 4; border-image-source: var(--src-integration-specular); mix-blend-mode: screen; }
-/* integration sits OUTSIDE the frame — its own (larger) outset pushes the contact shadow past the frame edge. */
-.poe-panel__integration-shadow   { z-index: 3; border-image-source: var(--src-integration-shadow); opacity: .8; border-image-outset: var(--integration-overhang, var(--overhang)); }
+/* integration shares the frame's slice/band, but SPILLS past the frame as decoration: its outset =
+   overhang + --integration-spill (how far it was traced beyond the frame). Same slice/band + uniform extra
+   outset keeps it locked to the frame; the frame's own geometry is untouched. */
+.poe-panel__integration-shadow   { z-index: 3; border-image-source: var(--src-integration-shadow); opacity: .8;
+  border-image-outset: calc(var(--overhang) + var(--integration-spill, 0px)); }
 
 .poe-panel__content {
   position: relative; z-index: 5;        /* in normal flow → drives the panel's auto height */
@@ -110,8 +114,11 @@
    surface/integration/frame choice onto every child panel — e.g. an outer surface or integration='none'
    would override all nested panels). Every layer is a direct child of its panel root, so > is exact. */
 .poe-panel[data-frame='none']       > .poe-panel__frame                { display: none; }
-.poe-panel[data-integration='none'] > .poe-panel__integration-shadow,
-.poe-panel[data-integration='none'] > .poe-panel__integration-specular { display: none; }
+/* INTEGRATION (component-user choice): raster = the frame's cut PNGs; css = a drop-shadow on the frame
+   silhouette (any frame, no asset); none = off. Raster layers show ONLY in raster mode. */
+.poe-panel:not([data-integration='raster']) > .poe-panel__integration-shadow,
+.poe-panel:not([data-integration='raster']) > .poe-panel__integration-specular { display: none; }
+.poe-panel[data-integration='css']  > .poe-panel__frame { filter: drop-shadow(var(--css-shadow)); }
 .poe-panel[data-surface='none']     > .poe-panel__surface,
 .poe-panel[data-surface='none']     > .poe-panel__inner-shadow         { display: none; }
 

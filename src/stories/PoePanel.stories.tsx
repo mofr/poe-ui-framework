@@ -69,9 +69,10 @@ export const Debug = {
         <Cell innerShadowColor="rgba(0,0,0,0.9)" label="black 0.9" />
       </Section>
 
-      <Section title="INTEGRATION — the frame's bundled contact-shadow/specular (auto = render it, none = hide it)">
-        <Cell integration="auto" label="integration auto" />
-        <Cell integration="none" label="integration none" />
+      <Section title="INTEGRATION — contact shadow; component-user choice: raster (cut PNG) · css (drop-shadow) · none">
+        <Cell frame="basic-panel-a" surface="ref-panel" integration="raster" label="integration raster" />
+        <Cell frame="basic-panel-a" surface="ref-panel" integration="css" label="integration css" />
+        <Cell frame="basic-panel-a" surface="ref-panel" integration="none" label="integration none" />
       </Section>
 
       <Section title="ACCENTS — centre-edge medallions, per edge; each has its own scale (1 = native). Plus resize.">
@@ -102,9 +103,9 @@ export const Gallery = {
         label="gpt-panel-b · leather">{questContent}</Cell>
       <Cell color="#cbb" w={620} h={420} frame="gpt-panel-a" integration="none" surface="gpt-stone-1"
         label="gpt-panel-a · stone (large)">{questContent}</Cell>
-      <Cell color="#cbb" w={454} h={306} frame="basic-panel-a" integration="auto" surface="ref-panel"
+      <Cell color="#cbb" w={454} h={306} frame="basic-panel-a" integration="raster" surface="ref-panel"
         label="basic-panel-a · combat log (native)">{questContent}</Cell>
-      <Cell color="#cbb" w={600} h={150} frame="basic-panel-b" integration="auto" surface="ref-panel"
+      <Cell color="#cbb" w={600} h={150} frame="basic-panel-b" integration="raster" surface="ref-panel"
         label="basic-panel-b · contribution health (wide)">{questContent}</Cell>
     </div>
   ),
@@ -127,7 +128,7 @@ export const Playground = {
     frame: 'debug-r8', frameScale: 1,
     surface: 'debug', surfaceScale: 1,
     innerShadowSize: 16, innerShadowColor: 'rgba(0, 0, 0, 0.55)',
-    integration: 'auto',
+    integration: 'raster',
     accentTop: 'none', accentRight: 'none', accentBottom: 'none', accentLeft: 'none',
     accentTopScale: 1, accentRightScale: 1, accentBottomScale: 1, accentLeftScale: 1,
     overhang: -1, contentPad: -1,
@@ -146,7 +147,7 @@ export const Playground = {
     surfaceScale: SCALE,
     innerShadowSize: { control: { type: 'range', min: 0, max: 60, step: 1 }, description: 'Inner-shadow blur radius (px).' },
     innerShadowColor: { control: 'color', description: 'Inner-shadow colour incl. opacity (opacity = intensity).' },
-    integration: { control: 'inline-radio', options: ['none', 'auto'] },
+    integration: { control: 'inline-radio', options: ['none', 'raster', 'css'] },
     accentTop: ACCENT, accentRight: ACCENT, accentBottom: ACCENT, accentLeft: ACCENT,
     accentTopScale: SCALE, accentRightScale: SCALE, accentBottomScale: SCALE, accentLeftScale: SCALE,
     overhang: { control: { type: 'range', min: -1, max: 80, step: 1 }, description: '-1 = auto (half the scaled band). Frame spill past the box edge.' },

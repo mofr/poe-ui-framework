@@ -1,7 +1,10 @@
-// Cut a PANEL mask into ALIGNED layers: the FRAME (op:keep, minus op:hole) and the INTEGRATION
-// (op:integration — contact shadow/specular). Both are cropped to the SAME union bbox so they line
-// up as PoePanel's shared 9-slice layers (--src-frame / --src-integration-shadow).
-//   node tools/cut-panel.mjs <maskName> [--src=cleaned-plate] [--feather=6] [--out-dir=src/assets/panels]
+// Cut a PANEL mask into two layers locked together: the FRAME (op:keep minus op:hole) and the INTEGRATION
+// (op:integration — a decorative contact shadow that SPILLS past the frame). The FRAME defines all geometry;
+// the integration is cut to the frame box grown by its own outward overshoot, then rendered with the SAME
+// slice/band but a larger outset (overhang + spill) so it stays locked to the frame while spilling outward.
+// Integration is NOT clipped by the frame — overlap is intentional (frame draws over it at runtime; the
+// integration is made semi-transparent so they mix).
+//   node tools/cut-panel.mjs <maskName> [--src=cleaned-plate] [--feather=N] [--out-dir=src/assets/panels]
 import { readFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -17,24 +20,35 @@ const mask = JSON.parse(await readFile(resolve(ROOT, 'tools/masks', `${name}.jso
 const srcPath = resolve(ROOT, opt.src || mask.image);
 const { width: W, height: H } = await sharp(srcPath).metadata();
 const all = mask.contours || [];
-const feather = Number(opt.feather ?? 6);
+const fade = Number(opt.fade ?? 2);   // integration OUTER-edge fade distance (source px); interior stays solid
 const outDir = resolve(ROOT, opt['out-dir'] || 'src/assets/panels');
 
 const has = op => all.some(c => (c.op || 'keep') === op);
 
-// 1-channel alpha buffer for a set of contours (minus holes), optionally feathered.
-async function alphaOf(contours, blur) {
+// 1-channel alpha for a set of contours. `outerFade` softens ONLY the outer edge (interior stays fully
+// solid) via max(solid, blur) — a symmetric blur would thin the solid core, which we don't want. `cutHoles`
+// punches op:hole (the interior opening). BOTH frame and integration punch it: the frame is a border, and
+// the integration is the RING between the frame's outer border and its traced outline — its inner boundary
+// IS the frame, so subtracting the interior keeps the ring (which still sits under the frame band) and drops
+// the panel content. The user only traces the OUTER path; the inner edge comes from the frame for free.
+async function alphaOf(contours, outerFade, cutHoles = true) {
   const dKeep = buildPathD(contours, W, H);
   if (!dKeep) return null;
-  const dHole = buildPathD(all.filter(c => c.op === 'hole'), W, H);
+  const dHole = cutHoles ? buildPathD(all.filter(c => c.op === 'hole'), W, H) : '';
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><path d="${dKeep}" fill="#fff"/>${dHole ? `<path d="${dHole}" fill="#000"/>` : ''}</svg>`;
-  let m = sharp(Buffer.from(svg)).flatten({ background: '#000' }).greyscale().toColourspace('b-w');
-  if (blur > 0) m = m.blur(blur);
-  return m.raw().toBuffer();
+  const solid = await sharp(Buffer.from(svg)).flatten({ background: '#000' }).greyscale().toColourspace('b-w').raw().toBuffer();
+  if (outerFade <= 0) return solid;
+  const blurred = await sharp(solid, { raw: { width: W, height: H, channels: 1 } }).blur(outerFade).raw().toBuffer();
+  const out = Buffer.alloc(W * H);                  // max(solid, blur): keep the interior, fade only outward
+  for (let i = 0; i < out.length; i++) out[i] = Math.max(solid[i], blurred[i]);
+  return out;
 }
 
 const frameA = await alphaOf(all.filter(c => (c.op || 'keep') === 'keep'), 0);
-const integA = has('integration') ? await alphaOf(all.filter(c => c.op === 'integration'), feather) : null;
+// integration: the ring from the frame's outer border out to the traced outline — punch the interior hole
+// so it's just the ring (not the panel content), solid near the frame + soft OUTER fade (--fade). It still
+// extends under the frame band, so the frame draws over that overlap at runtime.
+const integA = has('integration') ? await alphaOf(all.filter(c => c.op === 'integration'), fade) : null;
 
 // `th` = min alpha (0–255) for a pixel to count as INSIDE the crop. A contour edge rarely lands on a pixel
 // boundary, so the boundary pixel is antialiased; th picks where we cut. 127 ≈ 50% coverage = round to the
@@ -46,11 +60,22 @@ function bboxOf(th, ...alphas) {
   }
   return { left: l, top: t, width: r - l + 1, height: b - t + 1 };
 }
-// FRAME = its own extent at the 50% contour → crisp 9-slice edge (no 1–2px AA fringe), stable overhang.
+// FRAME BOX = the frame alone. The frame defines ALL geometry (slice/band/overhang/padding); integration
+// never touches it. The integration is a SEPARATE decorative layer that visually SPILLS past the frame:
+// it's cut to the frame box grown by its own outward overshoot (so the spill survives the crop) and is
+// rendered with the same slice/band but a larger outset (= overhang + spill). Same slice/band + a uniform
+// outset offset keeps it locked to the frame — it can't drift, and the frame's numbers don't change.
 const frameBox = bboxOf(127, frameA);
-// INTEGRATION = union of frame+integration, kept at a LOW threshold so the FEATHERED contact shadow retains
-// its soft tail (a 50% crop would harden the fade). Shares the frame's top/left/width, extends lower.
-const integBox = integA ? bboxOf(20, frameA, integA) : null;
+const edges = a => { const b = bboxOf(20, a); return { left: b.left, top: b.top, right: b.left + b.width - 1, bottom: b.top + b.height - 1 }; };
+const fe = { left: frameBox.left, top: frameBox.top, right: frameBox.left + frameBox.width - 1, bottom: frameBox.top + frameBox.height - 1 };
+let integBox = null, spill = 0;
+if (integA) {
+  const ie = edges(integA);                          // how far integration reaches past the frame, any side
+  spill = Math.max(0, fe.left - ie.left, fe.top - ie.top, ie.right - fe.right, ie.bottom - fe.bottom);
+  const l = Math.max(0, fe.left - spill), t = Math.max(0, fe.top - spill);
+  const r = Math.min(W - 1, fe.right + spill), b = Math.min(H - 1, fe.bottom + spill);
+  integBox = { left: l, top: t, width: r - l + 1, height: b - t + 1 };
+}
 
 async function writeLayer(alpha, box, file) {
   const buf = await sharp(srcPath).resize(W, H).ensureAlpha()
@@ -63,5 +88,6 @@ await writeLayer(frameA, frameBox, `panel-${name}.png`);
 console.log(`frame  -> panels/panel-${name}.png  ${frameBox.width}x${frameBox.height}`);
 if (integA) {
   await writeLayer(integA, integBox, `panel-${name}-integration-shadow.png`);
-  console.log(`integ. -> panels/panel-${name}-integration-shadow.png  ${integBox.width}x${integBox.height} (feather ${feather})`);
+  console.log(`integ. -> panels/panel-${name}-integration-shadow.png  ${integBox.width}x${integBox.height} (fade ${fade})`);
+  console.log(`         spill ${spill}px past the frame → set --integration-spill: ${spill}px (outset = overhang + spill)`);
 }
