@@ -1,5 +1,7 @@
 {
   "name": "basic-panel-b",
+  "build": "assemble",
+  "out": "src/assets/panels/plain-dark-2.png",
   "image": "assets-staging/sources/ref-master-w1680.png",
   "contours": [
     {

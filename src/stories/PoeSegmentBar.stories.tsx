@@ -15,11 +15,11 @@ export default {
 
 export const Playground = {};
 
-export const Variants = {
+export const Gallery = {
   render: () => (
     <Stack gap={16}>
-      <div><Caption>blue — extracted rail + segment raster</Caption><PoeSegmentBar variant="blue" /></div>
-      <div><Caption>green — temporary recolour until its own mask exists</Caption><PoeSegmentBar variant="green" /></div>
+      <div><Caption>blue — extracted rail + fill raster</Caption><PoeSegmentBar variant="blue" /></div>
+      <div><Caption>green — baked recolour (own asset)</Caption><PoeSegmentBar variant="green" /></div>
       <div style={{ width: 240 }}><Caption>narrow — whole segments (background-repeat: round)</Caption><PoeSegmentBar variant="blue" /></div>
     </Stack>
   ),

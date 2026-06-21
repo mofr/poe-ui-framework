@@ -5,8 +5,10 @@
 // Integration is NOT clipped by the frame — overlap is intentional (frame draws over it at runtime; the
 // integration is made semi-transparent so they mix).
 //   node tools/cut-panel.mjs <maskName> [--src=cleaned-plate] [--feather=N] [--out-dir=src/assets/panels]
-import { readFile, writeFile } from 'node:fs/promises';
-import { resolve, dirname } from 'node:path';
+// Output paths come from the mask's `out` object: { "frame": "...", "integration": "..." } (repo-relative).
+// Falls back to the legacy panel-<name>.png convention in --out-dir when `out` is absent.
+import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { resolve, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { buildPathD } from './mask-editor/path.mjs';
@@ -22,6 +24,7 @@ const { width: W, height: H } = await sharp(srcPath).metadata();
 const all = mask.contours || [];
 const fade = Number(opt.fade ?? 2);   // integration OUTER-edge fade distance (source px); interior stays solid
 const outDir = resolve(ROOT, opt['out-dir'] || 'src/assets/panels');
+const out = (mask.out && typeof mask.out === 'object') ? mask.out : {};
 
 const has = op => all.some(c => (c.op || 'keep') === op);
 
@@ -77,27 +80,35 @@ if (integA) {
   integBox = { left: l, top: t, width: r - l + 1, height: b - t + 1 };
 }
 
-async function writeLayer(alpha, box, file) {
+async function writeLayer(alpha, box, dest) {
   const buf = await sharp(srcPath).resize(W, H).ensureAlpha()
     .joinChannel(alpha, { raw: { width: W, height: H, channels: 1 } })
     .extract(box).png().toBuffer();
-  await sharp(buf).toFile(resolve(outDir, file));
+  await mkdir(dirname(dest), { recursive: true });
+  await sharp(buf).toFile(dest);
 }
 
-await writeLayer(frameA, frameBox, `panel-${name}.png`);
-console.log(`frame  -> panels/panel-${name}.png  ${frameBox.width}x${frameBox.height}`);
+// Output paths: the mask's explicit `out.frame`/`out.integration`, else the legacy panel-<name>.png in
+// --out-dir. The frame's basename is the data-frame id used to patch --integration-spill into the CSS.
+const framePath = out.frame ? resolve(ROOT, out.frame) : resolve(outDir, `panel-${name}.png`);
+const integPath = out.integration ? resolve(ROOT, out.integration) : resolve(outDir, `panel-${name}-integration-shadow.png`);
+const frameId = basename(framePath, '.png');
+const rel = p => p.replace(ROOT + '/', '');
+
+await writeLayer(frameA, frameBox, framePath);
+console.log(`frame  -> ${rel(framePath)}  ${frameBox.width}x${frameBox.height}`);
 if (integA) {
-  await writeLayer(integA, integBox, `panel-${name}-integration-shadow.png`);
-  console.log(`integ. -> panels/panel-${name}-integration-shadow.png  ${integBox.width}x${integBox.height} (fade ${fade})`);
+  await writeLayer(integA, integBox, integPath);
+  console.log(`integ. -> ${rel(integPath)}  ${integBox.width}x${integBox.height} (fade ${fade})`);
   // Write the derived spill straight into the matching CSS rule — no manual copy. Best-effort: only if the
-  // [data-frame='<name>'] rule already declares --integration-spill (so it's a wired frame).
+  // [data-frame='<frameId>'] rule already declares --integration-spill (so it's a wired frame).
   const cssPath = resolve(ROOT, 'src/styles/poe-panel.css');
   const css = await readFile(cssPath, 'utf8');
-  const re = new RegExp(`(\\[data-frame='${name}'\\][^\\n]*--integration-spill:\\s*)\\d+px`);
+  const re = new RegExp(`(\\[data-frame='${frameId}'\\][^\\n]*--integration-spill:\\s*)\\d+px`);
   if (re.test(css)) {
     await writeFile(cssPath, css.replace(re, `$1${spill}px`));
     console.log(`         --integration-spill: ${spill}px → patched into poe-panel.css`);
   } else {
-    console.log(`         spill ${spill}px → add --integration-spill: ${spill}px to the [data-frame='${name}'] rule`);
+    console.log(`         spill ${spill}px → add --integration-spill: ${spill}px to the [data-frame='${frameId}'] rule`);
   }
 }

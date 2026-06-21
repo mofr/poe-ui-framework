@@ -1,12 +1,12 @@
 import React from 'react';
 
-// Segmented progress bar: a 9-slice raster rail + the raster segment repeated with
-// `background-repeat: round` (natural integer count, any width). `variant` picks the rail+segment
-// raster set ('blue' is extracted; 'green' is a temporary recolour until its own mask exists).
-// `pad` (px) controls the gap between segments and the rail.
+// Segmented progress bar: a 9-slice raster rail (shared) + the per-variant fill repeated with
+// `background-repeat: round` (natural integer count, any width). `variant` picks the fill raster;
+// `blue` is extracted, `green` is a baked recolour shipped as its own asset. `pad` (px) is the gap
+// between the fill and the rail.
 export interface PoeSegmentBarProps {
   variant?: 'blue' | 'green';
-  /** Gap (px) between segments and the rail. */
+  /** Gap (px) between the fill and the rail. */
   pad?: number;
   className?: string;
 }

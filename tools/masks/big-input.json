@@ -1,5 +1,8 @@
 {
   "name": "big-input",
+  "out": {
+    "frame outline": "src/assets/inputs/frame.png"
+  },
   "image": "assets-staging/sources/ref-master-w1680.png",
   "contours": [
     {

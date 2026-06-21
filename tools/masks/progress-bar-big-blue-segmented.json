@@ -1,5 +1,9 @@
 {
   "name": "progress-bar-big-blue-segmented",
+  "out": {
+    "frame": "src/assets/segment-bar/rail.png",
+    "segment 1": "src/assets/segment-bar/fill-blue.png"
+  },
   "image": "assets-staging/sources/ref-master-w1680.png",
   "contours": [
     {

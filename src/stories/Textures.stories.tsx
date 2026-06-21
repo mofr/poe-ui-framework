@@ -3,8 +3,8 @@ import React from 'react';
 export default { title: 'Foundations/Textures', parameters: { layout: 'fullscreen' } };
 
 const TEXTURES = [
-  ['Stone (surface-gpt-stone-1)', '/src/assets/backgrounds/surface-gpt-stone-1.png'],
-  ['Leather (surface-gpt-stone-2)', '/src/assets/backgrounds/surface-gpt-stone-2.png'],
+  ['cracked-stone-1', '/src/assets/backgrounds/cracked-stone-1.png'],
+  ['worn-leather-1', '/src/assets/backgrounds/worn-leather-1.png'],
 ];
 
 // Each swatch tiles the texture at a fixed pixel scale (matches how panel bodies use it),

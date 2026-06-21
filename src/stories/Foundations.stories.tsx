@@ -32,12 +32,12 @@ export const Inputs = {
   render: () => (
     <Stack gap={20}>
       <div style={{ maxWidth: 520 }}>
-        <Caption>Large search — ornate 9-slice frame (extracted big-input) · .poe-search--ornate</Caption>
-        <input className="poe-search poe-search--ornate" placeholder="Search or jump to..." />
+        <Caption>Large input — ornate 9-slice frame (inputs/frame.png) · .poe-input--ornate</Caption>
+        <input className="poe-input poe-input--ornate" placeholder="Search or jump to..." />
       </div>
       <div style={{ maxWidth: 520 }}>
-        <Caption>Plain search · .poe-search</Caption>
-        <input className="poe-search" placeholder="Search modifiers, tags, item classes..." />
+        <Caption>Plain input · .poe-input</Caption>
+        <input className="poe-input" placeholder="Search modifiers, tags, item classes..." />
       </div>
     </Stack>
   ),

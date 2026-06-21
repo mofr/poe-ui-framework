@@ -1,5 +1,9 @@
 {
   "name": "basic-panel-a",
+  "out": {
+    "frame": "src/assets/panels/plain-dark-1.png",
+    "integration": "src/assets/panels/plain-dark-1-integration-shadow.png"
+  },
   "image": "assets-staging/sources/ref-master-w1680.png",
   "build": "panel",
   "comment": "Combat Log panel: frame (keep−hole, button inpainted) + integration ring (outline−hole, outward fade).",

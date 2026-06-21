@@ -1,13 +1,22 @@
 import React from 'react';
 import '../src/styles/poe-core.css';
 import grid from '../src/assets/backgrounds/blueprint-grid.png';
-import refStone from '../src/assets/backgrounds/stone-lowfreq.png';
-import pageStone from '../src/assets/backgrounds/page-stone-tile.png';  // canonical page stone (also the page-stone surface)
-import pageStone2 from '../src/assets/backgrounds/page-stone-2-tile.png';  // x2 super-res variant (page-stone-2 surface)
+import crackedStone1 from '../src/assets/backgrounds/cracked-stone-1.png';
+import wornLeather1 from '../src/assets/backgrounds/worn-leather-1.png';
+import solidBlack1 from '../src/assets/backgrounds/solid-black-1.png';
+import matteStone1 from '../src/assets/backgrounds/matte-stone-1.png';
+import matteStone2 from '../src/assets/backgrounds/matte-stone-2.png';
+import smoothSlate1 from '../src/assets/backgrounds/smooth-slate-1.png';
+import matteStoneSoft from '../src/assets/backgrounds/matte-stone-soft.png';
 
-// Swappable review backdrops, chosen from the toolbar "Background" dropdown (globalTypes.bg below).
-// A story can set its own default via parameters.bg; the toolbar overrides it when set.
-const BACKGROUNDS = {
+// A tiled-surface backdrop — same file, tiled the same way PoePanel uses it as a surface.
+const tile = (url) => ({ backgroundColor: '#16110d', backgroundImage: `url(${url})`, backgroundSize: 'auto', backgroundRepeat: 'repeat' });
+
+// Review backdrops (toolbar "Backdrop" dropdown, globalTypes.bg). The surface keys are the EXACT
+// PoePanel surface names (data-surface / Surface type) so you can review components on the real textures;
+// the rest are abstract dev backdrops. A story can set parameters.bg; the toolbar overrides it.
+const BACKDROPS = {
+  none: {},
   blueprint: {
     backgroundColor: '#1a63ad',
     backgroundImage: `url(${grid}),
@@ -17,27 +26,15 @@ const BACKGROUNDS = {
     backgroundRepeat: 'repeat, no-repeat, no-repeat',
   },
   dark: { background: 'radial-gradient(circle at 50% 0%, #241a12 0, #0c0a08 70%)' },
-  stone: { background: '#2a2520' },
   plain: { background: '#15171b' },
-  // tileable stone extracted from the reference (tools/masks/backgrounds.json → make-bg-tiles.mjs)
-  refstone: {
-    backgroundColor: '#16110d',
-    backgroundImage: `url(${refStone})`,   // low-frequency colour field from the reference page stone
-    backgroundSize: 'cover',
-    backgroundRepeat: 'no-repeat',
-  },
-  pagestone: {                             // canonical page stone (same file as the page-stone surface) — 1:1, tiled
-    backgroundColor: '#16110d',
-    backgroundImage: `url(${pageStone})`,
-    backgroundSize: 'auto',
-    backgroundRepeat: 'repeat',
-  },
-  pagestone2: {                            // x2 super-res variant (page-stone-2 surface) — 1:1, tiled
-    backgroundColor: '#16110d',
-    backgroundImage: `url(${pageStone2})`,
-    backgroundSize: 'auto',
-    backgroundRepeat: 'repeat',
-  },
+  'cracked-stone-1': tile(crackedStone1),
+  'worn-leather-1': tile(wornLeather1),
+  'solid-black-1': tile(solidBlack1),
+  'matte-stone-1': tile(matteStone1),
+  'matte-stone-2': tile(matteStone2),
+  'smooth-slate-1': tile(smoothSlate1),
+  // low-frequency colour field (blurred matte-stone), stretched to cover
+  'matte-stone-soft': { backgroundColor: '#16110d', backgroundImage: `url(${matteStoneSoft})`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' },
 };
 
 /** @type { import('@storybook/react-vite').Preview } */
@@ -47,22 +44,29 @@ const preview = {
     controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
     a11y: { test: 'todo' },
     docs: { canvas: { className: 'poe-sb-canvas' } },
+    // Our "Backdrop" toolbar (below) is the single background control — disable Storybook's built-in
+    // Backgrounds so the two don't both switch the canvas background.
+    backgrounds: { disable: true },
   },
   globalTypes: {
     bg: {
       description: 'Review backdrop',
       toolbar: {
-        title: 'Background',
+        title: 'Backdrop',
         icon: 'photo',
         dynamicTitle: true,
         items: [
+          { value: 'none', title: 'None' },
           { value: 'blueprint', title: 'Blueprint' },
           { value: 'dark', title: 'Dark' },
-          { value: 'stone', title: 'Stone' },
-          { value: 'refstone', title: 'Ref stone' },
-          { value: 'pagestone', title: 'Page stone' },
-          { value: 'pagestone2', title: 'Page stone 2' },
           { value: 'plain', title: 'Plain' },
+          { value: 'cracked-stone-1', title: 'cracked-stone-1' },
+          { value: 'worn-leather-1', title: 'worn-leather-1' },
+          { value: 'solid-black-1', title: 'solid-black-1' },
+          { value: 'matte-stone-1', title: 'matte-stone-1' },
+          { value: 'matte-stone-2', title: 'matte-stone-2' },
+          { value: 'smooth-slate-1', title: 'smooth-slate-1' },
+          { value: 'matte-stone-soft', title: 'matte-stone-soft' },
         ],
       },
     },
@@ -73,7 +77,7 @@ const preview = {
     (Story, ctx) => {
       const key = ctx.globals.bg || ctx.parameters.bg || 'blueprint';
       return (
-        <div className="poe-app" style={{ minHeight: '100vh', padding: 80, ...BACKGROUNDS[key] }}>
+        <div className="poe-app" style={{ minHeight: '100vh', padding: 80, ...BACKDROPS[key] }}>
           <Story />
         </div>
       );

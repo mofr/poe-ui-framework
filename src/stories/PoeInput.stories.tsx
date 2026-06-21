@@ -7,20 +7,17 @@ export default {
   component: PoeInput,
 };
 
-export const Ornate = {
+export const Gallery = {
   render: () => (
-    <Stack style={{ maxWidth: 460 }}>
-      <PoeInput ornate placeholder="Search or jump to..." />
-      <Caption>Ornate — extracted 9-slice frame · .poe-search--ornate (used on the Reconstruction dashboard)</Caption>
-    </Stack>
-  ),
-};
-
-export const Plain = {
-  render: () => (
-    <Stack style={{ maxWidth: 460 }}>
-      <PoeInput placeholder="Search modifiers, tags, item classes..." />
-      <Caption>Plain inset field · .poe-search</Caption>
+    <Stack gap={20} style={{ maxWidth: 460 }}>
+      <div>
+        <PoeInput ornate placeholder="Search or jump to..." />
+        <Caption>ornate — extracted 9-slice frame · .poe-input--ornate (used on the Reconstruction dashboard)</Caption>
+      </div>
+      <div>
+        <PoeInput placeholder="Search modifiers, tags, item classes..." />
+        <Caption>plain inset field · .poe-input</Caption>
+      </div>
     </Stack>
   ),
 };

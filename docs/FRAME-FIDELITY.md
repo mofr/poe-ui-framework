@@ -751,3 +751,32 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   show `ref-panel` surface again (verified — clearly dark-on-stone now). Reconstruction render
   `asset-review/reference-reconstruction.png` reads cohesive: gapless outer frame + stone surface + ref-panel
   inner panels + small-caps gold headers + IM Fell titles + raster segments/buttons.
+- 2026-06-21: NAMING CLEANUP — surfaces/frames renamed to **appearance + number** (no provenance/source
+  words), synced across filename ↔ CSS `data-*` ↔ TS union ↔ Storybook. SURFACES: `gpt-stone-1`→`cracked-stone-1`,
+  `big-stone-2`→`smooth-slate-1`, `gpt-stone-2`→`worn-leather-1`, `ref-panel`→`solid-black-1`,
+  `page-stone`→`matte-stone-1`, `page-stone-2`→`matte-stone-2` (+ backdrop `stone-lowfreq.png`→`matte-stone-soft.png`).
+  FRAMES: `gpt-panel-a`→`jeweled-gold-1`, `gpt-panel-b`→`slim-gold-1`, `basic-panel-a`→`plain-dark-1`,
+  `basic-panel-b`→`plain-dark-2`, `page-frame`→`ruled-gold-1`. `debug-r*`/`none` kept (functional states).
+  Also `.poe-search`→`.poe-input`; PoeInput stories `Ornate`+`Plain`→one `Gallery`; PoeSegmentBar `Variants`→`Gallery`;
+  fixed `LayerContract` invalid `surface:'stone'`→`cracked-stone-1`. PNGs `git mv`'d; tools/masks/* names left as-is.
+- 2026-06-21: NAMING CLEANUP pt.2 — structure + components. (1) DIRS: moved non-panel art OUT of `panels/`
+  → `assets/inputs/frame.png` (was `input-frame.png`), `assets/segment-bar/` (was
+  `panels/progress-bar-blue`/`segment-blue`), `assets/buttons/ornate.png` (dropped redundant `button-`
+  prefix). All PoePanel debug scaffolding now lives in ONE dir `panels/debug/` (folded the old top-level
+  `assets/debug/` `debug-surface`/`debug-accent` in, under the owning component). (2) SEGMENT BAR: kept
+  `variant:'blue'|'green'` but `green` is now its OWN baked asset (`fill-green.png` = blue fill via sharp
+  `modulate{hue:-105,saturation:1.35}`); rail shared. No runtime recolour/hue prop. (3) BUTTON: variant
+  system kept (`variant:'ornate'`, the one implemented; `.poe-button--ornate`); dropped dead
+  `compact`/string-`variant` props; PoeButton stories → `Gallery`+`Playground` (click play-tests dropped,
+  covered by Gallery). (4) BACKDROP dropdown renamed toolbar `Background`→`Backdrop` and Storybook's
+  built-in Backgrounds disabled (`parameters.backgrounds.disable`) so there's a single control; items mirror
+  the surface names + all surfaces present (incl. `smooth-slate-1`) + a `None` option; dropped the bogus flat
+  `stone` colour. (5) MASKS left at their freeform semantic names (basic-panel-*, page-frame, big-input,
+  progress-bar-big-blue-segmented, buttons/list/text-labels) — they carry valuable tokens (`blue`=variant,
+  `panel`/`page`). (6) OUTPUT PATHS now stored IN each mask as an `out` field (string, or a contour-name→path
+  map), read by all four cutters (cut-panel/assemble-frame/cut-mask/make-bg-tiles; `--out`/`--out-dir` still
+  override, legacy `panel-<name>` is the fallback). Prefilled to the renamed assets: basic-panel-a→plain-dark-1
+  (+integration), basic-panel-b→plain-dark-2 (added `build:assemble`), page-frame→ruled-gold-1, big-input→
+  inputs/frame.png, buttons→buttons/ornate.png, progress-bar `frame`→segment-bar/rail.png + `segment 1`→
+  fill-blue.png, backgrounds `basic panel background`→solid-black-1.png. cut-panel also derives the
+  `[data-frame='…']` CSS-patch id from the frame's `out` basename.

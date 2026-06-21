@@ -1,5 +1,8 @@
 {
   "name": "backgrounds",
+  "out": {
+    "basic panel background": "src/assets/backgrounds/solid-black-1.png"
+  },
   "comment": "",
   "image": "assets-staging/sources/ref-master-w1680.png",
   "contours": [

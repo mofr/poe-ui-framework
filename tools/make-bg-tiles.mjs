@@ -3,7 +3,9 @@
 // traced clean material — never the bbox, which can spill into neighbouring UI), then mirror-tiles
 // (2×2 reflect) so it repeats with no seam. Output → src/assets/backgrounds/tile-<slug>.png.
 //   node tools/make-bg-tiles.mjs <maskName> [--src=clean-plate] [--inset=0.06] [--out=src/assets/backgrounds]
-import { readFile } from 'node:fs/promises';
+// The mask's `out` (object: contour name → path, repo-relative) routes each region; unmapped regions
+// fall back to tile-<slug>.png in --out.
+import { readFile, mkdir } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
@@ -17,6 +19,7 @@ const srcPath = resolve(ROOT, opt.src || mask.image);
 const { width: W, height: H } = await sharp(srcPath).metadata();
 const inset = Number(opt.inset ?? 0.06);
 const outDir = resolve(ROOT, opt.out || 'src/assets/backgrounds');
+const outMap = (mask.out && typeof mask.out === 'object') ? mask.out : null;
 const slug = s => (s || 'region').replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-+|-+$/g, '');
 
 // largest all-inside axis-aligned rectangle of a binary mask (histogram method)
@@ -63,6 +66,8 @@ for (const c of (mask.contours || []).filter(c => (c.op || 'keep') === 'keep')) 
       { input: await sharp(crop).flip().toBuffer(), left: 0, top: ch },
       { input: await sharp(crop).flip().flop().toBuffer(), left: cw, top: ch },
     ]).png().toBuffer();
-  await sharp(tile).toFile(resolve(outDir, `tile-${slug(c.name)}.png`));
-  console.log(`tile-${slug(c.name)}.png  ${cw * 2}x${ch * 2}  (inscribed ${box.width}x${box.height})`);
+  const dest = (outMap && outMap[c.name]) ? resolve(ROOT, outMap[c.name]) : resolve(outDir, `tile-${slug(c.name)}.png`);
+  await mkdir(dirname(dest), { recursive: true });
+  await sharp(tile).toFile(dest);
+  console.log(`${dest.replace(ROOT + '/', '')}  ${cw * 2}x${ch * 2}  (inscribed ${box.width}x${box.height})`);
 }

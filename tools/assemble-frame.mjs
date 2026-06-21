@@ -2,7 +2,8 @@
 // broken by unrelated elements (so a single cut has gaps). Corners are kept as real pixels at their
 // positions; each edge is rebuilt by taking the CLEANEST 1-px cross-section of its line and stretching
 // it across the edge's span at the same offset → a continuous line, no gap. Then trim + 9-slice as usual.
-//   node tools/assemble-frame.mjs <maskName> [--src=plate] [--out=src/assets/panels/panel-<name>.png]
+//   node tools/assemble-frame.mjs <maskName> [--src=plate] [--out=src/assets/panels/<name>.png]
+// Output path: --out, else the mask's `out` string (repo-relative), else the legacy panel-<name>.png.
 import { readFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -50,7 +51,7 @@ for (const c of keeps.filter(c => /^corner/i.test(c.name || ''))) {
   for (let y = bb.t; y <= bb.b; y++) for (let x = bb.l; x <= bb.r; x++) { const al = a[y * W + x]; if (al > 30) { const i = (y * W + x) * 4; const j = (y * W + x) * 4; out[j] = src[i]; out[j + 1] = src[i + 1]; out[j + 2] = src[i + 2]; out[j + 3] = Math.max(out[j + 3], al); } }
 }
 
-const outPath = resolve(ROOT, opt.out || `src/assets/panels/panel-${name}.png`);
+const outPath = resolve(ROOT, opt.out || (typeof mask.out === 'string' ? mask.out : '') || `src/assets/panels/panel-${name}.png`);
 const buf = await sharp(out, { raw: { width: W, height: H, channels: 4 } }).png().toBuffer();
 await sharp(buf).trim().toFile(outPath);
 const m = await sharp(outPath).metadata();

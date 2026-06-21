@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'storybook/test';
 import { PoePanel, type PoePanelProps } from '../components/primitives/PoePanel.tsx';
-// Backgrounds are global now: pick from the toolbar "Background" dropdown (.storybook/preview.jsx).
+// Backdrops are global now: pick from the toolbar "Backdrop" dropdown (.storybook/preview.jsx).
 // Per-story default via parameters.bg (e.g. Gallery → 'dark').
 
 export default {
@@ -53,14 +53,15 @@ export const Debug = {
         <Cell frame="none" integration="none" label="frame none" />
       </Section>
 
-      <Section title="SURFACE — interior fill (scale 1 = 1:1 native pixels). ref-panel + page-stone are what the Reconstruction dashboard uses.">
+      <Section title="SURFACE — interior fill (scale 1 = 1:1 native pixels). solid-black-1 + matte-stone-1 are what the Reconstruction dashboard uses.">
         <Cell surface="none" label="surface none" />
         <Cell surface="debug" label="surface debug" />
-        <Cell surface="gpt-stone-1" surfaceScale={0.2} label="gpt-stone-1 (scale 0.2)" />
-        <Cell surface="gpt-stone-2" surfaceScale={0.2} label="gpt-stone-2 (scale 0.2)" />
-        <Cell surface="ref-panel" label="ref-panel (dashboard inner panels)" />
-        <Cell surface="page-stone" surfaceScale={0.3} label="page-stone (dashboard page)" />
-        <Cell surface="big-stone-2" surfaceScale={0.3} label="big-stone-2 (new)" />
+        <Cell surface="cracked-stone-1" surfaceScale={0.2} label="cracked-stone-1 (scale 0.2)" />
+        <Cell surface="worn-leather-1" surfaceScale={0.2} label="worn-leather-1 (scale 0.2)" />
+        <Cell surface="solid-black-1" label="solid-black-1 (dashboard inner panels)" />
+        <Cell surface="matte-stone-1" surfaceScale={0.3} label="matte-stone-1 (dashboard page)" />
+        <Cell surface="matte-stone-2" surfaceScale={0.3} label="matte-stone-2 (crisper super-res)" />
+        <Cell surface="smooth-slate-1" surfaceScale={0.3} label="smooth-slate-1" />
       </Section>
 
       <Section title="INNER SHADOW — colour incl. opacity (transparent = none)">
@@ -70,9 +71,9 @@ export const Debug = {
       </Section>
 
       <Section title="INTEGRATION — contact shadow; component-user choice: raster (cut PNG) · css (drop-shadow) · none">
-        <Cell frame="basic-panel-a" surface="ref-panel" integration="raster" label="integration raster" />
-        <Cell frame="basic-panel-a" surface="ref-panel" integration="css" label="integration css" />
-        <Cell frame="basic-panel-a" surface="ref-panel" integration="none" label="integration none" />
+        <Cell frame="plain-dark-1" surface="solid-black-1" integration="raster" label="integration raster" />
+        <Cell frame="plain-dark-1" surface="solid-black-1" integration="css" label="integration css" />
+        <Cell frame="plain-dark-1" surface="solid-black-1" integration="none" label="integration none" />
       </Section>
 
       <Section title="ACCENTS — centre-edge medallions, per edge; each has its own scale (1 = native). Plus resize.">
@@ -83,7 +84,7 @@ export const Debug = {
       </Section>
 
       <Section title="With content — sits in the surface, inset by padding">
-        <Cell w={320} h={240} surface="gpt-stone-2" surfaceScale={0.2} label="content slot">{questContent}</Cell>
+        <Cell w={320} h={240} surface="worn-leather-1" surfaceScale={0.2} label="content slot">{questContent}</Cell>
       </Section>
     </>
   ),
@@ -96,17 +97,19 @@ export const Gallery = {
   parameters: { bg: 'dark' },
   render: () => (
     <div style={{ display: 'flex', gap: 70, flexWrap: 'wrap', alignItems: 'flex-start' }}>
-      <Cell color="#cbb" w={320} h={230} label="default state">{questContent}</Cell>
-      <Cell color="#cbb" w={360} h={250} frame="gpt-panel-b" integration="none" surface="gpt-stone-1"
-        label="gpt-panel-b · stone">{questContent}</Cell>
-      <Cell color="#cbb" w={360} h={250} frame="gpt-panel-b" integration="none" surface="gpt-stone-2"
-        label="gpt-panel-b · leather">{questContent}</Cell>
-      <Cell color="#cbb" w={620} h={420} frame="gpt-panel-a" integration="none" surface="gpt-stone-1"
-        label="gpt-panel-a · stone (large)">{questContent}</Cell>
-      <Cell color="#cbb" w={454} h={306} frame="basic-panel-a" integration="raster" surface="ref-panel"
-        label="basic-panel-a · combat log (native)">{questContent}</Cell>
-      <Cell color="#cbb" w={600} h={150} frame="basic-panel-b" integration="raster" surface="ref-panel"
-        label="basic-panel-b · contribution health (wide)">{questContent}</Cell>
+      <Cell color="#cbb" w={320} h={230} label="default state (debug-r8 · debug)">{questContent}</Cell>
+      <Cell color="#cbb" w={620} h={420} frame="jeweled-gold-1" integration="none" surface="cracked-stone-1"
+        label="jeweled-gold-1 · cracked-stone-1 (large)">{questContent}</Cell>
+      <Cell color="#cbb" w={360} h={250} frame="slim-gold-1" integration="none" surface="worn-leather-1"
+        label="slim-gold-1 · worn-leather-1">{questContent}</Cell>
+      <Cell color="#cbb" w={360} h={250} frame="slim-gold-1" integration="none" surface="smooth-slate-1"
+        label="slim-gold-1 · smooth-slate-1">{questContent}</Cell>
+      <Cell color="#cbb" w={454} h={306} frame="plain-dark-1" integration="raster" surface="solid-black-1"
+        label="plain-dark-1 · solid-black-1 (combat log)">{questContent}</Cell>
+      <Cell color="#cbb" w={600} h={150} frame="plain-dark-2" integration="raster" surface="matte-stone-1"
+        label="plain-dark-2 · matte-stone-1 (wide)">{questContent}</Cell>
+      <Cell color="#cbb" w={820} h={420} frame="ruled-gold-1" integration="none" surface="matte-stone-2"
+        label="ruled-gold-1 · matte-stone-2 (page frame)">{questContent}</Cell>
     </div>
   ),
 };
@@ -139,11 +142,11 @@ export const Playground = {
   argTypes: {
     frame: {
       control: 'select',
-      options: ['none', 'debug-r0', 'debug-r4', 'debug-r8', 'debug-r24', 'gpt-panel-a', 'gpt-panel-b', 'basic-panel-a', 'basic-panel-b', 'page-frame'],
+      options: ['none', 'debug-r0', 'debug-r4', 'debug-r8', 'debug-r24', 'jeweled-gold-1', 'slim-gold-1', 'plain-dark-1', 'plain-dark-2', 'ruled-gold-1'],
       description: 'Real 1:1 frames render best when width/height stay near their native proportions.',
     },
     frameScale: SCALE,
-    surface: { control: 'inline-radio', options: ['none', 'debug', 'gpt-stone-1', 'gpt-stone-2', 'ref-panel', 'page-stone', 'big-stone-2'] },
+    surface: { control: 'inline-radio', options: ['none', 'debug', 'cracked-stone-1', 'worn-leather-1', 'solid-black-1', 'matte-stone-1', 'matte-stone-2', 'smooth-slate-1'] },
     surfaceScale: SCALE,
     innerShadowSize: { control: { type: 'range', min: 0, max: 60, step: 1 }, description: 'Inner-shadow blur radius (px).' },
     innerShadowColor: { control: 'color', description: 'Inner-shadow colour incl. opacity (opacity = intensity).' },
@@ -183,13 +186,13 @@ export const Playground = {
 // ============================================================================================
 export const LayerContract = {
   tags: ['!dev'],
-  args: { frame: 'gpt-panel-b', surface: 'stone', integration: 'none', accentTop: 'debug', accentBottom: 'debug' },
+  args: { frame: 'slim-gold-1', surface: 'cracked-stone-1', integration: 'none', accentTop: 'debug', accentBottom: 'debug' },
   render: (args) => <PoePanel {...args} style={{ width: 300, height: 200 }}>Body</PoePanel>,
   play: async ({ canvasElement }) => {
     const panel = canvasElement.querySelector('.poe-panel');
     await expect(panel).not.toBeNull();
-    await expect(panel).toHaveAttribute('data-frame', 'gpt-panel-b');
-    await expect(panel).toHaveAttribute('data-surface', 'stone');
+    await expect(panel).toHaveAttribute('data-frame', 'slim-gold-1');
+    await expect(panel).toHaveAttribute('data-surface', 'cracked-stone-1');
     await expect(panel).toHaveAttribute('data-integration', 'none');
 
     for (const layer of ['surface', 'inner-shadow', 'integration-shadow', 'integration-specular', 'content', 'frame']) {
