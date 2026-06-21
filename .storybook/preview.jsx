@@ -2,7 +2,7 @@ import React from 'react';
 import '../src/styles/poe-core.css';
 import grid from '../src/assets/backgrounds/blueprint-grid.png';
 import refStone from '../src/assets/backgrounds/stone-lowfreq.png';
-import userStone from '../src/assets/backgrounds/page-stone-tile.png';  // canonical page stone (also the page-stone surface)
+import pageStone from '../src/assets/backgrounds/page-stone-tile.png';  // canonical page stone (also the page-stone surface)
 
 // Swappable review backdrops, chosen from the toolbar "Background" dropdown (globalTypes.bg below).
 // A story can set its own default via parameters.bg; the toolbar overrides it when set.
@@ -25,9 +25,9 @@ const BACKGROUNDS = {
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
   },
-  userstone: {                             // user-made page background (ChatGPT) — 1:1, tiled (no stretch)
+  pagestone: {                             // canonical page stone (same file as the page-stone surface) — 1:1, tiled
     backgroundColor: '#16110d',
-    backgroundImage: `url(${userStone})`,
+    backgroundImage: `url(${pageStone})`,
     backgroundSize: 'auto',
     backgroundRepeat: 'repeat',
   },
@@ -53,7 +53,7 @@ const preview = {
           { value: 'dark', title: 'Dark' },
           { value: 'stone', title: 'Stone' },
           { value: 'refstone', title: 'Ref stone' },
-          { value: 'userstone', title: 'User stone' },
+          { value: 'pagestone', title: 'Page stone' },
           { value: 'plain', title: 'Plain' },
         ],
       },
