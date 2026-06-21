@@ -8,3 +8,11 @@ dist/
 storybook-static
 .env
 assets-staging/
+
+# Harness: ephemeral state ignored; shared .claude/settings.json stays tracked
+.superpowers/
+.claude/settings.local.json
+
+# asset-review is local scratch; only the README is tracked
+asset-review/*
+!asset-review/README.md
