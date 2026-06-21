@@ -10,17 +10,20 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const [inArg, outArg] = process.argv.slice(2).filter(a => !a.startsWith('--'));
 if (!inArg || !outArg) { console.error('usage: node tools/make-seamless.mjs <in.png> <out.png> [--heal=] [--blur=]'); process.exit(1); }
 const opt = Object.fromEntries(process.argv.slice(2).filter(a => a.startsWith('--')).map(a => a.replace(/^--/, '').split('=')));
-const heal = Number(opt.heal ?? 40);   // half-width of the healed band along the central cross (px)
-const blur = Number(opt.blur ?? 12);   // blur sigma used to dissolve the seam
+const heal = Number(opt.heal ?? 50);   // half-width of the healed band along the central cross (px)
+const blur = Number(opt.blur ?? 28);   // blur sigma used to dissolve the seam
 
 const src = sharp(resolve(ROOT, inArg)).removeAlpha();
 const { width: W, height: H } = await src.metadata();
 const base = await src.png().toBuffer();
 
-// circular shift by (W/2, H/2): tile 2×2, extract the centre WxH at the half-offset.
-const shifted = await sharp({ create: { width: 2 * W, height: 2 * H, channels: 3, background: '#000' } })
+// circular shift by (W/2, H/2): tile 2×2, then extract the centre WxH at the half-offset. NOTE: the
+// extract MUST be a separate sharp() call — chaining .composite().extract() leaves extract a no-op.
+const tiled = await sharp({ create: { width: 2 * W, height: 2 * H, channels: 3, background: '#000' } })
   .composite([{ input: base, left: 0, top: 0 }, { input: base, left: W, top: 0 },
               { input: base, left: 0, top: H }, { input: base, left: W, top: H }])
+  .png().toBuffer();
+const shifted = await sharp(tiled)
   .extract({ left: Math.round(W / 2), top: Math.round(H / 2), width: W, height: H })
   .png().toBuffer();
 
