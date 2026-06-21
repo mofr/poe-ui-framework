@@ -34,8 +34,15 @@ const mask = await sharp(Buffer.from(
   + `<rect x="0" y="${H / 2 - heal}" width="${W}" height="${2 * heal}" fill="#fff"/></svg>`))
   .blur(heal / 2).greyscale().toColourspace('b-w').raw().toBuffer();
 
-// healed = blurred copy showing only through the cross mask (mask = the alpha channel), over the shifted tile.
-const blurred = await sharp(shifted).blur(blur).png().toBuffer();
-const healed = await sharp(blurred).joinChannel(mask, { raw: { width: W, height: H, channels: 1 } }).png().toBuffer();
-await sharp(shifted).composite([{ input: healed }]).png().toFile(resolve(ROOT, outArg));
+// Blend shifted ↔ its blurred self by the mask, in RAW pixels — only the cross band is softened, the rest
+// stays at full detail. (Done by hand because sharp's joinChannel-as-alpha left alpha opaque and blurred
+// the WHOLE image — a uniformly-blurred tile still measures "seamless", so the bug hid in plain sight.)
+const sBuf = await sharp(shifted).removeAlpha().raw().toBuffer();
+const bBuf = await sharp(shifted).blur(blur).removeAlpha().raw().toBuffer();
+const out = Buffer.alloc(W * H * 3);
+for (let p = 0; p < W * H; p++) {
+  const a = mask[p] / 255;                                   // 0 = keep sharp, 1 = fully blurred (cross centre)
+  for (let c = 0; c < 3; c++) { const i = p * 3 + c; out[i] = Math.round(sBuf[i] * (1 - a) + bBuf[i] * a); }
+}
+await sharp(out, { raw: { width: W, height: H, channels: 3 } }).png().toFile(resolve(ROOT, outArg));
 console.log(`seamless ${W}x${H} (heal ${heal}, blur ${blur}) -> ${outArg}`);

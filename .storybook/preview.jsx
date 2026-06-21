@@ -2,7 +2,7 @@ import React from 'react';
 import '../src/styles/poe-core.css';
 import grid from '../src/assets/backgrounds/blueprint-grid.png';
 import refStone from '../src/assets/backgrounds/stone-lowfreq.png';
-import userStone from '../src/assets/backgrounds/page-bg-user.png';
+import userStone from '../src/assets/backgrounds/page-stone-tile.png';  // canonical page stone (also the page-stone surface)
 
 // Swappable review backdrops, chosen from the toolbar "Background" dropdown (globalTypes.bg below).
 // A story can set its own default via parameters.bg; the toolbar overrides it when set.
