@@ -6,7 +6,7 @@ import '../../styles/poe-panel.css';
 // every layer is decoration (absolute, inset:0, out of flow). All `*Scale` knobs are 1 = native px (1:1).
 
 export type Frame = 'none' | 'debug-r0' | 'debug-r4' | 'debug-r8' | 'debug-r24' | 'gpt-panel-a' | 'gpt-panel-b' | 'basic-panel-a' | 'basic-panel-b' | 'page-frame';
-export type Surface = 'none' | 'debug' | 'gpt-stone-1' | 'gpt-stone-2' | 'ref-panel' | 'page-stone' | 'big-stone-2';
+export type Surface = 'none' | 'debug' | 'gpt-stone-1' | 'gpt-stone-2' | 'ref-panel' | 'page-stone' | 'page-stone-2' | 'big-stone-2';
 // Integration = the contact shadow blending the frame into the page. Chosen by the component user, because
 // not every frame ships a clean cut: 'raster' = the frame's own integration PNG (when it has one); 'css' =
 // a drop-shadow following the frame silhouette (works for any frame, no asset); 'none' = off.

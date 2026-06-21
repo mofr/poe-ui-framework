@@ -3,6 +3,7 @@ import '../src/styles/poe-core.css';
 import grid from '../src/assets/backgrounds/blueprint-grid.png';
 import refStone from '../src/assets/backgrounds/stone-lowfreq.png';
 import pageStone from '../src/assets/backgrounds/page-stone-tile.png';  // canonical page stone (also the page-stone surface)
+import pageStone2 from '../src/assets/backgrounds/page-stone-2-tile.png';  // x2 super-res variant (page-stone-2 surface)
 
 // Swappable review backdrops, chosen from the toolbar "Background" dropdown (globalTypes.bg below).
 // A story can set its own default via parameters.bg; the toolbar overrides it when set.
@@ -31,6 +32,12 @@ const BACKGROUNDS = {
     backgroundSize: 'auto',
     backgroundRepeat: 'repeat',
   },
+  pagestone2: {                            // x2 super-res variant (page-stone-2 surface) — 1:1, tiled
+    backgroundColor: '#16110d',
+    backgroundImage: `url(${pageStone2})`,
+    backgroundSize: 'auto',
+    backgroundRepeat: 'repeat',
+  },
 };
 
 /** @type { import('@storybook/react-vite').Preview } */
@@ -54,6 +61,7 @@ const preview = {
           { value: 'stone', title: 'Stone' },
           { value: 'refstone', title: 'Ref stone' },
           { value: 'pagestone', title: 'Page stone' },
+          { value: 'pagestone2', title: 'Page stone 2' },
           { value: 'plain', title: 'Plain' },
         ],
       },

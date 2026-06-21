@@ -133,5 +133,7 @@
 .poe-panel[data-surface='ref-panel'] > .poe-panel__surface { background: url('../assets/backgrounds/tile-basic-panel-background.png') center / calc(431px * var(--surface-scale)) repeat; }
 /* page-stone — the page background (user ChatGPT stone, gradient flattened so it tiles cleanly), 1:1. */
 .poe-panel[data-surface='page-stone'] > .poe-panel__surface { background: url('../assets/backgrounds/page-stone-tile.png') 0 0 / calc(1254px * var(--surface-scale)) repeat; }
+/* page-stone-2 — same stone, x2 super-res then resampled to native (crisper grain), tiled the same way. */
+.poe-panel[data-surface='page-stone-2'] > .poe-panel__surface { background: url('../assets/backgrounds/page-stone-2-tile.png') 0 0 / calc(1254px * var(--surface-scale)) repeat; }
 /* big-stone-2 — user texture (assets-staging/big-stone-2.png), tiled 1:1 as-is (seam refinement TBD). */
 .poe-panel[data-surface='big-stone-2'] > .poe-panel__surface { background: url('../assets/backgrounds/surface-big-stone-2.png') center / calc(1024px * var(--surface-scale)) repeat; }
