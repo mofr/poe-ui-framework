@@ -35,12 +35,18 @@ for (const c of keeps.filter(c => !/^corner/i.test(c.name || ''))) {
   const horizontal = (bb.r - bb.l) >= (bb.b - bb.t);
   // longest CLEAN run (a real, gap-free segment of the line) → tiled across the side: real pixels, no stretch.
   const longestRun = (lo, hi, hasInk) => { let bs = lo, be = lo - 1, cs = lo, run = 0; for (let i = lo; i <= hi; i++) { if (hasInk(i)) { if (run === 0) cs = i; run++; if (run > be - bs + 1) { bs = cs; be = i; } } else run = 0; } return [bs, be]; };
+  // Tile the longest run of FULLY-OPAQUE cross-sections across the side — preserving the real traced
+  // pixels (repeat, not stretch). The run is bounded by `SOLID` rather than mere ink, so the contour's
+  // antialiased boundary columns (partial alpha) are excluded; tiling between opaque ends leaves no
+  // 1px semi-transparent seam (those repeated partial columns were the fake "ticks" on the bottom edge).
+  let peak = 0; for (let y = bb.t; y <= bb.b; y++) for (let x = bb.l; x <= bb.r; x++) { const v = a[y * W + x]; if (v > peak) peak = v; }
+  const SOLID = peak * 0.9;
   if (horizontal) {
-    const [ra, rb] = longestRun(bb.l, bb.r, x => { for (let y = bb.t; y <= bb.b; y++) if (a[y * W + x] > 30) return true; return false; });
+    const [ra, rb] = longestRun(bb.l, bb.r, x => { for (let y = bb.t; y <= bb.b; y++) if (a[y * W + x] >= SOLID) return true; return false; });
     const len = rb - ra + 1;
     for (let x = 0; x < W; x++) { const sx = ra + (((x - ra) % len) + len) % len; for (let y = bb.t; y <= bb.b; y++) { const al = a[y * W + sx]; if (al > 30) { const i = (y * W + sx) * 4; put(x, y, src[i], src[i + 1], src[i + 2], al); } } }
   } else {
-    const [ra, rb] = longestRun(bb.t, bb.b, y => { for (let x = bb.l; x <= bb.r; x++) if (a[y * W + x] > 30) return true; return false; });
+    const [ra, rb] = longestRun(bb.t, bb.b, y => { for (let x = bb.l; x <= bb.r; x++) if (a[y * W + x] >= SOLID) return true; return false; });
     const len = rb - ra + 1;
     for (let y = 0; y < H; y++) { const sy = ra + (((y - ra) % len) + len) % len; for (let x = bb.l; x <= bb.r; x++) { const al = a[sy * W + x]; if (al > 30) { const i = (sy * W + x) * 4; put(x, y, src[i], src[i + 1], src[i + 2], al); } } }
   }
@@ -55,4 +61,4 @@ const outPath = resolve(ROOT, opt.out || (typeof mask.out === 'string' ? mask.ou
 const buf = await sharp(out, { raw: { width: W, height: H, channels: 4 } }).png().toBuffer();
 await sharp(buf).trim().toFile(outPath);
 const m = await sharp(outPath).metadata();
-console.log(`assembled ${name} -> ${outPath.replace(ROOT + '/', '')}  ${m.width}x${m.height} (gapless: edges = stretched clean cross-section)`);
+console.log(`assembled ${name} -> ${outPath.replace(ROOT + '/', '')}  ${m.width}x${m.height} (gapless: edges = tiled opaque-bounded run)`);
