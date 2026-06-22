@@ -1,7 +1,7 @@
 {
-  "name": "basic-panel-b",
+  "name": "panel-slim-dark-3",
   "build": "assemble",
-  "out": "src/assets/panels/plain-dark-2.png",
+  "out": "src/assets/panels/slim-dark-3.png",
   "image": "assets-staging/sources/ref-master-w1680.png",
   "contours": [
     {
@@ -654,5 +654,6 @@
       "note": "looks unusual, maybe make the upper part transparent",
       "round": 0
     }
-  ]
+  ],
+  "comment": "Contribution Health panel (slim-dark-3): wide, separate corner+edge contours → assemble (gapless), small corners."
 }

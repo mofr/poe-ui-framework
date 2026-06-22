@@ -1,5 +1,5 @@
 // Single entry point to (re)build a mask's asset with the CORRECT tool — recorded in the mask's GLOBAL
-// `build` field — so regeneration can never pick the wrong tool and regress (e.g. the page-frame needs
+// `build` field — so regeneration can never pick the wrong tool and regress (e.g. panel-ruled-gold-1 needs
 // `assemble`, not `panel`; a plain union leaves gaps at the corner/edge seams).
 //   node tools/build-mask.mjs <maskName>
 //

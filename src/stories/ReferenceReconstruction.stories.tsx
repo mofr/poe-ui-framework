@@ -20,7 +20,7 @@ const Heading = ({ children, meta }: { children?: React.ReactNode; meta?: React.
     {meta && <PoeText variant="meta">{meta}</PoeText>}
   </div>
 );
-const Panel = ({ frame = 'plain-dark-1', children, style }: { frame?: Frame; children?: React.ReactNode; style?: React.CSSProperties }) => (
+const Panel = ({ frame = 'slim-dark-1', children, style }: { frame?: Frame; children?: React.ReactNode; style?: React.CSSProperties }) => (
   <PoePanel frame={frame} surface="solid-black-1" integration="raster" style={{ width: '100%', ...style }}>{children}</PoePanel>
 );
 const Row = ({ children }: { children?: React.ReactNode }) => (
@@ -48,7 +48,7 @@ export const Dashboard = {
         <div style={col}>
 
           {/* header */}
-          <Panel frame="plain-dark-2">
+          <Panel frame="slim-dark-3">
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
               <div><PoeText variant="display" as="span">gaearon</PoeText> <PoeText variant="meta" style={{ marginLeft: 8 }}>The Interface Mage</PoeText></div>
               <PoeInput ornate placeholder="Search or jump to..." style={{ flex: 1, maxWidth: 420 }} />
@@ -60,18 +60,18 @@ export const Dashboard = {
             {/* left */}
             <div style={{ flex: '0 0 240px', ...col }}>
               <Panel><Heading meta="6">Repositories</Heading>{repos.map((r, i) => <Row key={r}><PoeText variant="body" style={i === 0 ? { color: 'var(--poe-gold-4)' } : undefined}>{i ? '▸ ' : '★ '}{r}</PoeText></Row>)}</Panel>
-              <Panel><Heading meta="Issues & PRs">Quest Log</Heading>{['Fix hydration warning', 'Improve Suspense docs', 'Update type defs'].map(q => <Row key={q}><PoeText variant="body">{q}</PoeText><PoeBadge type="rare">●</PoeBadge></Row>)}</Panel>
+              <Panel frame="slim-dark-2"><Heading meta="Issues & PRs">Quest Log</Heading>{['Fix hydration warning', 'Improve Suspense docs', 'Update type defs'].map(q => <Row key={q}><PoeText variant="body">{q}</PoeText><PoeBadge type="rare">●</PoeBadge></Row>)}</Panel>
             </div>
 
             {/* center */}
             <div style={{ flex: '1 1 auto', ...col }}>
-              <Panel frame="plain-dark-2">
+              <Panel frame="slim-dark-3">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}><PoeText variant="display" as="span">react</PoeText><PoeBadge type="magic">Public</PoeBadge></div>
                 <PoeText variant="body" style={{ marginBottom: 10 }}>The library for web and native user interfaces.</PoeText>
                 <div style={{ display: 'flex', gap: 22 }}>{stats.map(([k, v]) => <div key={k}><PoeText variant="number">{v}</PoeText><PoeText variant="meta">{k}</PoeText></div>)}</div>
               </Panel>
-              <Panel frame="plain-dark-2"><Heading meta="100% Vitality">Contribution Health</Heading><PoeSegmentBar variant="green" /></Panel>
-              <Panel frame="plain-dark-2"><Heading meta="18 Day Streak">Coding Energy (Streak)</Heading><PoeSegmentBar variant="blue" /></Panel>
+              <Panel frame="slim-dark-3"><Heading meta="100% Vitality">Contribution Health</Heading><PoeSegmentBar variant="green" /></Panel>
+              <Panel frame="slim-dark-3"><Heading meta="18 Day Streak">Coding Energy (Streak)</Heading><PoeSegmentBar variant="blue" /></Panel>
               <div style={{ display: 'flex', gap: 14 }}>
                 <Panel><Heading meta="Recent Commits">Combat Log</Heading>{commits.map(([sha, msg]) => <Row key={sha}><PoeText variant="number" as="span" style={{ color: 'var(--poe-gold-4)' }}>{sha}</PoeText><PoeText variant="body" style={{ flex: 1, margin: '0 8px' }}>{msg}</PoeText></Row>)}</Panel>
                 <Panel><Heading meta="Latest">Activity Feed</Heading>{activity.map(([who, what, when]) => <Row key={who + what}><PoeText variant="body" as="span" style={{ color: 'var(--poe-magic, #4b8dff)' }}>{who}</PoeText><PoeText variant="body" style={{ flex: 1, margin: '0 8px' }}>{what}</PoeText><PoeText variant="meta">{when}</PoeText></Row>)}</Panel>

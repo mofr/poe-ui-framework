@@ -30,6 +30,12 @@ const put = (x, y, r, g, b, a) => { const i = (y * W + x) * 4; if (a > out[i + 3
 const keeps = (mask.contours || []).filter(c => (c.op || 'keep') === 'keep');
 // PASS 1 — edges: stretch the cleanest cross-section across the FULL side (overwriting any gap region
 // where unrelated reference content broke the line), so the line reaches corner-to-corner.
+// Frame bbox = union of all keep contours. Edges tile corner-to-corner ACROSS THIS SPAN, not the whole
+// image: for the page frame (panel-ruled-gold-1) the span IS the image, but for a contained panel it bounds the edge to the
+// panel (else the cross-section smears to the canvas borders, defeating trim).
+let FL = W, FT = H, FR = 0, FB = 0;
+for (const c of keeps) { const bb = bboxOf(await alphaOf(c)); if (bb.r < bb.l) continue; if (bb.l < FL) FL = bb.l; if (bb.t < FT) FT = bb.t; if (bb.r > FR) FR = bb.r; if (bb.b > FB) FB = bb.b; }
+
 for (const c of keeps.filter(c => !/^corner/i.test(c.name || ''))) {
   const a = await alphaOf(c); const bb = bboxOf(a); if (bb.r < bb.l) continue;
   const horizontal = (bb.r - bb.l) >= (bb.b - bb.t);
@@ -44,11 +50,11 @@ for (const c of keeps.filter(c => !/^corner/i.test(c.name || ''))) {
   if (horizontal) {
     const [ra, rb] = longestRun(bb.l, bb.r, x => { for (let y = bb.t; y <= bb.b; y++) if (a[y * W + x] >= SOLID) return true; return false; });
     const len = rb - ra + 1;
-    for (let x = 0; x < W; x++) { const sx = ra + (((x - ra) % len) + len) % len; for (let y = bb.t; y <= bb.b; y++) { const al = a[y * W + sx]; if (al > 30) { const i = (y * W + sx) * 4; put(x, y, src[i], src[i + 1], src[i + 2], al); } } }
+    for (let x = FL; x <= FR; x++) { const sx = ra + (((x - ra) % len) + len) % len; for (let y = bb.t; y <= bb.b; y++) { const al = a[y * W + sx]; if (al > 30) { const i = (y * W + sx) * 4; put(x, y, src[i], src[i + 1], src[i + 2], al); } } }
   } else {
     const [ra, rb] = longestRun(bb.t, bb.b, y => { for (let x = bb.l; x <= bb.r; x++) if (a[y * W + x] >= SOLID) return true; return false; });
     const len = rb - ra + 1;
-    for (let y = 0; y < H; y++) { const sy = ra + (((y - ra) % len) + len) % len; for (let x = bb.l; x <= bb.r; x++) { const al = a[sy * W + x]; if (al > 30) { const i = (sy * W + x) * 4; put(x, y, src[i], src[i + 1], src[i + 2], al); } } }
+    for (let y = FT; y <= FB; y++) { const sy = ra + (((y - ra) % len) + len) % len; for (let x = bb.l; x <= bb.r; x++) { const al = a[sy * W + x]; if (al > 30) { const i = (sy * W + x) * 4; put(x, y, src[i], src[i + 1], src[i + 2], al); } } }
   }
 }
 // PASS 2 — corners on top, real pixels in place (overwrite the line crossings at the corners).

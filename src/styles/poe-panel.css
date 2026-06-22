@@ -47,14 +47,17 @@
   --src-frame: url('../assets/panels/jeweled-gold-1.png'); --src-integration-shadow: none; --src-integration-specular: none; }
 .poe-panel[data-frame='slim-gold-1'] { --band: 57px; --slice: 57; --content-pad: calc(14px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(11px * var(--frame-scale));
   --src-frame: url('../assets/panels/slim-gold-1.png'); --src-integration-shadow: none; --src-integration-specular: none; }
-/* plain-dark-1/2 — extracted from the 1680 master via the mask editor. Rasters trimmed to the frame's
-   outer edge ⇒ overhang 0 (frame outer edge = box edge); thin continuous edges ⇒ stretch. plain-dark-1:
-   the Combat Log panel (button inpainted out). plain-dark-2: the wide Contribution Health panel (traced as
-   separate corner+edge contours; small corners ⇒ slice 24). */
-.poe-panel[data-frame='plain-dark-1'] { --band: 44px; --slice: 44; --content-pad: calc(16px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px; --integration-spill: 16px;
-  --src-frame: url('../assets/panels/plain-dark-1.png'); --src-integration-shadow: url('../assets/panels/plain-dark-1-integration-shadow.png'); --src-integration-specular: none; }
-.poe-panel[data-frame='plain-dark-2'] { --band: 34px; --slice: 34; --content-pad: calc(12px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px;
-  --src-frame: url('../assets/panels/plain-dark-2.png'); --src-integration-shadow: none; --src-integration-specular: none; }
+/* slim-dark-1/2/3 — thin dark panels extracted from the 1680 master via the mask editor. Rasters trimmed
+   to the frame's outer edge ⇒ overhang 2px; thin continuous edges ⇒ stretch. slim-dark-1: the Combat Log
+   panel (button inpainted out). slim-dark-2: the Quest Log panel (gold corners ~46px, two buttons inpainted
+   out). slim-dark-3: the wide Contribution Health panel (separate corner+edge contours → assemble; small
+   corners ⇒ slice 34). */
+.poe-panel[data-frame='slim-dark-1'] { --band: 44px; --slice: 44; --content-pad: calc(16px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px; --integration-spill: 16px;
+  --src-frame: url('../assets/panels/slim-dark-1.png'); --src-integration-shadow: url('../assets/panels/slim-dark-1-integration-shadow.png'); --src-integration-specular: none; }
+.poe-panel[data-frame='slim-dark-2'] { --band: 46px; --slice: 46; --content-pad: calc(14px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px; --integration-spill: 9px;
+  --src-frame: url('../assets/panels/slim-dark-2.png'); --src-integration-shadow: url('../assets/panels/slim-dark-2-integration-shadow.png'); --src-integration-specular: none; }
+.poe-panel[data-frame='slim-dark-3'] { --band: 34px; --slice: 34; --content-pad: calc(12px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px;
+  --src-frame: url('../assets/panels/slim-dark-3.png'); --src-integration-shadow: none; --src-integration-specular: none; }
 /* ruled-gold-1 — the OUTER dashboard border (rounded-rect, thin line, gold corners + ruler-tick bottom);
    wraps the whole reconstruction. */
 .poe-panel[data-frame='ruled-gold-1'] { --band: 120px; --slice: 120; --content-pad: calc(14px * var(--frame-scale)); --surface-radius: 6px; --edge-repeat: repeat; --overhang: 0px;

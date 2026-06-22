@@ -71,9 +71,9 @@ export const Debug = {
       </Section>
 
       <Section title="INTEGRATION — contact shadow; component-user choice: raster (cut PNG) · css (drop-shadow) · none">
-        <Cell frame="plain-dark-1" surface="solid-black-1" integration="raster" label="integration raster" />
-        <Cell frame="plain-dark-1" surface="solid-black-1" integration="css" label="integration css" />
-        <Cell frame="plain-dark-1" surface="solid-black-1" integration="none" label="integration none" />
+        <Cell frame="slim-dark-1" surface="solid-black-1" integration="raster" label="integration raster" />
+        <Cell frame="slim-dark-1" surface="solid-black-1" integration="css" label="integration css" />
+        <Cell frame="slim-dark-1" surface="solid-black-1" integration="none" label="integration none" />
       </Section>
 
       <Section title="ACCENTS — centre-edge medallions, per edge; each has its own scale (1 = native). Plus resize.">
@@ -104,10 +104,12 @@ export const Gallery = {
         label="slim-gold-1 · worn-leather-1">{questContent}</Cell>
       <Cell color="#cbb" w={360} h={250} frame="slim-gold-1" integration="none" surface="smooth-slate-1"
         label="slim-gold-1 · smooth-slate-1">{questContent}</Cell>
-      <Cell color="#cbb" w={454} h={306} frame="plain-dark-1" integration="raster" surface="solid-black-1"
-        label="plain-dark-1 · solid-black-1 (combat log)">{questContent}</Cell>
-      <Cell color="#cbb" w={600} h={150} frame="plain-dark-2" integration="raster" surface="matte-stone-1"
-        label="plain-dark-2 · matte-stone-1 (wide)">{questContent}</Cell>
+      <Cell color="#cbb" w={454} h={306} frame="slim-dark-1" integration="raster" surface="solid-black-1"
+        label="slim-dark-1 · solid-black-1 (combat log)">{questContent}</Cell>
+      <Cell color="#cbb" w={345} h={295} frame="slim-dark-2" integration="raster" surface="solid-black-1"
+        label="slim-dark-2 · solid-black-1 (quest log)">{questContent}</Cell>
+      <Cell color="#cbb" w={600} h={150} frame="slim-dark-3" integration="raster" surface="matte-stone-1"
+        label="slim-dark-3 · matte-stone-1 (wide)">{questContent}</Cell>
       <Cell color="#cbb" w={820} h={420} frame="ruled-gold-1" integration="none" surface="matte-stone-2"
         label="ruled-gold-1 · matte-stone-2 (page frame)">{questContent}</Cell>
     </div>
@@ -142,7 +144,7 @@ export const Playground = {
   argTypes: {
     frame: {
       control: 'select',
-      options: ['none', 'debug-r0', 'debug-r4', 'debug-r8', 'debug-r24', 'jeweled-gold-1', 'slim-gold-1', 'plain-dark-1', 'plain-dark-2', 'ruled-gold-1'],
+      options: ['none', 'debug-r0', 'debug-r4', 'debug-r8', 'debug-r24', 'jeweled-gold-1', 'slim-gold-1', 'slim-dark-1', 'slim-dark-2', 'slim-dark-3', 'ruled-gold-1'],
       description: 'Real 1:1 frames render best when width/height stay near their native proportions.',
     },
     frameScale: SCALE,

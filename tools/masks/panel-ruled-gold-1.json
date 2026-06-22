@@ -1,5 +1,5 @@
 {
-  "name": "page-frame",
+  "name": "panel-ruled-gold-1",
   "out": "src/assets/panels/ruled-gold-1.png",
   "image": "assets-staging/sources/ref-master-w1680.png",
   "build": "assemble",

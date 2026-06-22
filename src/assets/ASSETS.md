@@ -12,8 +12,8 @@ options. Single-asset component chrome (button/input/segment-bar) is named by ro
   `solid-black-1`, `matte-stone-1`, `matte-stone-2` (crisper super-res of `-1`), `smooth-slate-1`;
   `matte-stone-soft` (blurred colour field — a Storybook backdrop only) and `blueprint-grid` (grid overlay).
 - `panels/` — PoePanel frame art (9-sliced via `border-image`): `jeweled-gold-1`, `slim-gold-1`
-  (full 1:1 raster frames) and `plain-dark-1/2`, `ruled-gold-1` (extracted from the reference via the mask
-  editor; `plain-dark-1` ships `…-integration-shadow.png` too). Plus `panels/debug/` — all PoePanel debug
+  (full 1:1 raster frames) and `slim-dark-1/2/3`, `ruled-gold-1` (extracted from the reference via the mask
+  editor; `slim-dark-1`/`slim-dark-2` ship `…-integration-shadow.png` too). Plus `panels/debug/` — all PoePanel debug
   scaffolding in one place: `debug-surface`, `debug-accent`, and the `frame`/`shadow`/`specular` layer
   sets at several corner radii (`-r0/-r4/-r8/-r24`).
 - `inputs/` — `frame.png`, the ornate 9-slice input frame (`.poe-input--ornate`).

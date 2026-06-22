@@ -5,7 +5,7 @@ import '../../styles/poe-panel.css';
 // The PANEL is the whole component; the FRAME is one part. LAYOUT is just the box (size+padding+margin);
 // every layer is decoration (absolute, inset:0, out of flow). All `*Scale` knobs are 1 = native px (1:1).
 
-export type Frame = 'none' | 'debug-r0' | 'debug-r4' | 'debug-r8' | 'debug-r24' | 'jeweled-gold-1' | 'slim-gold-1' | 'plain-dark-1' | 'plain-dark-2' | 'ruled-gold-1';
+export type Frame = 'none' | 'debug-r0' | 'debug-r4' | 'debug-r8' | 'debug-r24' | 'jeweled-gold-1' | 'slim-gold-1' | 'slim-dark-1' | 'slim-dark-2' | 'slim-dark-3' | 'ruled-gold-1';
 export type Surface = 'none' | 'debug' | 'cracked-stone-1' | 'worn-leather-1' | 'solid-black-1' | 'matte-stone-1' | 'matte-stone-2' | 'smooth-slate-1';
 // Integration = the contact shadow blending the frame into the page. Chosen by the component user, because
 // not every frame ships a clean cut: 'raster' = the frame's own integration PNG (when it has one); 'css' =
@@ -15,7 +15,7 @@ export type Accent = 'none' | 'debug';
 
 export interface PoePanelProps {
   children?: React.ReactNode;
-  /** Frame raster set (corner radius + art). `plain-dark-*`/`ruled-gold-1` are real 1:1 frames extracted from the reference. */
+  /** Frame raster set (corner radius + art). `slim-dark-*`/`ruled-gold-1` are real 1:1 frames extracted from the reference. */
   frame?: Frame;
   /** Scales the frame + integration render (1 = native px). */
   frameScale?: number;
