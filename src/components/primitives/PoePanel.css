@@ -82,6 +82,10 @@
 .poe-panel__header {
   display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
   padding: var(--header-pad-y, 0px) var(--body-pad, 8px);
+  /* Panel headers use Fontin. Locally rebinding --poe-font-title makes a nested
+     PoeText variant="heading" (the usual title) adopt it too; font-family covers plain-text headers. */
+  --poe-font-title: var(--poe-font-fontin);
+  font-family: var(--poe-font-fontin);
 }
 /* PoePanelBody — opt-in breathing room ON TOP of the innate art clearance (prose, a progress bar). A
    header directly above provides the top gap, so drop the body's top padding there. */

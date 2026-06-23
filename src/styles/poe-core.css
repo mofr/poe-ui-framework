@@ -17,7 +17,30 @@ body {
 /* Typography roles — .poe-text-* are canonical (PoeText `variant`); the short aliases (.poe-title …)
    are kept for convenience. Role classes intentionally carry their default colours. */
 .poe-title, .poe-text-display  { font-family: var(--poe-font-display); font-size: var(--poe-fs-display); font-weight: 400; letter-spacing: .02em; color: #e9e3d2; text-shadow: 0 2px 3px rgba(0, 0, 0, .7); }
-.poe-text-heading, .poe-heading { font-family: var(--poe-font-title); font-size: var(--poe-fs-heading); font-weight: 600; letter-spacing: .04em; font-variant: small-caps; color: #ba9b48; }
+.poe-text-heading, .poe-heading {
+  font-family: var(--poe-font-title);
+  font-size: var(--poe-fs-heading);
+  /* font-variant: small-caps;  */
+  /* letter-spacing: .035em;  */
+
+  color: #f4dc72;
+
+  background: linear-gradient(
+    to bottom,
+    #fffde0 0%,
+    #fff3a7 20%,
+    #f4dc72 50%,
+    #e0bd4f 100%
+  );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow:
+    0 0.035em 0 rgba(84, 52, 10, 0.18),
+    0 0 0.06em rgba(255, 235, 140, 0.16);
+}
 .poe-text-label, .poe-label    { font-family: var(--poe-font-display); font-size: var(--poe-fs-label); letter-spacing: .01em; color: #8d8464; }
 .poe-text-body                 { font-family: var(--poe-font-ui); font-size: var(--poe-fs-body); color: #a8a9a6; line-height: 1.45; }
 .poe-text-meta, .poe-subtle    { font-size: var(--poe-fs-meta); color: #84898c; }
