@@ -20,8 +20,6 @@ body {
 .poe-text-heading, .poe-heading {
   font-family: var(--poe-font-title);
   font-size: var(--poe-fs-heading);
-  /* font-variant: small-caps;  */
-  /* letter-spacing: .035em;  */
 
   color: #f4dc72;
 

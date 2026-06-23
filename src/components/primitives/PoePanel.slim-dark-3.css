@@ -4,7 +4,7 @@
 .poe-panel[data-frame='slim-dark-3'] {
   --band: 34px;
   --slice: 34;
-  --content-pad: calc(12px * var(--frame-scale));
+  --content-pad: calc(10px * var(--frame-scale));
   --surface-radius: 4px;
   --edge-repeat: repeat;
   --overhang: 0px;

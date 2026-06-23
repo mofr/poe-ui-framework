@@ -1,10 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@500;600;700&display=swap');
 
-/* Fontin (Jos Buivenga / exljbris, free for personal & commercial use) — used on panel headers.
-   Self-hosted: not on Google Fonts. */
+/* Fontin (Jos Buivenga / exljbris, free for personal & commercial use). Self-hosted: not on Google
+   Fonts. SmallCaps is its OWN face with real, proper-height small caps (the Craft of Exile header
+   look) — use it directly, never with CSS `font-variant: small-caps`, which shrinks them again. */
 @font-face {
   font-family: 'Fontin';
   src: url('../assets/fonts/Fontin-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Fontin SmallCaps';
+  src: url('../assets/fonts/Fontin-SmallCaps.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -37,12 +45,13 @@
 
   --poe-font-display:'IM Fell English', Georgia, serif;
   --poe-font-title:Cinzel, 'IM Fell English SC', Georgia, serif;
-  --poe-font-fontin:'Fontin', Georgia, serif;  /* panel headers */
+  --poe-font-fontin:'Fontin', Georgia, serif;
+  --poe-font-smallcaps:'Fontin SmallCaps', Georgia, serif;  /* panel headers — real small caps, no font-variant */
   --poe-font-ui:Inter, IBM Plex Sans, Segoe UI, Arial, sans-serif;
   --poe-font-number:'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
   --poe-font-rune:'JetBrains Mono', Cinzel, ui-monospace, monospace;
   /* TYPE SIZES — tweak these to resize each role globally (stories may override per-instance inline). */
-  --poe-fs-display:30px; --poe-fs-heading:24px; --poe-fs-label:13px; --poe-fs-body:14px; --poe-fs-meta:11px; --poe-fs-number:14px;
+  --poe-fs-display:30px; --poe-fs-heading:20px; --poe-fs-label:13px; --poe-fs-body:14px; --poe-fs-meta:11px; --poe-fs-number:14px;
 
   --poe-glow-gold:0 0 18px rgba(201,162,94,.18);
 }
