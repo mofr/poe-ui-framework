@@ -1,4 +1,5 @@
 import React from 'react';
+import './PoeButton.css';
 
 // Buttons are RASTER plates: a 9-slice frame + CSS fill, picked by `variant`. `ornate` is the one
 // implemented variant today (buttons/ornate.png → .poe-button--ornate); more can be added later.

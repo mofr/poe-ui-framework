@@ -1,4 +1,6 @@
-/* PoePanel — a layered decorative PANEL (see PoePanel.tsx).
+/* PoePanel — ENGINE (the CLOSED part: layer machinery + content model; see PoePanel.tsx).
+   The OPEN part — the frame & surface CATALOGS — lives in the two imported files below: add a preset
+   there (a few var assignments), never touch this engine.
 
    TERMINOLOGY: PANEL = whole component · BOX = its layout rectangle · FRAME = ornamental border ·
    SURFACE = interior fill · CONTENT = the flow wrapper (drives auto-height) · INTEGRATION =
@@ -15,6 +17,9 @@
    measured per frame, so content never sits under any ornament. A bare child (e.g. a list) sits just
    inside that (on thin frames the side gap is only a few px); wrap it in PoePanelBody for extra
    breathing room (--body-pad). PoePanelHeader is the title bar. Per-instance: `contentPad` prop. */
+
+@import './PoePanel.frames.css';
+@import './PoePanel.surfaces.css';
 
 .poe-panel {
   position: relative;
@@ -33,42 +38,13 @@
   --content-pad: calc(var(--band) * var(--frame-scale));     /* per-frame clearance consumed by
                                            PoePanelHeader/Body so their content clears the (scaled) frame;
                                            per-frame/instance overridable (contentPad prop) */
-  --src-frame:    url('../assets/panels/debug/frame-r8.png');
-  --src-integration-shadow:   url('../assets/panels/debug/shadow-r8.png');
-  --src-integration-specular: url('../assets/panels/debug/specular-r8.png');
+  --src-frame:    url('../../assets/panels/debug/frame-r8.png');
+  --src-integration-shadow:   url('../../assets/panels/debug/shadow-r8.png');
+  --src-integration-specular: url('../../assets/panels/debug/specular-r8.png');
+  /* default SURFACE = none. Set on the root (not just the layer) so a nested panel can't inherit a
+     parent's --src-surface; each panel re-declares via its own data-surface (see PoePanel.surfaces.css). */
+  --src-surface: none; --surface-tile: 64px;
 }
-/* debug frame sets — same band/slice (30), only radius (+ art) differs ... */
-.poe-panel[data-frame='debug-r0'] { --surface-radius: 0px;
-  --src-frame: url('../assets/panels/debug/frame-r0.png'); --src-integration-shadow: url('../assets/panels/debug/shadow-r0.png'); --src-integration-specular: url('../assets/panels/debug/specular-r0.png'); }
-.poe-panel[data-frame='debug-r4'] { --surface-radius: 4px;
-  --src-frame: url('../assets/panels/debug/frame-r4.png'); --src-integration-shadow: url('../assets/panels/debug/shadow-r4.png'); --src-integration-specular: url('../assets/panels/debug/specular-r4.png'); }
-.poe-panel[data-frame='debug-r8'] { --surface-radius: 8px;
-  --src-frame: url('../assets/panels/debug/frame-r8.png'); --src-integration-shadow: url('../assets/panels/debug/shadow-r8.png'); --src-integration-specular: url('../assets/panels/debug/specular-r8.png'); }
-/* ... EXCEPT debug-r24: radius 24 can't fit a 30px corner slice, so its band/slice grow to 48. */
-.poe-panel[data-frame='debug-r24'] { --band: 48px; --slice: 48; --surface-radius: 24px;
-  --src-frame: url('../assets/panels/debug/frame-r24.png'); --src-integration-shadow: url('../assets/panels/debug/shadow-r24.png'); --src-integration-specular: url('../assets/panels/debug/specular-r24.png'); }
-
-/* jeweled-gold-1 / slim-gold-1 — full 1:1 raster frames (band = slice = native corner inset).
-   Rectangular opening ⇒ radius 0. Edges are continuous bars (one big tile), so they STRETCH/repeat. */
-.poe-panel[data-frame='jeweled-gold-1'] { --band: 80px; --slice: 80; --content-pad: calc(20px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(18px * var(--frame-scale));
-  --src-frame: url('../assets/panels/jeweled-gold-1.png'); --src-integration-shadow: none; --src-integration-specular: none; }
-.poe-panel[data-frame='slim-gold-1'] { --band: 57px; --slice: 57; --content-pad: calc(8px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(11px * var(--frame-scale));
-  --src-frame: url('../assets/panels/slim-gold-1.png'); --src-integration-shadow: none; --src-integration-specular: none; }
-/* slim-dark-1/2/3 — thin dark panels extracted from the 1680 master via the mask editor. Rasters trimmed
-   to the frame's outer edge ⇒ overhang 2px; thin continuous edges ⇒ stretch. slim-dark-1: the Combat Log
-   panel (button inpainted out). slim-dark-2: the Quest Log panel (gold corners ~46px, two buttons inpainted
-   out). slim-dark-3: the wide Contribution Health panel (separate corner+edge contours → assemble; small
-   corners ⇒ slice 34). */
-.poe-panel[data-frame='slim-dark-1'] { --band: 44px; --slice: 44; --content-pad: calc(12px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 0px; --integration-spill: 16px;
-  --src-frame: url('../assets/panels/slim-dark-1.png'); --src-integration-shadow: url('../assets/panels/slim-dark-1-integration-shadow.png'); --src-integration-specular: none; }
-.poe-panel[data-frame='slim-dark-2'] { --band: 46px; --slice: 46; --content-pad: calc(10px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 0px; --integration-spill: 9px;
-  --src-frame: url('../assets/panels/slim-dark-2.png'); --src-integration-shadow: url('../assets/panels/slim-dark-2-integration-shadow.png'); --src-integration-specular: none; }
-.poe-panel[data-frame='slim-dark-3'] { --band: 34px; --slice: 34; --content-pad: calc(12px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 0px;
-  --src-frame: url('../assets/panels/slim-dark-3.png'); --src-integration-shadow: none; --src-integration-specular: none; }
-/* ruled-gold-1 — the OUTER dashboard border (rounded-rect, thin line, gold corners + ruler-tick bottom);
-   wraps the whole reconstruction. */
-.poe-panel[data-frame='ruled-gold-1'] { --band: 120px; --slice: 120; --content-pad: calc(25px * var(--frame-scale)); --surface-radius: 6px; --edge-repeat: repeat; --overhang: 0px;
-  --src-frame: url('../assets/panels/ruled-gold-1.png'); --src-integration-shadow: none; --src-integration-specular: none; }
 
 /* Every 9-slice layer shares EXACTLY this geometry — only source/z/blend differ. */
 .poe-panel__frame,
@@ -101,7 +77,7 @@
    interior art-to-art; --body-pad insets the text to align with the body/rows. Title left, meta right. */
 .poe-panel__header {
   display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
-  padding: var(--header-pad-y, 8px) var(--body-pad, 8px);
+  padding: var(--header-pad-y, 0px) var(--body-pad, 8px);
 }
 /* PoePanelBody — opt-in breathing room ON TOP of the innate art clearance (prose, a progress bar). A
    header directly above provides the top gap, so drop the body's top padding there. */
@@ -115,17 +91,19 @@
   box-shadow: inset 0 0 var(--inner-shadow-size) 3px var(--inner-shadow-color);
 }
 
-/* surface — material fill, corner radius --surface-radius. Tile scaled by --surface-scale. */
+/* surface — material fill (one render rule for EVERY surface; the catalog only sets --src-surface +
+   --surface-tile). Corner radius --surface-radius; tile scaled by --surface-scale. */
 .poe-panel__surface {
   position: absolute; inset: 0; z-index: 1;
   border-radius: var(--surface-radius);
+  background: var(--src-surface) center / calc(var(--surface-tile) * var(--surface-scale)) repeat;
 }
 
 /* accent — centre-edge medallions; rendered per-edge by the component, sized by per-medallion --accent-scale. */
 .poe-panel__accent {
   position: absolute; z-index: 7; pointer-events: none;
   width: calc(48px * var(--accent-scale)); height: calc(48px * var(--accent-scale));  /* 48 = native px */
-  background: url('../assets/panels/debug/debug-accent.png') center / contain no-repeat;
+  background: url('../../assets/panels/debug/debug-accent.png') center / contain no-repeat;
   filter: drop-shadow(0 0 9px rgba(255, 225, 140, .9));
 }
 .poe-panel__accent--t { top: 0;    left: 50%; transform: translate(-50%, -50%); }
@@ -145,19 +123,3 @@
 .poe-panel[data-integration='css']  > .poe-panel__frame { filter: drop-shadow(var(--css-shadow)); }
 .poe-panel[data-surface='none']     > .poe-panel__surface,
 .poe-panel[data-surface='none']     > .poe-panel__inner-shadow         { display: none; }
-
-/* surface variants (tile size scaled by --surface-scale) */
-.poe-panel[data-surface='debug'] > .poe-panel__surface {
-  background: url('../assets/panels/debug/debug-surface.png') 0 0 / calc(64px * var(--surface-scale)) repeat;
-  box-shadow: inset 0 0 0 2px rgba(150, 255, 170, .95);   /* DEBUG: inner-2px edge marker (inset, never spills outside the frame) */
-}
-.poe-panel[data-surface='cracked-stone-1'] > .poe-panel__surface { background: url('../assets/backgrounds/cracked-stone-1.png')   center / calc(1254px * var(--surface-scale)) repeat; }
-.poe-panel[data-surface='worn-leather-1'] > .poe-panel__surface { background: url('../assets/backgrounds/worn-leather-1.png') center / calc(1254px * var(--surface-scale)) repeat; }
-/* solid-black-1 — near-black panel interior tiled from the reference */
-.poe-panel[data-surface='solid-black-1'] > .poe-panel__surface { background: url('../assets/backgrounds/solid-black-1.png') center / calc(431px * var(--surface-scale)) repeat; }
-/* matte-stone-1 — smooth matte dark-brown (gradient flattened so it tiles cleanly), 1:1. */
-.poe-panel[data-surface='matte-stone-1'] > .poe-panel__surface { background: url('../assets/backgrounds/matte-stone-1.png') 0 0 / calc(1254px * var(--surface-scale)) repeat; }
-/* matte-stone-2 — same stone, x2 super-res then resampled to native (crisper grain), tiled the same way. */
-.poe-panel[data-surface='matte-stone-2'] > .poe-panel__surface { background: url('../assets/backgrounds/matte-stone-2.png') 0 0 / calc(1254px * var(--surface-scale)) repeat; }
-/* smooth-slate-1 — dark slate, smooth with sparse cracks, tiled 1:1 as-is. */
-.poe-panel[data-surface='smooth-slate-1'] > .poe-panel__surface { background: url('../assets/backgrounds/smooth-slate-1.png') center / calc(1024px * var(--surface-scale)) repeat; }

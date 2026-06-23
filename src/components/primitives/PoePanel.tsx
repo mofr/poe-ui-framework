@@ -1,5 +1,5 @@
 import React from 'react';
-import '../../styles/poe-panel.css';
+import './PoePanel.css';
 
 // PoePanel — a layered decorative PANEL (docs/FRAME-FIDELITY.md). DEBUG skeleton.
 // The PANEL is the whole component; the FRAME is one part. LAYOUT is just the box (size+padding+margin);

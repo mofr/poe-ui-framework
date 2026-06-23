@@ -1,53 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@500;600;700&display=swap');
 
+/* Design tokens — only tokens actually referenced are kept (audit: tools below in the repo plan).
+   Add a token when something consumes it; don't keep a speculative palette. */
 :root {
   color-scheme: dark;
 
-  --poe-bg-0:#070605;
-  --poe-bg-1:#0d0b09;
-  --poe-bg-2:#15110e;
-  --poe-bg-3:#211913;
-  --poe-stone-0:#080807;
-  --poe-stone-1:#11100d;
-  --poe-stone-2:#1d1914;
-  --poe-metal-0:#0b0b0a;
-  --poe-metal-1:#171513;
-  --poe-metal-2:#2a2219;
-  --poe-parchment-0:#2f2418;
-  --poe-parchment-1:#d7bd86;
-  --poe-parchment-2:#ead7a7;
-  --poe-panel:#1b1510;
-  --poe-panel-2:#251c15;
-  --poe-inset:#080706;
-
+  /* gold ramp (gold-1 kept to round out the ramp; 2/3/4 consumed) */
   --poe-gold-1:#6f5127;
   --poe-gold-2:#9a7438;
   --poe-gold-3:#c9a25e;
   --poe-gold-4:#f0d89a;
+
   --poe-text:#eadcc0;
-  --poe-text-soft:#bda277;
-  --poe-text-muted:#7b6a51;
-  --poe-text-dark:#21170d;
   --poe-red:#d05248;
   --poe-green:#53bf62;
   --poe-blue:#4b8dff;
-  --poe-purple:#9b5eff;
   --poe-amber:#efbd4e;
   --poe-danger:#cf312d;
-  --poe-corruption:#8f1f2c;
   --poe-magic:var(--poe-blue);
-  --poe-rare:#f0d35a;
+
   --poe-border:rgba(201,162,94,.65);
   --poe-border-dim:rgba(154,116,56,.35);
-  --poe-border-cold:rgba(114,161,255,.55);
 
-  --poe-radius:4px;
-  --poe-gap:12px;
   --poe-row-height:34px;
   --poe-control-height:32px;
-  --poe-pad-1:6px;
-  --poe-pad-2:10px;
-  --poe-pad-3:14px;
 
   --poe-font-display:'IM Fell English', Georgia, serif;
   --poe-font-title:Cinzel, 'IM Fell English SC', Georgia, serif;
@@ -57,10 +33,5 @@
   /* TYPE SIZES — tweak these to resize each role globally (stories may override per-instance inline). */
   --poe-fs-display:30px; --poe-fs-heading:24px; --poe-fs-label:13px; --poe-fs-body:14px; --poe-fs-meta:11px; --poe-fs-number:14px;
 
-  --poe-shadow:0 12px 32px rgba(0,0,0,.45), inset 0 1px rgba(255,231,174,.08), inset 0 -1px rgba(0,0,0,.8);
-  --poe-shadow-inset:inset 0 2px 10px rgba(0,0,0,.72), inset 0 1px rgba(255,231,174,.06);
-  --poe-shadow-raised:0 10px 20px rgba(0,0,0,.42), inset 0 1px rgba(255,255,255,.08);
   --poe-glow-gold:0 0 18px rgba(201,162,94,.18);
-  --poe-glow-blue:0 0 18px rgba(75,141,255,.22);
-  --poe-glow-red:0 0 18px rgba(207,49,45,.2);
 }

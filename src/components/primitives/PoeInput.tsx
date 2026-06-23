@@ -1,4 +1,5 @@
 import React from 'react';
+import './PoeInput.css';
 
 // Text input. `ornate` swaps the plain inset field for the extracted 9-slice frame
 // (inputs/frame.png via .poe-input--ornate). Styling lives in poe-core.css (.poe-input).

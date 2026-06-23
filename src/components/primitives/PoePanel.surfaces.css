@@ -1,0 +1,18 @@
+/* PoePanel — SURFACE CATALOG (the OPEN part). Each entry is a DATA ROW: it only sets --src-surface +
+   --surface-tile (the tile's native px); the single render rule lives in the engine (PoePanel.css).
+   Add a surface = add a row here; never edit the engine. */
+
+.poe-panel[data-surface='cracked-stone-1'] { --src-surface: url('../../assets/backgrounds/cracked-stone-1.png'); --surface-tile: 1254px; }
+.poe-panel[data-surface='worn-leather-1']  { --src-surface: url('../../assets/backgrounds/worn-leather-1.png');  --surface-tile: 1254px; }
+/* solid-black-1 — near-black panel interior tiled from the reference */
+.poe-panel[data-surface='solid-black-1']   { --src-surface: url('../../assets/backgrounds/solid-black-1.png');   --surface-tile: 431px; }
+/* matte-stone-1 — smooth matte dark-brown (gradient flattened so it tiles cleanly), 1:1. */
+.poe-panel[data-surface='matte-stone-1']   { --src-surface: url('../../assets/backgrounds/matte-stone-1.png');   --surface-tile: 1254px; }
+/* matte-stone-2 — same stone, x2 super-res then resampled to native (crisper grain), tiled the same way. */
+.poe-panel[data-surface='matte-stone-2']   { --src-surface: url('../../assets/backgrounds/matte-stone-2.png');   --surface-tile: 1254px; }
+/* smooth-slate-1 — dark slate, smooth with sparse cracks, tiled 1:1 as-is. */
+.poe-panel[data-surface='smooth-slate-1']  { --src-surface: url('../../assets/backgrounds/smooth-slate-1.png');  --surface-tile: 1024px; }
+
+/* debug surface — grid tile + a DEBUG inner-2px edge marker (the one-off extra, not part of the render). */
+.poe-panel[data-surface='debug']           { --src-surface: url('../../assets/panels/debug/debug-surface.png');  --surface-tile: 64px; }
+.poe-panel[data-surface='debug'] > .poe-panel__surface { box-shadow: inset 0 0 0 2px rgba(150, 255, 170, .95); }

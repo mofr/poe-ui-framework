@@ -10,7 +10,7 @@
   /* DEFAULT INTERIOR BACKGROUND — lets PoeList stand alone (no PoePanel required). */
   --list-bg: #0f0e0c;
   --list-rule-h: 27px;   /* header-rule render height = asset native (no vertical squash) */
-  --list-rule-pad: 8px;  /* how far the first row sits below the body top (clears the rule line) */
+  --list-rule-pad: 6px;  /* how far the first row sits below the body top (clears the rule line) */
   --list-sep-h: 6px;     /* divider render height (asset native height) */
   /* CORNER SLICE — px of the source held as the rule's end ornaments (the durable knob: it's CSS,
      so it survives asset recuts via `node tools/build-mask.mjs list`). Bump to show more corner. */
@@ -66,8 +66,8 @@
 }
 
 /* states — rows are otherwise unadorned; hover/selected echo the .poe-mod-row palette. */
-.poe-list-row:hover { background: rgba(201, 162, 94, .06); }
+.poe-list-row:hover { background: color-mix(in srgb, var(--poe-gold-3) 6%, transparent); }
 .poe-list-row.is-selected {
-  background: rgba(201, 162, 94, .12);
-  box-shadow: inset 0 0 16px rgba(201, 162, 94, .08), var(--poe-glow-gold);
+  background: color-mix(in srgb, var(--poe-gold-3) 12%, transparent);
+  box-shadow: inset 0 0 16px color-mix(in srgb, var(--poe-gold-3) 8%, transparent), var(--poe-glow-gold);
 }

@@ -1,0 +1,5 @@
+/* PoeBadge — small inline rune badge; the `type` becomes a class for a colour variant. */
+.poe-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; border-radius: 3px; font-family: var(--poe-font-rune); font-size: 10px; font-weight: 700; }
+.poe-badge.corrupt { background: var(--poe-danger); color: white; }
+.poe-badge.socket  { background: #1e73c9; color: white; }
+.poe-badge.essence { background: #7a36bd; color: white; }

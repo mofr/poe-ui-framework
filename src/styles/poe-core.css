@@ -26,31 +26,6 @@ body {
 .poe-text-warning              { color: var(--poe-amber); text-shadow: 0 0 10px rgba(239, 189, 78, .18); }
 .poe-text-danger               { color: #ff9a8f; text-shadow: 0 0 10px rgba(207, 49, 45, .2); }
 
-/* PoeInput — plain inset field + ornate 9-slice raster variant (inputs/frame.png, CSS fill behind). */
-.poe-input { width: 100%; height: 34px; border: 1px solid var(--poe-border-dim); border-radius: 3px; background: linear-gradient(180deg, #070606, #11100f); color: var(--poe-text); padding: 0 12px; box-shadow: inset 0 2px 8px rgba(0, 0, 0, .75); font-family: var(--poe-font-ui); font-weight: 500; }
-.poe-input::placeholder { color: rgba(189, 162, 119, .58); font-style: italic; }
-.poe-input:focus { outline: none; border-color: var(--poe-gold-2); box-shadow: inset 0 2px 8px rgba(0, 0, 0, .75), var(--poe-glow-gold); }
-.poe-input.poe-input--ornate { height: 46px; border: 12px solid transparent; border-image: url('../assets/inputs/frame.png') 12 / 12px repeat; border-radius: 0; background: #0a0908; background-clip: padding-box; box-shadow: none; }
-.poe-input.poe-input--ornate:focus { box-shadow: none; border-image: url('../assets/inputs/frame.png') 12 / 12px repeat; }
-
-/* PoeButton — RASTER only: a 9-slice ornate frame (buttons/ornate.png) + CSS fill. Small element ⇒ it
-   SCALES (border-image fill keeps corners crisp). `--ornate` is the one implemented variant. */
-.poe-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: var(--poe-control-height); color: var(--poe-text); cursor: pointer; font-family: var(--poe-font-title); font-size: 12px; font-weight: 600; letter-spacing: .045em; text-transform: uppercase; }
-.poe-button:active:not(:disabled) { transform: translateY(1px); }
-.poe-button:disabled { cursor: not-allowed; opacity: .45; filter: saturate(.6); }
-.poe-button.poe-button--ornate { border: 9px solid transparent; border-image: url('../assets/buttons/ornate.png') 9 / 9px repeat; background: transparent; min-height: 44px; padding: 8px 18px; }
-.poe-button.poe-button--ornate:hover:not(:disabled) { filter: brightness(1.12); }
-.poe-button.poe-button--ornate.is-selected { filter: brightness(1.2); }
-
-/* PoeBadge — small inline rune badge; the `type` becomes a class for a colour variant. */
-.poe-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; border-radius: 3px; font-family: var(--poe-font-rune); font-size: 10px; font-weight: 700; }
-.poe-badge.corrupt { background: var(--poe-danger); color: white; }
-.poe-badge.socket  { background: #1e73c9; color: white; }
-.poe-badge.essence { background: #7a36bd; color: white; }
-
-/* PoeSegmentBar — shared 9-slice rail (variant-agnostic) + a repeating fill raster. `blue` is
-   extracted; `green` is a baked recolour shipped as its own asset. */
-.poe-segment-bar { padding: var(--segment-pad, 1px); border: 8px solid transparent; background: #090807; background-clip: padding-box; border-image: url('../assets/segment-bar/rail.png') 8 / 8px repeat; }
-.poe-segment-fill { height: 20px; background-size: 24px 100%; background-repeat: round; }
-.poe-segment-bar[data-variant='blue'] .poe-segment-fill  { background-image: url('../assets/segment-bar/fill-blue.png'); }
-.poe-segment-bar[data-variant='green'] .poe-segment-fill { background-image: url('../assets/segment-bar/fill-green.png'); }
+/* Component-owned styles live next to their .tsx (PoeButton.css, PoeInput.css, PoeBadge.css,
+   PoeSegmentBar.css, PoeList.css, PoePanel.css). This file keeps only the cross-cutting layer:
+   reset + page backdrop + typography roles (the .poe-text-* / .poe-title aliases used as utilities). */

@@ -1,0 +1,8 @@
+/* PoeButton — RASTER only: a 9-slice ornate frame (buttons/ornate.png) + CSS fill. Small element ⇒ it
+   SCALES (border-image fill keeps corners crisp). `--ornate` is the one implemented variant. */
+.poe-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: var(--poe-control-height); color: var(--poe-text); cursor: pointer; font-family: var(--poe-font-title); font-size: 12px; font-weight: 600; letter-spacing: .045em; text-transform: uppercase; }
+.poe-button:active:not(:disabled) { transform: translateY(1px); }
+.poe-button:disabled { cursor: not-allowed; opacity: .45; filter: saturate(.6); }
+.poe-button.poe-button--ornate { border: 9px solid transparent; border-image: url('../../assets/buttons/ornate.png') 9 / 9px repeat; background: transparent; min-height: 44px; padding: 8px 18px; }
+.poe-button.poe-button--ornate:hover:not(:disabled) { filter: brightness(1.12); }
+.poe-button.poe-button--ornate.is-selected { filter: brightness(1.2); }

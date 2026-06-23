@@ -1,4 +1,5 @@
 import React from 'react';
+import './PoeSegmentBar.css';
 
 // Segmented progress bar: a 9-slice raster rail (shared) + the per-variant fill repeated with
 // `background-repeat: round` (natural integer count, any width). `variant` picks the fill raster;

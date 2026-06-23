@@ -1,4 +1,5 @@
 import React from 'react';
+import './PoeBadge.css';
 
 export interface PoeBadgeProps {
   children?: React.ReactNode;
