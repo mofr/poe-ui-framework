@@ -364,7 +364,7 @@ $('save').onclick = async () => {
   if (!name) { alert('name the mask first'); return; }
   const body = JSON.stringify({ name, image: $('image').value, build: $('build').value, comment: $('comment').value, contours });
   const r = await fetch('/save', { method: 'POST', body });
-  if (r.ok) { await refreshMaskList(name); $('status').textContent = `saved tools/masks/${name}.json — rebuild: node tools/build-mask.mjs ${name}`; }
+  if (r.ok) { await refreshMaskList(name); $('status').textContent = `saved ${name} — rebuild: node tools/build-mask.mjs ${name}`; }
   else $('status').textContent = 'save failed';
 };
 $('recut').onclick = async () => {

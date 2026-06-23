@@ -4,7 +4,7 @@
     "frame": "src/assets/segment-bar/rail.png",
     "segment 1": "src/assets/segment-bar/fill-blue.png"
   },
-  "image": "assets-staging/sources/ref-master-w1680.png",
+  "image": "inspiration/reference-1680.png",
   "contours": [
     {
       "points": [

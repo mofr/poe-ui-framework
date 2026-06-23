@@ -4,7 +4,7 @@
     "frame": "src/assets/panels/slim-dark-1.png",
     "integration": "src/assets/panels/slim-dark-1-integration-shadow.png"
   },
-  "image": "assets-staging/sources/ref-master-w1680.png",
+  "image": "inspiration/reference-1680.png",
   "build": "panel",
   "comment": "Combat Log panel (slim-dark-1): frame (keep−hole, button inpainted) + integration ring (outline−hole, outward fade).",
   "contours": [

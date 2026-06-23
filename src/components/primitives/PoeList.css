@@ -3,7 +3,7 @@
 
    MODEL: the heavy frame + surface come from the enclosing PoePanel. PoeList adds only its own
    THIN ornament — a header RULE (the list's top edge, with corner ornaments) + a divider
-   repeated between rows. Both are raster (cut from tools/masks/list*.json → src/assets/lists/).
+   repeated between rows. Both are raster (cut from PoeList.list*.mask.json → src/assets/lists/).
    Rows carry no border/background of their own; the dividers do the separating (matches the ref). */
 
 .poe-list {

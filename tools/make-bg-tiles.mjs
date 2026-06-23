@@ -10,11 +10,12 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { buildPathD } from './mask-editor/path.mjs';
+import { findMaskPath } from './find-mask.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const name = process.argv[2];
 const opt = Object.fromEntries(process.argv.slice(3).map(a => a.replace(/^--/, '').split('=')));
-const mask = JSON.parse(await readFile(resolve(ROOT, 'tools/masks', `${name}.json`), 'utf8'));
+const mask = JSON.parse(await readFile(await findMaskPath(name), 'utf8'));
 const srcPath = resolve(ROOT, opt.src || mask.image);
 const { width: W, height: H } = await sharp(srcPath).metadata();
 const inset = Number(opt.inset ?? 0.06);

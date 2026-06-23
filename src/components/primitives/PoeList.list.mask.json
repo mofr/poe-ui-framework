@@ -1,6 +1,6 @@
 {
   "name": "list",
-  "image": "assets-staging/sources/ref-master-w1680.png",
+  "image": "inspiration/reference-1680.png",
   "build": "assemble",
   "out": "src/assets/lists/edge-dark-1.png",
   "comment": "List frame ornament: top edge + corner ornaments (header rule). Sides/lower corners fade — trace later; same asset gains them.",

@@ -4,7 +4,7 @@
     "frame": "src/assets/panels/slim-dark-2.png",
     "integration": "src/assets/panels/slim-dark-2-integration-shadow.png"
   },
-  "image": "assets-staging/sources/ref-master-w1680.png",
+  "image": "inspiration/reference-1680.png",
   "build": "panel",
   "comment": "Quest Log panel (slim-dark-2): frame (keep−hole, two buttons inpainted) + integration ring.",
   "contours": [

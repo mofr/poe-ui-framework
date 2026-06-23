@@ -15,6 +15,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { findMaskPath } from './find-mask.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const name = process.argv[2];
@@ -22,7 +23,7 @@ if (!name) { console.error('usage: node tools/build-mask.mjs <maskName>'); proce
 
 const TOOLS = { assemble: 'assemble-frame.mjs', panel: 'cut-panel.mjs', mask: 'cut-mask.mjs', bg: 'make-bg-tiles.mjs' };
 
-const mask = JSON.parse(await readFile(resolve(ROOT, 'tools/masks', `${name}.json`), 'utf8'));
+const mask = JSON.parse(await readFile(await findMaskPath(name), 'utf8'));
 const build = mask.build;
 if (!build || !TOOLS[build]) {
   console.error(`mask "${name}" has no valid global "build" field. Set one of: ${Object.keys(TOOLS).join(', ')}.\n` +

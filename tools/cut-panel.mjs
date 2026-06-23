@@ -12,13 +12,14 @@ import { resolve, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { buildPathD } from './mask-editor/path.mjs';
+import { findMaskPath } from './find-mask.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const name = process.argv[2];
 if (!name) { console.error('usage: node tools/cut-panel.mjs <maskName> [--src=] [--feather=] [--out-dir=]'); process.exit(1); }
 const opt = Object.fromEntries(process.argv.slice(3).map(a => a.replace(/^--/, '').split('=')));
 
-const mask = JSON.parse(await readFile(resolve(ROOT, 'tools/masks', `${name}.json`), 'utf8'));
+const mask = JSON.parse(await readFile(await findMaskPath(name), 'utf8'));
 const srcPath = resolve(ROOT, opt.src || mask.image);
 const { width: W, height: H } = await sharp(srcPath).metadata();
 const all = mask.contours || [];
@@ -102,12 +103,12 @@ if (integA) {
   console.log(`integ. -> ${rel(integPath)}  ${integBox.width}x${integBox.height} (fade ${fade})`);
   // Write the derived spill straight into the matching CSS rule — no manual copy. Best-effort: only if the
   // [data-frame='<frameId>'] rule already declares --integration-spill (so it's a wired frame).
-  const cssPath = resolve(ROOT, 'src/styles/poe-panel.css');
+  const cssPath = resolve(ROOT, 'src/components/primitives/PoePanel.frames.css');
   const css = await readFile(cssPath, 'utf8');
   const re = new RegExp(`(\\[data-frame='${frameId}'\\][^\\n]*--integration-spill:\\s*)\\d+px`);
   if (re.test(css)) {
     await writeFile(cssPath, css.replace(re, `$1${spill}px`));
-    console.log(`         --integration-spill: ${spill}px → patched into poe-panel.css`);
+    console.log(`         --integration-spill: ${spill}px → patched into PoePanel.frames.css`);
   } else {
     console.log(`         spill ${spill}px → add --integration-spill: ${spill}px to the [data-frame='${frameId}'] rule`);
   }

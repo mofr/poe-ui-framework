@@ -10,13 +10,14 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { buildPathD } from './mask-editor/path.mjs';
+import { findMaskPath } from './find-mask.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const name = process.argv[2];
 if (!name) { console.error('usage: node tools/cut-mask.mjs <maskName> [--src=] [--width=] [--feather=] [--out=] [--each]'); process.exit(1); }
 const opt = Object.fromEntries(process.argv.slice(3).map(a => a.replace(/^--/, '').split('=')));
 
-const mask = JSON.parse(await readFile(resolve(ROOT, 'tools/masks', `${name}.json`), 'utf8'));
+const mask = JSON.parse(await readFile(await findMaskPath(name), 'utf8'));
 const srcPath = resolve(ROOT, opt.src || mask.image);
 const meta = await sharp(srcPath).metadata();
 const W = opt.width ? Number(opt.width) : meta.width;
