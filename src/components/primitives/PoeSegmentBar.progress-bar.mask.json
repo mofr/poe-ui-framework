@@ -1,8 +1,8 @@
 {
   "name": "progress-bar-big-blue-segmented",
   "out": {
-    "frame": "src/assets/segment-bar/rail.png",
-    "segment 1": "src/assets/segment-bar/fill-blue.png"
+    "frame": "src/components/primitives/PoeSegmentBar.progress-bar.png",
+    "segment 1": "src/components/primitives/PoeSegmentBar.progress-bar.segment-1.png"
   },
   "image": "inspiration/reference-1680.png",
   "contours": [

@@ -8,7 +8,8 @@
 // Output paths come from the mask's `out` object: { "frame": "...", "integration": "..." } (repo-relative).
 // Falls back to the legacy panel-<name>.png convention in --out-dir when `out` is absent.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { resolve, dirname, basename } from 'node:path';
+import { existsSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import { buildPathD } from './mask-editor/path.mjs';
@@ -90,10 +91,9 @@ async function writeLayer(alpha, box, dest) {
 }
 
 // Output paths: the mask's explicit `out.frame`/`out.integration`, else the legacy panel-<name>.png in
-// --out-dir. The frame's basename is the data-frame id used to patch --integration-spill into the CSS.
+// --out-dir.
 const framePath = out.frame ? resolve(ROOT, out.frame) : resolve(outDir, `panel-${name}.png`);
 const integPath = out.integration ? resolve(ROOT, out.integration) : resolve(outDir, `panel-${name}-integration-shadow.png`);
-const frameId = basename(framePath, '.png');
 const rel = p => p.replace(ROOT + '/', '');
 
 await writeLayer(frameA, frameBox, framePath);
@@ -101,15 +101,20 @@ console.log(`frame  -> ${rel(framePath)}  ${frameBox.width}x${frameBox.height}`)
 if (integA) {
   await writeLayer(integA, integBox, integPath);
   console.log(`integ. -> ${rel(integPath)}  ${integBox.width}x${integBox.height} (fade ${fade})`);
-  // Write the derived spill straight into the matching CSS rule — no manual copy. Best-effort: only if the
-  // [data-frame='<frameId>'] rule already declares --integration-spill (so it's a wired frame).
-  const cssPath = resolve(ROOT, 'src/components/primitives/PoePanel.frames.css');
-  const css = await readFile(cssPath, 'utf8');
-  const re = new RegExp(`(\\[data-frame='${frameId}'\\][^\\n]*--integration-spill:\\s*)\\d+px`);
-  if (re.test(css)) {
-    await writeFile(cssPath, css.replace(re, `$1${spill}px`));
-    console.log(`         --integration-spill: ${spill}px → patched into PoePanel.frames.css`);
+  // Write the derived spill straight into the frame's COLOCATED per-frame CSS (the frame raster path with
+  // .css) — no manual copy. Best-effort: only if that file already declares --integration-spill (one rule
+  // per file, so a bare match is unambiguous).
+  const cssPath = framePath.replace(/\.png$/, '.css');
+  if (existsSync(cssPath)) {
+    const css = await readFile(cssPath, 'utf8');
+    const re = /(--integration-spill:\s*)\d+px/;
+    if (re.test(css)) {
+      await writeFile(cssPath, css.replace(re, `$1${spill}px`));
+      console.log(`         --integration-spill: ${spill}px → patched into ${rel(cssPath)}`);
+    } else {
+      console.log(`         spill ${spill}px → add --integration-spill: ${spill}px to ${rel(cssPath)}`);
+    }
   } else {
-    console.log(`         spill ${spill}px → add --integration-spill: ${spill}px to the [data-frame='${frameId}'] rule`);
+    console.log(`         spill ${spill}px → add --integration-spill: ${spill}px to the frame's colocated CSS`);
   }
 }

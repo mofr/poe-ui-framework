@@ -2,7 +2,7 @@
   "name": "list-separator",
   "build": "mask",
   "out": {
-    "separator-1": "src/assets/lists/separator-1.png"
+    "separator-1": "src/components/primitives/PoeList.list-separator.png"
   },
   "image": "inspiration/reference-1680.png",
   "comment": "List inter-row divider (thin engraved line, faded ends). Cut --each (trimmed). Repeated between PoeListRows.",

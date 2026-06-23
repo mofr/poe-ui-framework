@@ -3,7 +3,7 @@
 
    MODEL: the heavy frame + surface come from the enclosing PoePanel. PoeList adds only its own
    THIN ornament — a header RULE (the list's top edge, with corner ornaments) + a divider
-   repeated between rows. Both are raster (cut from PoeList.list*.mask.json → src/assets/lists/).
+   repeated between rows. Both are raster (cut from PoeList.list*.mask.json → colocated PoeList.*.png).
    Rows carry no border/background of their own; the dividers do the separating (matches the ref). */
 
 .poe-list {
@@ -33,7 +33,7 @@
   border: 0 solid transparent;
   border-left-width: calc(var(--list-cap) * 1px);
   border-right-width: calc(var(--list-cap) * 1px);
-  border-image-source: url('../../assets/lists/edge-dark-1.png');
+  border-image-source: url('./PoeList.list.png');
   border-image-slice: 0 var(--list-cap) fill;
   border-image-width: 0 calc(var(--list-cap) * 1px);
   border-image-repeat: round;
@@ -44,7 +44,7 @@
 .poe-list__sep {
   display: block;
   height: var(--list-sep-h);
-  background: url('../../assets/lists/separator-1.png') center / 100% 100% no-repeat;
+  background: url('./PoeList.list-separator.png') center / 100% 100% no-repeat;
 }
 
 /* ROW — slot layout: leading | main(title+meta) | trailing. Flex so missing slots collapse. */

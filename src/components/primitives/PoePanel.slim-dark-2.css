@@ -1,0 +1,14 @@
+/* PoePanel frame: slim-dark-2 — the Quest Log panel (gold corners ~46px, two buttons inpainted out).
+   Colocated with its mask + raster. Regenerate: `node tools/build-mask.mjs panel-slim-dark-2`. */
+.poe-panel[data-frame='slim-dark-2'] {
+  --band: 46px;
+  --slice: 46;
+  --content-pad: calc(10px * var(--frame-scale));
+  --surface-radius: 4px;
+  --edge-repeat: repeat;
+  --overhang: 0px;
+  --integration-spill: 9px;   /* auto-patched by tools/cut-panel.mjs on re-cut */
+  --src-frame: url('./PoePanel.slim-dark-2.png');
+  --src-integration-shadow: url('./PoePanel.slim-dark-2.integration-shadow.png');
+  --src-integration-specular: none;
+}

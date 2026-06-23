@@ -1,6 +1,6 @@
 {
   "name": "panel-ruled-gold-1",
-  "out": "src/assets/panels/ruled-gold-1.png",
+  "out": "src/components/primitives/PoePanel.ruled-gold-1.png",
   "image": "inspiration/reference-1680.png",
   "build": "assemble",
   "comment": "Outer dashboard border. Separate corner+edge contours → assemble-frame (gapless). inpaint clears UI bits on the line.",

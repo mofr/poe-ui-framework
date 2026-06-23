@@ -18,7 +18,11 @@
    inside that (on thin frames the side gap is only a few px); wrap it in PoePanelBody for extra
    breathing room (--body-pad). PoePanelHeader is the title bar. Per-instance: `contentPad` prop. */
 
-@import './PoePanel.frames.css';
+@import './PoePanel.frames.css';        /* mask-less frames (debug, jeweled-gold-1, slim-gold-1) */
+@import './PoePanel.slim-dark-1.css';   /* masked frames: each colocated with its mask + raster */
+@import './PoePanel.slim-dark-2.css';
+@import './PoePanel.slim-dark-3.css';
+@import './PoePanel.ruled-gold-1.css';
 @import './PoePanel.surfaces.css';
 
 .poe-panel {

@@ -1,7 +1,7 @@
 {
   "name": "big-input",
   "out": {
-    "frame outline": "src/assets/inputs/frame.png"
+    "frame outline": "src/components/primitives/PoeInput.big-input.png"
   },
   "image": "inspiration/reference-1680.png",
   "contours": [

@@ -1,7 +1,7 @@
 {
   "name": "buttons",
   "out": {
-    "toolbar button outline": "src/assets/buttons/ornate.png"
+    "toolbar button outline": "src/components/primitives/PoeButton.buttons.png"
   },
   "image": "inspiration/reference-1680.png",
   "contours": [

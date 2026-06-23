@@ -5,21 +5,26 @@ surfaces, buttons), the project's core visual-fidelity work (see `docs/FRAME-FID
 
 PoePanel's swappable parts (surfaces, frames) are named by **appearance + number** (`<look>-<n>`), kept in
 sync with the `data-surface`/`data-frame` values, the `Surface`/`Frame` TS unions, and the Storybook
-options. Single-asset component chrome (button/input/segment-bar) is named by role within its component dir.
+options.
 
-## Folders
-- `backgrounds/` — tileable `PoePanel` surfaces + overlays: `cracked-stone-1`, `worn-leather-1`,
-  `solid-black-1`, `matte-stone-1`, `matte-stone-2` (crisper super-res of `-1`), `smooth-slate-1`;
-  `matte-stone-soft` (blurred colour field — a Storybook backdrop only) and `blueprint-grid` (grid overlay).
-- `panels/` — PoePanel frame art (9-sliced via `border-image`): `jeweled-gold-1`, `slim-gold-1`
-  (full 1:1 raster frames) and `slim-dark-1/2/3`, `ruled-gold-1` (extracted from the reference via the mask
-  editor; `slim-dark-1`/`slim-dark-2` ship `…-integration-shadow.png` too). Plus `panels/debug/` — all PoePanel debug
-  scaffolding in one place: `debug-surface`, `debug-accent`, and the `frame`/`shadow`/`specular` layer
-  sets at several corner radii (`-r0/-r4/-r8/-r24`).
-- `inputs/` — `frame.png`, the ornate 9-slice input frame (`.poe-input--ornate`).
-- `buttons/` — `ornate.png`, the 9-slice button plate (`.poe-button--ornate`; the one implemented variant).
-- `segment-bar/` — `rail.png` (shared 9-slice rail) + per-variant fills `fill-blue.png` / `fill-green.png`
-  (green is a baked recolour) for `PoeSegmentBar`.
+## Where the rasters live
+A raster CUT FROM A MASK is **colocated with its component** in `src/components/primitives/`, beside its
+`*.mask.json` and the matching `*.css` (the file is named to match the mask, e.g. `PoePanel.slim-dark-1.png`
++ `…integration-shadow.png`, `PoeButton.buttons.png`, `PoeList.list*.png`, `PoeInput.big-input.png`,
+`PoeSegmentBar.progress-bar*.png` / `…fill-green.png`). Each is a committed, hand-tweakable artifact;
+regenerate one deliberately with `node tools/build-mask.mjs <maskName>` — this is **never** wired into
+`npm run build` (cuts aren't pure functions of the mask: inpaint, AI textures and hand-finishing are in play).
+
+This `src/assets/` tree holds only the **shared / mask-less** rasters:
+
+- `backgrounds/` — tileable `PoePanel` surfaces + overlays, shared with Storybook backdrops:
+  `cracked-stone-1`, `worn-leather-1`, `solid-black-1`, `matte-stone-1`, `matte-stone-2` (crisper super-res
+  of `-1`), `smooth-slate-1`; `matte-stone-soft` (blurred colour field — a Storybook backdrop only) and
+  `blueprint-grid` (grid overlay).
+- `panels/` — the mask-less PoePanel frames `jeweled-gold-1`, `slim-gold-1` (full 1:1 raster frames). Plus
+  `panels/debug/` — all PoePanel debug scaffolding in one place: `debug-surface`, `debug-accent`, and the
+  `frame`/`shadow`/`specular` layer sets at several corner radii (`-r0/-r4/-r8/-r24`).
+  (The masked frames `slim-dark-1/2/3` and `ruled-gold-1` now live with the component — see above.)
 
 ## Usage rules
 - Put ornament on frames, headers, dividers, and selected states.

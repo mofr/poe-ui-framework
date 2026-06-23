@@ -1,6 +1,16 @@
 /* PoeSegmentBar — shared 9-slice rail (variant-agnostic) + a repeating fill raster. `blue` is
    extracted; `green` is a baked recolour shipped as its own asset. */
-.poe-segment-bar { padding: var(--segment-pad, 1px); border: 8px solid transparent; background: #090807; background-clip: padding-box; border-image: url('../../assets/segment-bar/rail.png') 8 / 8px repeat; }
-.poe-segment-fill { height: 20px; background-size: 24px 100%; background-repeat: round; }
-.poe-segment-bar[data-variant='blue'] .poe-segment-fill  { background-image: url('../../assets/segment-bar/fill-blue.png'); }
-.poe-segment-bar[data-variant='green'] .poe-segment-fill { background-image: url('../../assets/segment-bar/fill-green.png'); }
+.poe-segment-bar {
+  padding: var(--segment-pad, 1px);
+  border: 8px solid transparent;
+  background: #090807;
+  background-clip: padding-box;
+  border-image: url('./PoeSegmentBar.progress-bar.png') 8 / 8px repeat;
+}
+.poe-segment-fill {
+  height: 20px;
+  background-size: 24px 100%;
+  background-repeat: round;
+}
+.poe-segment-bar[data-variant='blue'] .poe-segment-fill  { background-image: url('./PoeSegmentBar.progress-bar.segment-1.png'); }
+.poe-segment-bar[data-variant='green'] .poe-segment-fill { background-image: url('./PoeSegmentBar.fill-green.png'); }

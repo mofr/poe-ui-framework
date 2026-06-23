@@ -1,0 +1,15 @@
+/* PoePanel frame: slim-dark-1 — the Combat Log panel (button inpainted out). Thin dark panel cut from
+   the 1680 master; raster trimmed to the frame's outer edge ⇒ overhang 0; thin continuous edges ⇒
+   stretch. Colocated with its mask + raster. Regenerate: `node tools/build-mask.mjs panel-slim-dark-1`. */
+.poe-panel[data-frame='slim-dark-1'] {
+  --band: 44px;
+  --slice: 44;
+  --content-pad: calc(12px * var(--frame-scale));
+  --surface-radius: 4px;
+  --edge-repeat: repeat;
+  --overhang: 0px;
+  --integration-spill: 16px;   /* auto-patched by tools/cut-panel.mjs on re-cut */
+  --src-frame: url('./PoePanel.slim-dark-1.png');
+  --src-integration-shadow: url('./PoePanel.slim-dark-1.integration-shadow.png');
+  --src-integration-specular: none;
+}
