@@ -40,8 +40,13 @@ createServer(async (req, res) => {
       const { name, image, contours, build = '', comment = '' } = JSON.parse(await readBody(req));
       if (!name || !/^[\w-]+$/.test(name)) return send(res, 400, 'text/plain', 'bad name');
       await mkdir(MASKS, { recursive: true });
-      // GLOBAL config (name/image/build/comment) grouped first, then per-contour data — kept separate.
-      await writeFile(resolve(MASKS, `${name}.json`), JSON.stringify({ name, image, build, comment, contours }, null, 2));
+      // MERGE over the existing file so fields the editor doesn't manage (e.g. `out` routing) survive a
+      // save — otherwise every re-trace silently drops them and the next build falls back to a wrong path.
+      let prev = {};
+      try { prev = JSON.parse(await readFile(resolve(MASKS, `${name}.json`), 'utf8')); } catch {}
+      // GLOBAL config first (name/image/build/comment + preserved out/…), then per-contour data.
+      const merged = { ...prev, name, image, build, comment, contours };
+      await writeFile(resolve(MASKS, `${name}.json`), JSON.stringify(merged, null, 2));
       return send(res, 200, 'application/json', JSON.stringify({ ok: true }));
     }
     if (req.method === 'POST' && url.pathname === '/build') {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { expect } from 'storybook/test';
-import { PoePanel, type PoePanelProps } from '../components/primitives/PoePanel.tsx';
+import { PoePanel, PoePanelHeader, PoePanelBody, type PoePanelProps } from '../components/primitives/PoePanel.tsx';
+import { PoeText } from '../components/primitives/PoeText.tsx';
 // Backdrops are global now: pick from the toolbar "Backdrop" dropdown (.storybook/preview.jsx).
 // Per-story default via parameters.bg (e.g. Gallery → 'dark').
 
@@ -20,13 +21,23 @@ interface CellProps extends Partial<PoePanelProps> {
   w?: number;
   h?: number;
   color?: string;
+  header?: React.ReactNode;
 }
-const Cell = ({ label, w = 300, h = 200, color = '#dce8f6', children, ...props }: CellProps) => (
+const Cell = ({ label, w = 300, h = 200, color = '#dce8f6', header, children, ...props }: CellProps) => (
   <figure style={{ margin: 0, width: w }}>
-    <PoePanel style={{ width: w, height: h }} {...props}>{children}</PoePanel>
+    <PoePanel style={{ width: w, height: h }} {...props}>
+      {header && <PoePanelHeader>{header}</PoePanelHeader>}
+      <PoePanelBody>{children}</PoePanelBody>
+    </PoePanel>
     <figcaption style={{ marginTop: 24, textAlign: 'center', font: '11px system-ui', color }}>{label}</figcaption>
   </figure>
 );
+
+// title + optional meta for the header slot (layout/background come from .poe-panel__header).
+const title = (t: React.ReactNode, meta?: React.ReactNode) => (
+  <><PoeText variant="heading">{t}</PoeText>{meta && <PoeText variant="meta">{meta}</PoeText>}</>
+);
+const demoBody = <p style={{ margin: 0 }}>Body sits below the title bar, inset by the content padding.</p>;
 
 const questContent = (
   <div>
@@ -83,6 +94,12 @@ export const Debug = {
         <Cell accentTop="debug" accentBottom="debug" w={520} h={150} label="wide — edges tile, corners hold" />
       </Section>
 
+      <Section title="HEADER — optional title bar. Breaks OUT of the content padding so its background spans the panel interior (frame-to-frame); the frame draws over its outer edges. Title left, meta right.">
+        <Cell frame="slim-dark-1" surface="solid-black-1" integration="raster" w={340} h={200} header={title('Combat Log', 'Recent Commits')} label="header + meta">{demoBody}</Cell>
+        <Cell frame="slim-dark-2" surface="solid-black-1" integration="raster" w={320} h={200} header={title('Quest Log')} label="header only">{demoBody}</Cell>
+        <Cell frame="slim-dark-1" surface="solid-black-1" integration="raster" w={320} h={200} label="no header">{demoBody}</Cell>
+      </Section>
+
       <Section title="With content — sits in the surface, inset by padding">
         <Cell w={320} h={240} surface="worn-leather-1" surfaceScale={0.2} label="content slot">{questContent}</Cell>
       </Section>
@@ -105,7 +122,8 @@ export const Gallery = {
       <Cell color="#cbb" w={360} h={250} frame="slim-gold-1" integration="none" surface="smooth-slate-1"
         label="slim-gold-1 · smooth-slate-1">{questContent}</Cell>
       <Cell color="#cbb" w={454} h={306} frame="slim-dark-1" integration="raster" surface="solid-black-1"
-        label="slim-dark-1 · solid-black-1 (combat log)">{questContent}</Cell>
+        header={title('Combat Log', 'Recent Commits')}
+        label="slim-dark-1 · solid-black-1 · header slot">{demoBody}</Cell>
       <Cell color="#cbb" w={345} h={295} frame="slim-dark-2" integration="raster" surface="solid-black-1"
         label="slim-dark-2 · solid-black-1 (quest log)">{questContent}</Cell>
       <Cell color="#cbb" w={600} h={150} frame="slim-dark-3" integration="raster" surface="matte-stone-1"
@@ -177,7 +195,7 @@ export const Playground = {
     if (surfaceRadius >= 0) style['--surface-radius'] = `${surfaceRadius}px`;
     if (edgeRepeat !== 'auto') style['--edge-repeat'] = edgeRepeat;
     if (srcFrame) style['--src-frame'] = `url('${srcFrame}')`;
-    return <PoePanel style={style} {...args}>{content}</PoePanel>;
+    return <PoePanel style={style} {...args}><PoePanelBody>{content}</PoePanelBody></PoePanel>;
   },
 };
 

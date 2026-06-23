@@ -1,0 +1,73 @@
+/* PoeList — interior list ornament + row kit. Colocated with PoeList.tsx (new convention:
+   component-specific CSS travels with its component; global tokens/core stay in src/styles).
+
+   MODEL: the heavy frame + surface come from the enclosing PoePanel. PoeList adds only its own
+   THIN ornament — a header RULE (the list's top edge, with corner ornaments) + a divider
+   repeated between rows. Both are raster (cut from tools/masks/list*.json → src/assets/lists/).
+   Rows carry no border/background of their own; the dividers do the separating (matches the ref). */
+
+.poe-list {
+  /* DEFAULT INTERIOR BACKGROUND — lets PoeList stand alone (no PoePanel required). */
+  --list-bg: #0f0e0c;
+  --list-rule-h: 27px;   /* header-rule render height = asset native (no vertical squash) */
+  --list-rule-pad: 8px;  /* how far the first row sits below the body top (clears the rule line) */
+  --list-sep-h: 6px;     /* divider render height (asset native height) */
+  /* CORNER SLICE — px of the source held as the rule's end ornaments (the durable knob: it's CSS,
+     so it survives asset recuts via `node tools/build-mask.mjs list`). Bump to show more corner. */
+  --list-cap: 13;
+  display: flex;
+  flex-direction: column;
+  background: var(--list-bg);
+}
+
+.poe-list__body { position: relative; padding-top: var(--list-rule-pad); }
+
+/* header RULE — the ornament's top edge: corner ornaments fixed at the ends, line tiled between.
+   Horizontal 3-slice (top/bottom slice 0 ⇒ full height is the "middle"; left/right = the corners).
+   Out of flow (absolute) at the body top so the corner tails don't push the first row down — the row
+   clears the line via --list-rule-pad. */
+.poe-list__rule {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: var(--list-rule-h);
+  pointer-events: none;
+  border: 0 solid transparent;
+  border-left-width: calc(var(--list-cap) * 1px);
+  border-right-width: calc(var(--list-cap) * 1px);
+  border-image-source: url('../../assets/lists/edge-dark-1.png');
+  border-image-slice: 0 var(--list-cap) fill;
+  border-image-width: 0 calc(var(--list-cap) * 1px);
+  border-image-repeat: round;
+}
+
+/* divider — between rows only (PoeList injects it; not above the first / below the last).
+   No corners, faded ends → stretch full width (ends stay at the row edges). */
+.poe-list__sep {
+  display: block;
+  height: var(--list-sep-h);
+  background: url('../../assets/lists/separator-1.png') center / 100% 100% no-repeat;
+}
+
+/* ROW — slot layout: leading | main(title+meta) | trailing. Flex so missing slots collapse. */
+.poe-list-row {
+  display: flex; align-items: center; gap: 10px;
+  min-height: var(--poe-row-height);
+  padding: 7px 8px;
+  color: var(--poe-text);
+}
+.poe-list-row__leading { flex: 0 0 auto; display: flex; align-items: center; }
+.poe-list-row__main { flex: 1 1 auto; min-width: 0; display: grid; gap: 2px; }
+.poe-list-row__title { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.poe-list-row__title > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.poe-list-row__meta { min-width: 0; }
+.poe-list-row__trailing {
+  flex: 0 0 auto; text-align: right;
+  font-family: var(--poe-font-number); font-variant-numeric: tabular-nums;
+  color: var(--poe-gold-4);
+}
+
+/* states — rows are otherwise unadorned; hover/selected echo the .poe-mod-row palette. */
+.poe-list-row:hover { background: rgba(201, 162, 94, .06); }
+.poe-list-row.is-selected {
+  background: rgba(201, 162, 94, .12);
+  box-shadow: inset 0 0 16px rgba(201, 162, 94, .08), var(--poe-glow-gold);
+}

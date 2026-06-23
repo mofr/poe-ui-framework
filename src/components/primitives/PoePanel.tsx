@@ -99,7 +99,7 @@ export function PoePanel({
       <div className="poe-panel__inner-shadow" />                {/* inner shadow — seats the surface */}
       <div className="poe-panel__integration-shadow" />          {/* C2 integration */}
       <div className="poe-panel__integration-specular" />        {/* C1 integration (screen) */}
-      <div className="poe-panel__content">{children}</div>       {/* B  content */}
+      <div className="poe-panel__content">{children}</div>       {/* B  content — compose PoePanelHeader / PoePanelBody (parts self-pad) */}
       <div className="poe-panel__frame" />                       {/* A3 frame */}
       {accent('t', accentTop, accentTopScale)}
       {accent('r', accentRight, accentRightScale)}
@@ -107,4 +107,19 @@ export function PoePanel({
       {accent('l', accentLeft, accentLeftScale)}
     </div>
   );
+}
+
+// Composable parts (the shadcn/MUI Card model): the panel imposes NO padding — full-bleed is the
+// default. Each part self-pads from --content-pad (the per-frame clearance). Drop them in as children;
+// either is optional, and a bare full-bleed child (image, flush list) needs no wrapper. Both are plain
+// styled divs — swap in your own element when you want a custom header/body.
+
+/** Section title bar — spans the panel interior; text inset to clear the frame. Title left, meta right. */
+export function PoePanelHeader({ children, className = '', ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={`poe-panel__header ${className}`.trim()} {...props}>{children}</div>;
+}
+
+/** Padded content region (content cleared from the frame). Omit it for full-bleed content. */
+export function PoePanelBody({ children, className = '', ...props }: React.HTMLAttributes<HTMLDivElement>) {
+  return <div className={`poe-panel__body ${className}`.trim()} {...props}>{children}</div>;
 }

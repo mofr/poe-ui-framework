@@ -1,8 +1,9 @@
 {
   "name": "panel-slim-dark-3",
+  "image": "assets-staging/sources/ref-master-w1680.png",
   "build": "assemble",
   "out": "src/assets/panels/slim-dark-3.png",
-  "image": "assets-staging/sources/ref-master-w1680.png",
+  "comment": "Contribution Health panel (slim-dark-3): wide, separate corner+edge contours → assemble (gapless), small corners.",
   "contours": [
     {
       "points": [
@@ -525,32 +526,12 @@
           "y": 0.43271889694504057
         },
         {
-          "x": 0.7667349801981831,
-          "y": 0.43267866739085126
+          "x": 0.7663840260747588,
+          "y": 0.43274811395828067
         },
         {
-          "x": 0.7666828121371214,
-          "y": 0.4665314998000243
-        },
-        {
-          "x": 0.7672081310924951,
-          "y": 0.46649558055521245
-        },
-        {
-          "x": 0.7685416330561361,
-          "y": 0.4671062077170144
-        },
-        {
-          "x": 0.7688042925338229,
-          "y": 0.4699797473019647
-        },
-        {
-          "x": 0.7679334300720124,
-          "y": 0.4709478982490695
-        },
-        {
-          "x": 0.7668646599860595,
-          "y": 0.47140926467651395
+          "x": 0.7664347153130373,
+          "y": 0.4665859965779889
         }
       ],
       "name": "corner-bottom-right",
@@ -613,12 +594,12 @@
           "y": 0.3114700515907866
         },
         {
-          "x": 0.766629531066256,
-          "y": 0.3114195876380116
+          "x": 0.7663444977683356,
+          "y": 0.3114878209411055
         },
         {
-          "x": 0.76660114509282,
-          "y": 0.431574259195437
+          "x": 0.7663876452532994,
+          "y": 0.43135754159314094
         },
         {
           "x": 0.7642734952710702,
@@ -654,6 +635,5 @@
       "note": "looks unusual, maybe make the upper part transparent",
       "round": 0
     }
-  ],
-  "comment": "Contribution Health panel (slim-dark-3): wide, separate corner+edge contours → assemble (gapless), small corners."
+  ]
 }

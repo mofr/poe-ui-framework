@@ -1,0 +1,35 @@
+{
+  "name": "list-separator",
+  "build": "mask",
+  "out": {
+    "separator-1": "src/assets/lists/separator-1.png"
+  },
+  "image": "assets-staging/sources/ref-master-w1680.png",
+  "comment": "List inter-row divider (thin engraved line, faded ends). Cut --each (trimmed). Repeated between PoeListRows.",
+  "contours": [
+    {
+      "points": [
+        {
+          "x": 0.2309127874071887,
+          "y": 0.5662217398152417
+        },
+        {
+          "x": 0.2309127874071887,
+          "y": 0.5617677534585687
+        },
+        {
+          "x": 0.482681895785448,
+          "y": 0.5621799316733874
+        },
+        {
+          "x": 0.48269993558473967,
+          "y": 0.565932209926057
+        }
+      ],
+      "name": "separator-1",
+      "op": "keep",
+      "note": "",
+      "round": 0
+    }
+  ]
+}

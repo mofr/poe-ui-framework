@@ -1,14 +1,20 @@
-/* PoePanel — a layered decorative PANEL.  DEBUG skeleton.
+/* PoePanel — a layered decorative PANEL (see PoePanel.tsx).
 
-   TERMINOLOGY: PANEL = whole component · BOX = its layout rectangle (size+padding+margin) · FRAME =
-   ornamental border · SURFACE = interior background fill · CONTENT = developer content · INTEGRATION =
+   TERMINOLOGY: PANEL = whole component · BOX = its layout rectangle · FRAME = ornamental border ·
+   SURFACE = interior fill · CONTENT = the flow wrapper (drives auto-height) · INTEGRATION =
    shadow+specular blending frame→page · INNER SHADOW seats the surface · ACCENT = centre-edge medallion.
-   OVERHANG = how far the frame spills OUTSIDE the box edge (vs INSET = pushed inward, e.g. padding).
+   OVERHANG = how far the frame spills OUTSIDE the box edge.
 
-   MODEL: layout is just the BOX; every layer is decoration (absolute, inset:0, out of flow). One rule
-   for every raster layer: box edge at the raster CENTRE (overhang = half the band). Layers differ only
-   by texture/z/blend. Corner radius + edge-repeat + slice live in the RASTER set (per frame choice).
-   Parts are independent CHOICES (each with a "none") + per-part SCALE knobs. */
+   DECORATION MODEL: layout is just the BOX; every visual layer is decoration (absolute, inset:0, out of
+   flow). One rule for every raster layer: box edge at the raster CENTRE (overhang = half the band).
+   Layers differ only by texture/z/blend; corner radius + edge-repeat + slice live in the RASTER set
+   (per frame choice). Parts are independent CHOICES (each with a "none") + per-part SCALE knobs.
+
+   CONTENT MODEL: the CONTENT wrapper INNATELY pads by --content-pad = the frame's DEEPEST opaque-art
+   intrusion minus overhang (corner-aware: the corner ornament usually binds, not the thin edge),
+   measured per frame, so content never sits under any ornament. A bare child (e.g. a list) sits just
+   inside that (on thin frames the side gap is only a few px); wrap it in PoePanelBody for extra
+   breathing room (--body-pad). PoePanelHeader is the title bar. Per-instance: `contentPad` prop. */
 
 .poe-panel {
   position: relative;
@@ -24,8 +30,9 @@
   --inner-shadow-color: rgba(0, 0, 0, .55); /* inner-shadow colour incl. opacity (= intensity) */
   --css-shadow: 0 2px 6px rgba(0, 0, 0, .55); /* integration='css' drop-shadow (x y blur colour) */
   --overhang: calc(var(--band) * var(--frame-scale) / 2);    /* frame spill past the box edge — tracks scale */
-  --content-pad: calc(var(--band) * var(--frame-scale));     /* content inset — defaults to frame thickness ×
-                                           scale so content clears the (scaled) frame; per-frame/instance overridable */
+  --content-pad: calc(var(--band) * var(--frame-scale));     /* per-frame clearance consumed by
+                                           PoePanelHeader/Body so their content clears the (scaled) frame;
+                                           per-frame/instance overridable (contentPad prop) */
   --src-frame:    url('../assets/panels/debug/frame-r8.png');
   --src-integration-shadow:   url('../assets/panels/debug/shadow-r8.png');
   --src-integration-specular: url('../assets/panels/debug/specular-r8.png');
@@ -45,22 +52,22 @@
    Rectangular opening ⇒ radius 0. Edges are continuous bars (one big tile), so they STRETCH/repeat. */
 .poe-panel[data-frame='jeweled-gold-1'] { --band: 80px; --slice: 80; --content-pad: calc(20px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(18px * var(--frame-scale));
   --src-frame: url('../assets/panels/jeweled-gold-1.png'); --src-integration-shadow: none; --src-integration-specular: none; }
-.poe-panel[data-frame='slim-gold-1'] { --band: 57px; --slice: 57; --content-pad: calc(14px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(11px * var(--frame-scale));
+.poe-panel[data-frame='slim-gold-1'] { --band: 57px; --slice: 57; --content-pad: calc(8px * var(--frame-scale)); --surface-radius: 0px; --edge-repeat: repeat; --overhang: calc(11px * var(--frame-scale));
   --src-frame: url('../assets/panels/slim-gold-1.png'); --src-integration-shadow: none; --src-integration-specular: none; }
 /* slim-dark-1/2/3 — thin dark panels extracted from the 1680 master via the mask editor. Rasters trimmed
    to the frame's outer edge ⇒ overhang 2px; thin continuous edges ⇒ stretch. slim-dark-1: the Combat Log
    panel (button inpainted out). slim-dark-2: the Quest Log panel (gold corners ~46px, two buttons inpainted
    out). slim-dark-3: the wide Contribution Health panel (separate corner+edge contours → assemble; small
    corners ⇒ slice 34). */
-.poe-panel[data-frame='slim-dark-1'] { --band: 44px; --slice: 44; --content-pad: calc(16px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px; --integration-spill: 16px;
+.poe-panel[data-frame='slim-dark-1'] { --band: 44px; --slice: 44; --content-pad: calc(12px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 0px; --integration-spill: 16px;
   --src-frame: url('../assets/panels/slim-dark-1.png'); --src-integration-shadow: url('../assets/panels/slim-dark-1-integration-shadow.png'); --src-integration-specular: none; }
-.poe-panel[data-frame='slim-dark-2'] { --band: 46px; --slice: 46; --content-pad: calc(14px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px; --integration-spill: 9px;
+.poe-panel[data-frame='slim-dark-2'] { --band: 46px; --slice: 46; --content-pad: calc(10px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 0px; --integration-spill: 9px;
   --src-frame: url('../assets/panels/slim-dark-2.png'); --src-integration-shadow: url('../assets/panels/slim-dark-2-integration-shadow.png'); --src-integration-specular: none; }
-.poe-panel[data-frame='slim-dark-3'] { --band: 34px; --slice: 34; --content-pad: calc(12px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 2px;
+.poe-panel[data-frame='slim-dark-3'] { --band: 34px; --slice: 34; --content-pad: calc(12px * var(--frame-scale)); --surface-radius: 4px; --edge-repeat: repeat; --overhang: 0px;
   --src-frame: url('../assets/panels/slim-dark-3.png'); --src-integration-shadow: none; --src-integration-specular: none; }
 /* ruled-gold-1 — the OUTER dashboard border (rounded-rect, thin line, gold corners + ruler-tick bottom);
    wraps the whole reconstruction. */
-.poe-panel[data-frame='ruled-gold-1'] { --band: 120px; --slice: 120; --content-pad: calc(14px * var(--frame-scale)); --surface-radius: 6px; --edge-repeat: repeat; --overhang: 0px;
+.poe-panel[data-frame='ruled-gold-1'] { --band: 120px; --slice: 120; --content-pad: calc(25px * var(--frame-scale)); --surface-radius: 6px; --edge-repeat: repeat; --overhang: 0px;
   --src-frame: url('../assets/panels/ruled-gold-1.png'); --src-integration-shadow: none; --src-integration-specular: none; }
 
 /* Every 9-slice layer shares EXACTLY this geometry — only source/z/blend differ. */
@@ -82,11 +89,24 @@
 .poe-panel__integration-shadow   { z-index: 3; border-image-source: var(--src-integration-shadow); opacity: .8;
   border-image-outset: calc(var(--overhang) + var(--integration-spill, 0px)); }
 
+/* CONTENT — flow wrapper (drives auto-height). INNATE padding = --content-pad, the frame's visible-art
+   thickness (measured per frame) so content never sits under the opaque ornament. A bare child sits at
+   the art's inner edge (near edge-to-edge). */
 .poe-panel__content {
-  position: relative; z-index: 5;        /* in normal flow → drives the panel's auto height */
+  position: relative; z-index: 5;
   padding: var(--content-pad);
   color: #e8e0cf; font: 12px/1.4 system-ui, sans-serif;
 }
+/* PoePanelHeader — title bar. As a child of the (art-padded) content its background already spans the
+   interior art-to-art; --body-pad insets the text to align with the body/rows. Title left, meta right. */
+.poe-panel__header {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  padding: var(--header-pad-y, 8px) var(--body-pad, 8px);
+}
+/* PoePanelBody — opt-in breathing room ON TOP of the innate art clearance (prose, a progress bar). A
+   header directly above provides the top gap, so drop the body's top padding there. */
+.poe-panel__body { padding: var(--body-pad, 8px); }
+.poe-panel__header + .poe-panel__body { padding-top: 0; }
 
 /* inner shadow — symmetric single colour, on the box edge; seats the surface into the frame. */
 .poe-panel__inner-shadow {

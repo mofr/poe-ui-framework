@@ -1,66 +1,56 @@
 @import './poe-tokens.css';
-*{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at 50% -20%,#1d150d 0,#0b0907 48%,#040303 100%);background-attachment:fixed;color:var(--poe-text);font-family:var(--poe-font-ui);font-size:13px;font-feature-settings:"liga" 1,"calt" 1;text-rendering:geometricPrecision} .poe-app{min-height:100vh;padding:12px} /* Typography roles: .poe-text-* classes are canonical; short class aliases retained for existing component compatibility. Role classes intentionally carry their default colors. */ .poe-title,.poe-text-display{font-family:var(--poe-font-display);font-size:var(--poe-fs-display);font-weight:400;letter-spacing:.02em;text-transform:none;color:#e9e3d2;text-shadow:0 2px 3px rgba(0,0,0,.7)} .poe-text-heading,.poe-heading{font-family:var(--poe-font-title);font-size:var(--poe-fs-heading);font-weight:600;letter-spacing:.04em;text-transform:none;font-variant:small-caps;color:#ba9b48} .poe-text-label,.poe-label{font-family:var(--poe-font-display);font-size:var(--poe-fs-label);letter-spacing:.01em;text-transform:none;color:#8d8464} .poe-text-body{font-family:var(--poe-font-ui);font-size:var(--poe-fs-body);color:#a8a9a6;line-height:1.45} .poe-text-meta,.poe-subtle{font-size:var(--poe-fs-meta);color:#84898c} .poe-text-number,.poe-number{font-family:var(--poe-font-number);font-size:var(--poe-fs-number);font-variant-numeric:tabular-nums;color:var(--poe-gold-4)} .poe-text-rune{font-family:var(--poe-font-rune);letter-spacing:.08em;text-transform:uppercase;color:var(--poe-magic);text-shadow:0 0 10px rgba(75,141,255,.28)} .poe-text-warning{color:var(--poe-amber);text-shadow:0 0 10px rgba(239,189,78,.18)} .poe-text-danger{color:#ff9a8f;text-shadow:0 0 10px rgba(207,49,45,.2)} 
-.poe-frame{position:relative;border:1px solid var(--poe-border-dim);border-radius:var(--poe-radius);background:linear-gradient(180deg,rgba(255,231,174,.05),transparent 22%),linear-gradient(180deg,var(--poe-panel-2),var(--poe-panel));box-shadow:0 20px 40px rgba(0,0,0,.62),0 2px 5px rgba(0,0,0,.5),inset 0 1px rgba(255,231,174,.07);overflow:hidden}
-.poe-frame:before{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;box-shadow:inset 0 1px 0 rgba(255,231,174,.1),inset 0 -10px 22px rgba(0,0,0,.3);z-index:1}
-.poe-frame--metal{background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 18%),linear-gradient(180deg,var(--poe-metal-2),var(--poe-metal-0));border-color:rgba(177,148,92,.52)}
-.poe-frame--stone{background:linear-gradient(180deg,rgba(255,231,174,.045),transparent 20%),linear-gradient(180deg,var(--poe-stone-2),var(--poe-stone-0))}
-.poe-frame--parchment{background:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.04)),linear-gradient(180deg,var(--poe-parchment-2),var(--poe-parchment-1));color:var(--poe-text-dark);border-color:rgba(111,81,39,.85)}
-.poe-frame--parchment .poe-panel-header{color:#f8df9e;background:linear-gradient(180deg,#3a2a18,#1c130c)}
-.poe-frame--parchment .poe-panel-body{color:var(--poe-text-dark)}
-.poe-frame--inset{background:linear-gradient(180deg,#050403,#100d0b);box-shadow:var(--poe-shadow-inset)}
-.poe-frame--compact .poe-panel-header{min-height:26px;padding:5px 9px;font-size:11px}
-.poe-frame--compact .poe-panel-body{padding:8px}
-.poe-frame.is-selected{border-color:var(--poe-gold-3);box-shadow:var(--poe-shadow),var(--poe-glow-gold)}
-.poe-frame.is-active{border-color:var(--poe-border-cold);box-shadow:var(--poe-shadow),var(--poe-glow-blue)}
-.poe-panel-header{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;min-height:30px;padding:7px 10px;border-bottom:1px solid rgba(201,162,94,.24);background:linear-gradient(180deg,#2a2119,#17120f);font-family:var(--poe-font-title);font-weight:600;letter-spacing:.065em;text-transform:uppercase;color:var(--poe-gold-4)}
-.poe-panel-header .poe-subtle{font-family:var(--poe-font-number);font-size:10px;letter-spacing:.02em;text-transform:none}
-.poe-panel-body{position:relative;z-index:2;padding:10px}.poe-grid{display:grid;gap:var(--poe-gap)}.poe-layout{display:grid;grid-template-columns:280px minmax(560px,1fr) 340px;gap:12px}.poe-header{display:flex;align-items:center;gap:14px;margin-bottom:12px;padding:10px 14px}.poe-input{width:100%;height:34px;border:1px solid var(--poe-border-dim);border-radius:3px;background:linear-gradient(180deg,#070606,#11100f);color:var(--poe-text);padding:0 12px;box-shadow:inset 0 2px 8px rgba(0,0,0,.75);font-family:var(--poe-font-ui);font-weight:500}.poe-input::placeholder{color:rgba(189,162,119,.58);font-style:italic}.poe-input:focus{outline:none;border-color:var(--poe-gold-2);box-shadow:inset 0 2px 8px rgba(0,0,0,.75),var(--poe-glow-gold)}
-/* ornate input — 9-slice raster frame (inputs/frame.png), CSS fill behind. */
-.poe-input.poe-input--ornate{height:46px;border:12px solid transparent;border-image:url('../assets/inputs/frame.png') 12 / 12px repeat;border-radius:0;background:#0a0908;background-clip:padding-box;box-shadow:none}
-.poe-input.poe-input--ornate:focus{box-shadow:none;border-image:url('../assets/inputs/frame.png') 12 / 12px repeat}
-/* Buttons are RASTER only (9-slice ornate frame + CSS fill) — no CSS-styled variants, no glow. */
-.poe-button{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:var(--poe-control-height);color:var(--poe-text);cursor:pointer;font-family:var(--poe-font-title);font-size:12px;font-weight:600;letter-spacing:.045em;text-transform:uppercase}
-.poe-button:active:not(:disabled){transform:translateY(1px)}
-.poe-button:disabled{cursor:not-allowed;opacity:.45;filter:saturate(.6)}
-.poe-tabs{display:flex;flex-wrap:wrap;gap:6px}.poe-tabs--compact{gap:4px}
-.poe-tab{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(201,162,94,.25);background:#11100e;color:var(--poe-text-soft);border-radius:999px;padding:4px 9px;font-family:var(--poe-font-title);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;cursor:pointer}
-.poe-tabs--compact .poe-tab{padding:3px 7px;font-size:10px}
-.poe-tab .poe-subtle{font-family:var(--poe-font-number);font-size:10px}
-.poe-tab[data-active="true"],.poe-tab[data-active]{border-color:#8ba8ff;background:linear-gradient(180deg,#202849,#101524);color:#cfe0ff;box-shadow:0 0 12px rgba(75,141,255,.22)}
-.poe-action-tile{position:relative;display:flex;min-height:72px;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px solid var(--poe-border-dim);border-radius:5px;background:radial-gradient(circle at 50% 32%,rgba(75,141,255,.18),transparent 28%),linear-gradient(180deg,#2a2119,#0e0c0b);color:var(--poe-text);font-family:var(--poe-font-title);font-size:11px;font-weight:600;letter-spacing:.045em;text-transform:uppercase;box-shadow:var(--poe-shadow-raised);cursor:pointer}
-.poe-action-tile kbd{position:absolute;top:4px;left:50%;transform:translateX(-50%);color:var(--poe-text-muted);font-family:var(--poe-font-number);font-size:10px}.poe-action-tile:hover:not(:disabled){border-color:var(--poe-gold-2);box-shadow:var(--poe-glow-blue),var(--poe-shadow-raised)}.poe-action-tile.is-selected{border-color:var(--poe-border-cold);box-shadow:var(--poe-glow-blue),var(--poe-shadow-raised)}.poe-action-tile:disabled{cursor:not-allowed;opacity:.45;filter:saturate(.5)}.poe-action-tile--danger{background:radial-gradient(circle at 50% 32%,rgba(207,49,45,.18),transparent 28%),linear-gradient(180deg,#2a1715,#0e0c0b)}
-.poe-table{width:100%;border-collapse:collapse;background:var(--poe-inset);font-size:12px}.poe-table th{height:28px;text-align:left;padding:0 8px;color:var(--poe-text-soft);font-family:var(--poe-font-title);font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;background:linear-gradient(180deg,#211b16,#12100e);border-bottom:1px solid rgba(201,162,94,.2)}.poe-table td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.055);vertical-align:top}.poe-table td:nth-child(n+2){font-family:var(--poe-font-number);font-variant-numeric:tabular-nums;color:var(--poe-text-soft)}.poe-table tr:nth-child(even){background:rgba(255,255,255,.018)}.poe-table tr:hover{background:rgba(201,162,94,.075)}.poe-table tr[data-selected="true"]{outline:1px solid var(--poe-gold-2);background:rgba(201,162,94,.12);box-shadow:inset 0 0 16px rgba(201,162,94,.08)}
-.poe-tag{display:inline-flex;align-items:center;gap:3px;margin:1px 2px;padding:1px 5px;border:1px solid rgba(255,255,255,.08);border-radius:2px;background:#1b1815;color:var(--poe-text-soft);font-family:var(--poe-font-title);font-size:10px;font-weight:600;letter-spacing:.035em;line-height:15px;text-transform:uppercase}.poe-tag.life{background:#2b1717;color:#ef8a83}.poe-tag.attack{background:#2a2115;color:#f0c25a}.poe-tag.defence{background:#162318;color:#82d78b}.poe-tag.elemental{background:#152133;color:#8fc5ff}.poe-tag.chaos{background:#24172d;color:#c690ff}.poe-badge{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;border-radius:3px;font-family:var(--poe-font-rune);font-size:10px;font-weight:700}.poe-badge.corrupt{background:var(--poe-danger);color:white}.poe-badge.socket{background:#1e73c9;color:white}.poe-badge.essence{background:#7a36bd;color:white}
-/* variant = which fill raster (the rail is shared, variant-agnostic). `blue` is extracted; `green` is a
-   baked recolour (hue-rotate + saturation) shipped as its own asset. */
-.poe-segment-bar{padding:var(--segment-pad,1px);border:8px solid transparent;background:#090807;background-clip:padding-box;border-image:url('../assets/segment-bar/rail.png') 8 / 8px repeat}
-.poe-segment-fill{height:20px;background-size:24px 100%;background-repeat:round}
-.poe-segment-bar[data-variant='blue'] .poe-segment-fill{background-image:url('../assets/segment-bar/fill-blue.png')}
-.poe-segment-bar[data-variant='green'] .poe-segment-fill{background-image:url('../assets/segment-bar/fill-green.png')}
-.poe-mod-group{box-shadow:var(--poe-shadow-inset)}
-.poe-mod-group--prefix .poe-panel-header{border-left:2px solid var(--poe-blue)}
-.poe-mod-group--suffix .poe-panel-header{border-left:2px solid var(--poe-purple)}
-.poe-mod-list{display:grid;gap:4px}
-.poe-mod-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;min-height:var(--poe-row-height);padding:7px 8px;border:1px solid rgba(255,255,255,.055);background:linear-gradient(180deg,rgba(255,255,255,.025),rgba(0,0,0,.08));box-shadow:inset 0 1px rgba(255,255,255,.035)}
-.poe-mod-row:hover{border-color:rgba(201,162,94,.32);background:rgba(201,162,94,.075)}
-.poe-mod-row[data-state="selected"]{border-color:var(--poe-gold-3);background:rgba(201,162,94,.12);box-shadow:inset 0 0 16px rgba(201,162,94,.08),var(--poe-glow-gold)}
-.poe-mod-row[data-state="required"]{border-color:rgba(83,191,98,.55);box-shadow:inset 3px 0 0 var(--poe-green)}
-.poe-mod-row[data-state="blocked"]{border-color:rgba(207,49,45,.38);background:rgba(80,16,16,.22);color:rgba(234,220,192,.72)}
-.poe-mod-row[data-state="warning"]{border-color:rgba(239,189,78,.45);background:rgba(99,65,13,.16)}
-.poe-mod-row[data-state="magic"]{border-color:rgba(75,141,255,.42);box-shadow:inset 0 0 14px rgba(75,141,255,.08)}
-.poe-mod-main{display:grid;gap:4px;min-width:0}.poe-mod-name{display:flex;align-items:center;gap:6px;min-width:0}.poe-mod-name span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.poe-mod-tags{display:flex;flex-wrap:wrap;gap:3px}.poe-mod-stats{display:grid;grid-template-columns:repeat(3,minmax(52px,auto));gap:8px;text-align:right}.poe-mod-stats span{display:grid;gap:1px}.poe-mod-stats b{font-family:var(--poe-font-number);font-size:12px;color:var(--poe-gold-4);font-variant-numeric:tabular-nums}.poe-mod-stats small{font-family:var(--poe-font-title);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--poe-text-muted)}
-.poe-inspector-title{font-size:18px;font-weight:600;letter-spacing:.025em;color:var(--poe-gold-4);margin:0 0 8px;font-family:var(--poe-font-title)}.poe-statline{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.055);padding:7px 0}.poe-statline strong{font-family:var(--poe-font-number);font-variant-numeric:tabular-nums;color:var(--poe-text)}.poe-kbdbar{position:sticky;bottom:0;display:grid;grid-template-columns:repeat(10,1fr);gap:8px;padding:10px;margin-top:12px;background:linear-gradient(180deg,rgba(9,8,7,.2),rgba(9,8,7,.9))}.poe-skill{position:relative;text-align:center;padding:24px 6px 8px;border:1px solid var(--poe-border-dim);background:radial-gradient(circle at 50% 32%,rgba(75,141,255,.18),transparent 28%),linear-gradient(180deg,#2a2119,#0e0c0b);border-radius:5px;font-family:var(--poe-font-title);font-size:11px;font-weight:600;letter-spacing:.045em;text-transform:uppercase}.poe-skill kbd{position:absolute;top:3px;left:50%;transform:translateX(-50%);color:var(--poe-text-muted);font-family:var(--poe-font-number);font-size:11px}.poe-skill:hover{border-color:var(--poe-gold-2);box-shadow:var(--poe-glow-blue)}
 
-/* Raster ornament layer — generated assets wired as 9-slice border-image.
-   Slice = the art's real ornate-band thickness (measured by process-assets); border-width
-   scales that band DOWN to a crisp ~27px UI frame. Hollow center (no `fill`) lets the
-   panel material show inside. */
-/* Button plate: small element, so it SCALES (not 1:1) — border-image fill keeps corners
-   undistorted while the dark plate fills the centre. `--ornate` is the one implemented variant. */
-.poe-button.poe-button--ornate{border-style:solid;border-color:transparent;border-width:9px;border-image:url('../assets/buttons/ornate.png') 9 / 9px repeat;background:transparent;box-shadow:none;min-height:44px;padding:8px 18px;color:var(--poe-text)}
-.poe-button.poe-button--ornate:hover:not(:disabled){filter:brightness(1.12);box-shadow:none}
-.poe-button.poe-button--ornate.is-selected{filter:brightness(1.2);box-shadow:none}
-.poe-mod-browser{display:grid;grid-template-columns:240px minmax(560px,1fr) 320px;gap:12px;margin-top:12px;align-items:start}.poe-browser-sidebar,.poe-browser-inspector,.poe-group-stack{display:grid;gap:12px}.poe-mod-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.poe-affix-column{min-width:0}.poe-filter-stack{display:flex;flex-wrap:wrap;gap:6px}.poe-inspector-copy{margin:0 0 10px}.poe-tag-row{display:flex;flex-wrap:wrap;gap:5px}.poe-stat-stack{margin-top:12px}@media(max-width:1100px){.poe-mod-browser{grid-template-columns:220px minmax(0,1fr)}.poe-browser-inspector{grid-column:1/-1}.poe-mod-columns{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){.poe-mod-browser{grid-template-columns:1fr}.poe-mod-columns{grid-template-columns:1fr}.poe-kbdbar{grid-template-columns:repeat(5,1fr)}}
-.poe-asset-icon{width:1.25em;height:1.25em;vertical-align:-.25em;object-fit:contain;filter:drop-shadow(0 0 4px rgba(0,0,0,.65))}.poe-asset-icon.lg{width:32px;height:32px}.poe-asset-icon.xl{width:52px;height:52px}
-.poe-tag .poe-asset-icon{width:13px;height:13px;margin-right:3px}
-.poe-node-preview{display:grid;grid-template-columns:repeat(4,minmax(56px,1fr));gap:10px;align-items:center}.poe-node-tile{display:flex;align-items:center;justify-content:center;min-height:76px;background:#080706;border:1px solid rgba(201,162,94,.18);box-shadow:inset 0 0 18px rgba(0,0,0,.5)}
+/* Global reset + page backdrop. */
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(circle at 50% -20%, #1d150d 0, #0b0907 48%, #040303 100%);
+  background-attachment: fixed;
+  color: var(--poe-text);
+  font-family: var(--poe-font-ui);
+  font-size: 13px;
+  font-feature-settings: "liga" 1, "calt" 1;
+  text-rendering: geometricPrecision;
+}
+.poe-app { min-height: 100vh; padding: 12px; }
+
+/* Typography roles — .poe-text-* are canonical (PoeText `variant`); the short aliases (.poe-title …)
+   are kept for convenience. Role classes intentionally carry their default colours. */
+.poe-title, .poe-text-display  { font-family: var(--poe-font-display); font-size: var(--poe-fs-display); font-weight: 400; letter-spacing: .02em; color: #e9e3d2; text-shadow: 0 2px 3px rgba(0, 0, 0, .7); }
+.poe-text-heading, .poe-heading { font-family: var(--poe-font-title); font-size: var(--poe-fs-heading); font-weight: 600; letter-spacing: .04em; font-variant: small-caps; color: #ba9b48; }
+.poe-text-label, .poe-label    { font-family: var(--poe-font-display); font-size: var(--poe-fs-label); letter-spacing: .01em; color: #8d8464; }
+.poe-text-body                 { font-family: var(--poe-font-ui); font-size: var(--poe-fs-body); color: #a8a9a6; line-height: 1.45; }
+.poe-text-meta, .poe-subtle    { font-size: var(--poe-fs-meta); color: #84898c; }
+.poe-text-number, .poe-number  { font-family: var(--poe-font-number); font-size: var(--poe-fs-number); font-variant-numeric: tabular-nums; color: var(--poe-gold-4); }
+.poe-text-rune                 { font-family: var(--poe-font-rune); letter-spacing: .08em; text-transform: uppercase; color: var(--poe-magic); text-shadow: 0 0 10px rgba(75, 141, 255, .28); }
+.poe-text-warning              { color: var(--poe-amber); text-shadow: 0 0 10px rgba(239, 189, 78, .18); }
+.poe-text-danger               { color: #ff9a8f; text-shadow: 0 0 10px rgba(207, 49, 45, .2); }
+
+/* PoeInput — plain inset field + ornate 9-slice raster variant (inputs/frame.png, CSS fill behind). */
+.poe-input { width: 100%; height: 34px; border: 1px solid var(--poe-border-dim); border-radius: 3px; background: linear-gradient(180deg, #070606, #11100f); color: var(--poe-text); padding: 0 12px; box-shadow: inset 0 2px 8px rgba(0, 0, 0, .75); font-family: var(--poe-font-ui); font-weight: 500; }
+.poe-input::placeholder { color: rgba(189, 162, 119, .58); font-style: italic; }
+.poe-input:focus { outline: none; border-color: var(--poe-gold-2); box-shadow: inset 0 2px 8px rgba(0, 0, 0, .75), var(--poe-glow-gold); }
+.poe-input.poe-input--ornate { height: 46px; border: 12px solid transparent; border-image: url('../assets/inputs/frame.png') 12 / 12px repeat; border-radius: 0; background: #0a0908; background-clip: padding-box; box-shadow: none; }
+.poe-input.poe-input--ornate:focus { box-shadow: none; border-image: url('../assets/inputs/frame.png') 12 / 12px repeat; }
+
+/* PoeButton — RASTER only: a 9-slice ornate frame (buttons/ornate.png) + CSS fill. Small element ⇒ it
+   SCALES (border-image fill keeps corners crisp). `--ornate` is the one implemented variant. */
+.poe-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: var(--poe-control-height); color: var(--poe-text); cursor: pointer; font-family: var(--poe-font-title); font-size: 12px; font-weight: 600; letter-spacing: .045em; text-transform: uppercase; }
+.poe-button:active:not(:disabled) { transform: translateY(1px); }
+.poe-button:disabled { cursor: not-allowed; opacity: .45; filter: saturate(.6); }
+.poe-button.poe-button--ornate { border: 9px solid transparent; border-image: url('../assets/buttons/ornate.png') 9 / 9px repeat; background: transparent; min-height: 44px; padding: 8px 18px; }
+.poe-button.poe-button--ornate:hover:not(:disabled) { filter: brightness(1.12); }
+.poe-button.poe-button--ornate.is-selected { filter: brightness(1.2); }
+
+/* PoeBadge — small inline rune badge; the `type` becomes a class for a colour variant. */
+.poe-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; border-radius: 3px; font-family: var(--poe-font-rune); font-size: 10px; font-weight: 700; }
+.poe-badge.corrupt { background: var(--poe-danger); color: white; }
+.poe-badge.socket  { background: #1e73c9; color: white; }
+.poe-badge.essence { background: #7a36bd; color: white; }
+
+/* PoeSegmentBar — shared 9-slice rail (variant-agnostic) + a repeating fill raster. `blue` is
+   extracted; `green` is a baked recolour shipped as its own asset. */
+.poe-segment-bar { padding: var(--segment-pad, 1px); border: 8px solid transparent; background: #090807; background-clip: padding-box; border-image: url('../assets/segment-bar/rail.png') 8 / 8px repeat; }
+.poe-segment-fill { height: 20px; background-size: 24px 100%; background-repeat: round; }
+.poe-segment-bar[data-variant='blue'] .poe-segment-fill  { background-image: url('../assets/segment-bar/fill-blue.png'); }
+.poe-segment-bar[data-variant='green'] .poe-segment-fill { background-image: url('../assets/segment-bar/fill-green.png'); }
