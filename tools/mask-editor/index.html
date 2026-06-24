@@ -325,7 +325,7 @@ async function setImage(path) {
 }
 async function refreshMaskList(selected) {
   const masks = await (await fetch('/api/masks')).json();
-  $('maskSel').innerHTML = `<option value="">(new)</option>` + masks.map(m => `<option${m === selected ? ' selected' : ''}>${m}</option>`).join('');
+  $('maskSel').innerHTML = `<option value="">(new)</option>` + masks.map(m => `<option value="${m.name}"${m.name === selected ? ' selected' : ''}>${m.name} — ${m.path}</option>`).join('');
 }
 async function loadMask(name) {
   const m = await (await fetch(`/api/mask?name=${name}`)).json();

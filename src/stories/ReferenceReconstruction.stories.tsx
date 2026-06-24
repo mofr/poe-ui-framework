@@ -50,7 +50,7 @@ const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap
 
 export const Dashboard = {
   render: () => (
-    <PoePanel frame="ruled-gold-1" surface="matte-stone-1" integration="none" innerShadowSize={64} innerShadowColor="rgba(0,0,0,1.0)" style={{ maxWidth: 1680, margin: '0 auto' }}>
+    <PoePanel frame="ruled-gold-1" surface="cracked-stone-2" integration="none" innerShadowSize={64} innerShadowColor="rgba(0,0,0,1.0)" style={{ maxWidth: 1680, margin: '0 auto' }}>
       <PoePanelBody>
         <div style={col}>
 
@@ -65,7 +65,7 @@ export const Dashboard = {
 
           <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
             {/* left */}
-            <div style={{ flex: '0 0 240px', ...col }}>
+            <div style={{ flex: '0 0 340px', ...col }}>
               <Panel header={<Heading>Repositories</Heading>}>{repos.map((r, i) => <Row key={r}><PoeText variant="body" style={i === 0 ? { color: 'var(--poe-gold-4)' } : undefined}>{i ? '▸ ' : '★ '}{r}</PoeText></Row>)}</Panel>
               <Panel frame="slim-dark-2" header={<Heading>Quest Log (Issues & PRs)</Heading>}>{['Fix hydration warning', 'Improve Suspense docs', 'Update type defs'].map(q => <Row key={q}><PoeText variant="body">{q}</PoeText><PoeBadge type="rare">●</PoeBadge></Row>)}</Panel>
             </div>
@@ -98,7 +98,7 @@ export const Dashboard = {
             </div>
 
             {/* right */}
-            <div style={{ flex: '0 0 260px', ...col }}>
+            <div style={{ flex: '0 0 340px', ...col }}>
               <Panel header={<Heading>Repo Overview</Heading>}><div style={{ height: 150, display: 'grid', placeItems: 'center' }}><PoeText variant="meta">atlas / skill-tree art</PoeText></div></Panel>
               <Panel header={<Heading>Pinned Repositories</Heading>}>{pinned.map(([n, d, s]) => <div key={n} style={{ marginBottom: 8 }}><Row><PoeText variant="label" as="span">{n}</PoeText><PoeText variant="number" as="span">★ {s}</PoeText></Row><PoeText variant="meta">{d}</PoeText></div>)}</Panel>
             </div>

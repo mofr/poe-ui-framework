@@ -8,7 +8,7 @@
   --surface-radius: 4px;
   --edge-repeat: repeat;
   --overhang: 0px;
-  --integration-spill: 16px;   /* auto-patched by tools/cut-panel.mjs on re-cut */
+  --integration-spill: 17px;   /* auto-patched by tools/cut-panel.mjs on re-cut */
   --src-frame: url('./PoePanel.slim-dark-1.png');
   --src-integration-shadow: url('./PoePanel.slim-dark-1.integration-shadow.png');
   --src-integration-specular: none;

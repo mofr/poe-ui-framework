@@ -66,7 +66,7 @@
 /* integration shares the frame's slice/band, but SPILLS past the frame as decoration: its outset =
    overhang + --integration-spill (how far it was traced beyond the frame). Same slice/band + uniform extra
    outset keeps it locked to the frame; the frame's own geometry is untouched. */
-.poe-panel__integration-shadow   { z-index: 3; border-image-source: var(--src-integration-shadow); opacity: .8;
+.poe-panel__integration-shadow   { z-index: 3; border-image-source: var(--src-integration-shadow); opacity: 1.0;
   border-image-outset: calc(var(--overhang) + var(--integration-spill, 0px)); }
 
 /* CONTENT — flow wrapper (drives auto-height). INNATE padding = --content-pad, the frame's visible-art

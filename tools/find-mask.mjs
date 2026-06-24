@@ -44,7 +44,7 @@ export async function listMasks() {
   const files = await allMaskFiles();
   const out = [];
   for (const f of files) {
-    try { const m = JSON.parse(await readFile(f, 'utf8')); if (m.name) out.push({ name: m.name, path: f }); } catch { /* skip */ }
+    try { const m = JSON.parse(await readFile(f, 'utf8')); if (m.name) out.push({ name: m.name, path: relative(ROOT, f) }); } catch { /* skip */ }
   }
   return out.sort((a, b) => a.name.localeCompare(b.name));
 }

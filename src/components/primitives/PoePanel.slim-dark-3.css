@@ -8,7 +8,8 @@
   --surface-radius: 4px;
   --edge-repeat: repeat;
   --overhang: 0px;
+  --integration-spill: 11px;
   --src-frame: url('./PoePanel.slim-dark-3.png');
-  --src-integration-shadow: none;
+  --src-integration-shadow: url('./PoePanel.slim-dark-3.integration-shadow.png');
   --src-integration-specular: none;
 }

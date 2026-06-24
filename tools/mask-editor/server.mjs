@@ -70,7 +70,7 @@ createServer(async (req, res) => {
     }
     if (url.pathname === '/api/images') return send(res, 200, 'application/json', JSON.stringify(await listImages()));
     if (url.pathname === '/api/masks') {
-      try { return send(res, 200, 'application/json', JSON.stringify((await listMasks()).map(m => m.name))); }
+      try { return send(res, 200, 'application/json', JSON.stringify(await listMasks())); }
       catch { return send(res, 200, 'application/json', '[]'); }
     }
     if (url.pathname === '/api/mask') {

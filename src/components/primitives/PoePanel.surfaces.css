@@ -3,6 +3,7 @@
    Add a surface = add a row here; never edit the engine. */
 
 .poe-panel[data-surface='cracked-stone-1'] { --src-surface: url('../../assets/backgrounds/cracked-stone-1.png'); --surface-tile: 1254px; }
+.poe-panel[data-surface='cracked-stone-2'] { --src-surface: url('../../assets/backgrounds/cracked-stone-2.png'); --surface-tile: 350px; }
 .poe-panel[data-surface='worn-leather-1']  { --src-surface: url('../../assets/backgrounds/worn-leather-1.png');  --surface-tile: 1254px; }
 /* solid-black-1 — near-black panel interior tiled from the reference */
 .poe-panel[data-surface='solid-black-1']   { --src-surface: url('../../assets/backgrounds/solid-black-1.png');   --surface-tile: 431px; }
