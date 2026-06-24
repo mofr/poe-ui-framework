@@ -66,8 +66,8 @@ export const Dashboard = {
           <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
             {/* left */}
             <div style={{ flex: '0 0 240px', ...col }}>
-              <Panel header={<Heading meta="6">Repositories</Heading>}>{repos.map((r, i) => <Row key={r}><PoeText variant="body" style={i === 0 ? { color: 'var(--poe-gold-4)' } : undefined}>{i ? '▸ ' : '★ '}{r}</PoeText></Row>)}</Panel>
-              <Panel frame="slim-dark-2" header={<Heading meta="Issues & PRs">Quest Log</Heading>}>{['Fix hydration warning', 'Improve Suspense docs', 'Update type defs'].map(q => <Row key={q}><PoeText variant="body">{q}</PoeText><PoeBadge type="rare">●</PoeBadge></Row>)}</Panel>
+              <Panel header={<Heading>Repositories</Heading>}>{repos.map((r, i) => <Row key={r}><PoeText variant="body" style={i === 0 ? { color: 'var(--poe-gold-4)' } : undefined}>{i ? '▸ ' : '★ '}{r}</PoeText></Row>)}</Panel>
+              <Panel frame="slim-dark-2" header={<Heading>Quest Log (Issues & PRs)</Heading>}>{['Fix hydration warning', 'Improve Suspense docs', 'Update type defs'].map(q => <Row key={q}><PoeText variant="body">{q}</PoeText><PoeBadge type="rare">●</PoeBadge></Row>)}</Panel>
             </div>
 
             {/* center */}
@@ -80,7 +80,7 @@ export const Dashboard = {
               <Panel frame="slim-dark-3" header={<Heading meta="100% Vitality">Contribution Health</Heading>}><PoeSegmentBar variant="green" /></Panel>
               <Panel frame="slim-dark-3" header={<Heading meta="18 Day Streak">Coding Energy (Streak)</Heading>}><PoeSegmentBar variant="blue" /></Panel>
               <div style={{ display: 'flex', gap: 14 }}>
-                <Panel bleed header={<Heading meta="Recent Commits">Combat Log</Heading>}>
+                <Panel bleed header={<Heading>Combat Log (Recent Commits)</Heading>}>
                   <PoeList>
                     {commits.map(([sha, msg, val, color]) => (
                       <PoeListRow
