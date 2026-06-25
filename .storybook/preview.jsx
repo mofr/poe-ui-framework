@@ -1,5 +1,6 @@
 import React from 'react';
 import '../src/styles/poe-core.css';
+import '../src/styles/poe-vignette.css';
 import grid from '../src/assets/backgrounds/blueprint-grid.png';
 import crackedStone1 from '../src/assets/backgrounds/cracked-stone-1.png';
 import wornLeather1 from '../src/assets/backgrounds/worn-leather-1.png';

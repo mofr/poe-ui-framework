@@ -7,6 +7,7 @@ import { PoeBadge } from '../components/primitives/PoeBadge.tsx';
 import { PoeInput } from '../components/primitives/PoeInput.tsx';
 import { PoeList, PoeListRow } from '../components/primitives/PoeList.tsx';
 import { GitCommitHorizontal } from 'lucide-react';
+import castleNight from '../assets/backgrounds/castle-night-2.jpg';
 // Reference reconstruction — rebuild the @d4m1n.max "Interface Mage" dashboard from OUR framework.
 // Semantic text only (PoeText → role tokens, no inline sizes); PoePanel is auto-height (inner panels AND
 // the outer ruled-gold-1 container). The page stone is the OUTER PANEL'S SURFACE (matte-stone-1), not an
@@ -46,7 +47,7 @@ const activity = [
 const pinned = [['next.js', 'The React Framework for Production', '128k'], ['tailwindcss', 'A utility-first CSS framework', '82.7k'], ['typescript', 'JavaScript with syntax for types', '100k']];
 const stats = [['Stars', '226k'], ['Forks', '45.6k'], ['Watchers', '6.2k'], ['Issues', '1.2k'], ['Pull Requests', '672']];
 const actions = ['Repos', 'Issues', 'PRs', 'Actions', 'Review', 'Merge', 'Fork', 'Star', 'Settings', 'Create'];
-const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 14 };
+const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 12 };
 
 export const Dashboard = {
   render: () => (
@@ -57,14 +58,14 @@ export const Dashboard = {
 
           {/* header */}
           <Panel frame="slim-dark-3">
-            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div><PoeText variant="display" as="span">gaearon</PoeText> <PoeText variant="meta" style={{ marginLeft: 8 }}>The Interface Mage</PoeText></div>
               <PoeInput ornate placeholder="Search or jump to..." style={{ flex: 1, maxWidth: 420 }} />
-              <div style={{ display: 'flex', gap: 14 }}>{['Code', 'Issues', 'Pull Requests', 'Actions', 'Wiki'].map((t, i) => <PoeText key={t} variant="label" as="span" style={i === 0 ? { color: 'var(--poe-magic, #4b8dff)' } : undefined}>{t}</PoeText>)}</div>
+              <div style={{ display: 'flex', gap: 12 }}>{['Code', 'Issues', 'Pull Requests', 'Actions', 'Wiki'].map((t, i) => <PoeText key={t} variant="label" as="span" style={i === 0 ? { color: 'var(--poe-magic, #4b8dff)' } : undefined}>{t}</PoeText>)}</div>
             </div>
           </Panel>
 
-          <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             {/* left */}
             <div style={{ flex: '0 0 340px', ...col }}>
               <Panel header={<Heading>Repositories</Heading>}>{repos.map((r, i) => <Row key={r}><PoeText variant="body" style={i === 0 ? { color: 'var(--poe-gold-4)' } : undefined}>{i ? '▸ ' : '★ '}{r}</PoeText></Row>)}</Panel>
@@ -100,7 +101,28 @@ export const Dashboard = {
 
             {/* right */}
             <div style={{ flex: '0 0 340px', ...col }}>
-              <Panel frame="slim-dark-4" header={<Heading>Repo Overview</Heading>}><div style={{ height: 150, display: 'grid', placeItems: 'center' }}><PoeText variant="meta">atlas / skill-tree art</PoeText></div></Panel>
+              <PoePanel frame="slim-dark-4" surface="solid-black-1">
+                <PoePanelHeader><Heading>Repo Overview</Heading></PoePanelHeader>
+                <PoePanel className="fill-content" frame="slim-dark-5" surface="solid-black-1" integration="raster" style={{ width: '100%', height: '200px'}}>
+                  <div
+                    className="poe-vignette"
+                    data-vignette='strong'
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: `url(${castleNight}) center / cover`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      font: '14px/1.4 system-ui',
+                      color: '#e8e0cf',
+                      padding: 24,
+                    }}
+                  >
+                  </div>
+                </PoePanel>
+                <PoePanelHeader><Heading>...</Heading></PoePanelHeader>
+              </PoePanel>
               <Panel header={<Heading>Pinned Repositories</Heading>}>{pinned.map(([n, d, s]) => <div key={n} style={{ marginBottom: 8 }}><Row><PoeText variant="label" as="span">{n}</PoeText><PoeText variant="number" as="span">★ {s}</PoeText></Row><PoeText variant="meta">{d}</PoeText></div>)}</Panel>
             </div>
           </div>

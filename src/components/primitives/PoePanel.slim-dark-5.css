@@ -1,0 +1,12 @@
+.poe-panel[data-frame='slim-dark-5'] {
+  --band: 48px;
+  --slice: 48;
+  --content-pad: calc(4px * var(--frame-scale));
+  --surface-radius: 4px;
+  --edge-repeat: repeat;
+  --overhang: 0px;
+  --integration-spill: 8px;   /* auto-patched by tools/cut-panel.mjs on re-cut */
+  --src-frame: url('./PoePanel.slim-dark-5.png');
+  --src-integration-shadow: url('./PoePanel.slim-dark-5.integration-shadow.png');
+  --src-integration-specular: none;
+}

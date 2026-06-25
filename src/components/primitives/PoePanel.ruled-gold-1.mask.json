@@ -1,5 +1,5 @@
 {
-  "name": "panel-ruled-gold-1",
+  "name": "PoePanel.ruled-gold-1",
   "image": "inspiration/reference-1680.png",
   "build": "assemble",
   "comment": "Outer dashboard border. Separate corner+edge contours → assemble-frame (gapless). inpaint clears UI bits on the line.",
@@ -600,5 +600,6 @@
       "note": "",
       "round": 0
     }
-  ]
+  ],
+  "fade": 2
 }
