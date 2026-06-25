@@ -1,0 +1,7 @@
+/* PoePanel frame: debug-r8 — debug scaffolding: band/slice 30, radius 8. Colocated with the component. */
+.poe-panel[data-frame='debug-r8'] {
+  --surface-radius: 8px;
+  --src-frame: url('./PoePanel.debug-r8.png');
+  --src-integration-shadow: url('./PoePanel.debug-r8.integration-shadow.png');
+  --src-integration-specular: url('./PoePanel.debug-r8.integration-specular.png');
+}

@@ -1,0 +1,10 @@
+/* PoePanel frame: debug-r24 — debug scaffolding: band/slice 48 (radius 24 can't fit 30px slice),
+   radius 24. Colocated with the component. */
+.poe-panel[data-frame='debug-r24'] {
+  --band: 48px;
+  --slice: 48;
+  --surface-radius: 24px;
+  --src-frame: url('./PoePanel.debug-r24.png');
+  --src-integration-shadow: url('./PoePanel.debug-r24.integration-shadow.png');
+  --src-integration-specular: url('./PoePanel.debug-r24.integration-specular.png');
+}

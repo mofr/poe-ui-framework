@@ -116,12 +116,7 @@ export const Gallery = {
   render: () => (
     <div style={{ display: 'flex', gap: 70, flexWrap: 'wrap', alignItems: 'flex-start' }}>
       <Cell color="#cbb" w={320} h={230} label="default state (debug-r8 · debug)">{questContent}</Cell>
-      <Cell color="#cbb" w={620} h={420} frame="jeweled-gold-1" integration="none" surface="cracked-stone-1"
-        label="jeweled-gold-1 · cracked-stone-1 (large)">{questContent}</Cell>
-      <Cell color="#cbb" w={360} h={250} frame="slim-gold-1" integration="none" surface="worn-leather-1"
-        label="slim-gold-1 · worn-leather-1">{questContent}</Cell>
-      <Cell color="#cbb" w={360} h={250} frame="slim-gold-1" integration="none" surface="smooth-slate-1"
-        label="slim-gold-1 · smooth-slate-1">{questContent}</Cell>
+
       <Cell color="#cbb" w={454} h={306} frame="slim-dark-1" integration="raster" surface="solid-black-1"
         header={title('Combat Log', 'Recent Commits')}
         label="slim-dark-1 · solid-black-1 · header slot">{demoBody}</Cell>
@@ -129,10 +124,12 @@ export const Gallery = {
         label="slim-dark-2 · solid-black-1 (quest log)">{questContent}</Cell>
       <Cell color="#cbb" w={600} h={150} frame="slim-dark-3" integration="raster" surface="matte-stone-1"
         label="slim-dark-3 · matte-stone-1 (wide)">{questContent}</Cell>
+      <Cell color="#cbb" w={600} h={150} frame="slim-dark-4" integration="raster" surface="matte-stone-1"
+        label="slim-dark-4 · matte-stone-1 (wide)">{questContent}</Cell>
       <Cell color="#cbb" w={820} h={420} frame="ruled-gold-1" integration="none" surface="matte-stone-2"
         label="ruled-gold-1 · matte-stone-2 (page frame)">{questContent}</Cell>
-      <Cell color="#cbb" w={360} h={250} frame="cracked-stone-2-frame" surface="cracked-stone-2"
-        label="cracked-stone-2-frame · cracked-stone-2 (9-slice surface)">{questContent}</Cell>
+      <Cell color="#cbb" w={360} h={250} frame="cracked-stone-2" surface="cracked-stone-2"
+        label="cracked-stone-2 · cracked-stone-2 (9-slice surface)">{questContent}</Cell>
     </div>
   ),
 };
@@ -165,7 +162,7 @@ export const Playground = {
   argTypes: {
     frame: {
       control: 'select',
-      options: ['none', 'debug-r0', 'debug-r4', 'debug-r8', 'debug-r24', 'jeweled-gold-1', 'slim-gold-1', 'slim-dark-1', 'slim-dark-2', 'slim-dark-3', 'ruled-gold-1', 'cracked-stone-2-frame'],
+      options: ['none', 'debug-r0', 'debug-r4', 'debug-r8', 'debug-r24', 'slim-dark-1', 'slim-dark-2', 'slim-dark-3', 'ruled-gold-1', 'cracked-stone-2-frame'],
       description: 'Real 1:1 frames render best when width/height stay near their native proportions.',
     },
     frameScale: SCALE,
@@ -209,12 +206,12 @@ export const Playground = {
 // ============================================================================================
 export const LayerContract = {
   tags: ['!dev'],
-  args: { frame: 'slim-gold-1', surface: 'cracked-stone-1', integration: 'none', accentTop: 'debug', accentBottom: 'debug' },
+  args: { frame: 'slim-dark-1', surface: 'cracked-stone-1', integration: 'none', accentTop: 'debug', accentBottom: 'debug' },
   render: (args) => <PoePanel {...args} style={{ width: 300, height: 200 }}>Body</PoePanel>,
   play: async ({ canvasElement }) => {
     const panel = canvasElement.querySelector('.poe-panel');
     await expect(panel).not.toBeNull();
-    await expect(panel).toHaveAttribute('data-frame', 'slim-gold-1');
+    await expect(panel).toHaveAttribute('data-frame', 'slim-dark-1');
     await expect(panel).toHaveAttribute('data-surface', 'cracked-stone-1');
     await expect(panel).toHaveAttribute('data-integration', 'none');
 

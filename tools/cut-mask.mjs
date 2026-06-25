@@ -49,7 +49,7 @@ const outMap = (mask.out && typeof mask.out === 'object') ? mask.out : null;
 
 if ('each' in opt) {                       // one trimmed PNG per keep contour (multi-region masks)
   const keeps = all.filter(c => (c.op || 'keep') === 'keep');
-  const dir = resolve(ROOT, opt.out || `asset-review/${name}`);
+  const dir = resolve(ROOT, opt.out || `${name}`);
   for (let i = 0; i < keeps.length; i++) {
     // route by contour name → out[name] when mapped, else the slugged file in the default dir
     const mapped = outMap && outMap[keeps[i].name];
@@ -60,7 +60,7 @@ if ('each' in opt) {                       // one trimmed PNG per keep contour (
   }
   console.log(`cut ${keeps.length} region(s) of ${name} @ ${W}x${H}`);
 } else {
-  const out = resolve(ROOT, opt.out || (typeof mask.out === 'string' ? mask.out : '') || `asset-review/cut-${name}.png`);
+  const out = resolve(ROOT, opt.out || (typeof mask.out === 'string' ? mask.out : '') || `${name}.png`);
   await mkdir(dirname(out), { recursive: true });
   await cut(all.filter(c => (c.op || 'keep') === 'keep'), out, false);
   console.log(`cut ${name}: ${W}x${H} from ${opt.src || mask.image}${feather ? ` feather ${feather}` : ''} -> ${out.replace(ROOT + '/', '')}`);

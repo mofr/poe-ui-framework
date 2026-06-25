@@ -100,7 +100,7 @@ export const Dashboard = {
 
             {/* right */}
             <div style={{ flex: '0 0 340px', ...col }}>
-              <Panel header={<Heading>Repo Overview</Heading>}><div style={{ height: 150, display: 'grid', placeItems: 'center' }}><PoeText variant="meta">atlas / skill-tree art</PoeText></div></Panel>
+              <Panel frame="slim-dark-4" header={<Heading>Repo Overview</Heading>}><div style={{ height: 150, display: 'grid', placeItems: 'center' }}><PoeText variant="meta">atlas / skill-tree art</PoeText></div></Panel>
               <Panel header={<Heading>Pinned Repositories</Heading>}>{pinned.map(([n, d, s]) => <div key={n} style={{ marginBottom: 8 }}><Row><PoeText variant="label" as="span">{n}</PoeText><PoeText variant="number" as="span">★ {s}</PoeText></Row><PoeText variant="meta">{d}</PoeText></div>)}</Panel>
             </div>
           </div>

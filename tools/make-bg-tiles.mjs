@@ -19,7 +19,7 @@ const mask = JSON.parse(await readFile(await findMaskPath(name), 'utf8'));
 const srcPath = resolve(ROOT, opt.src || mask.image);
 const { width: W, height: H } = await sharp(srcPath).metadata();
 const inset = Number(opt.inset ?? 0.06);
-const outDir = resolve(ROOT, opt.out || 'src/assets/backgrounds');
+const outDir = resolve(ROOT, opt.out || `${name}`);
 const outMap = (mask.out && typeof mask.out === 'object') ? mask.out : null;
 const slug = s => (s || 'region').replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-+|-+$/g, '');
 

@@ -755,7 +755,7 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   words), synced across filename ↔ CSS `data-*` ↔ TS union ↔ Storybook. SURFACES: `gpt-stone-1`→`cracked-stone-1`,
   `big-stone-2`→`smooth-slate-1`, `gpt-stone-2`→`worn-leather-1`, `ref-panel`→`solid-black-1`,
   `page-stone`→`matte-stone-1`, `page-stone-2`→`matte-stone-2` (+ backdrop `stone-lowfreq.png`→`matte-stone-soft.png`).
-  FRAMES: `gpt-panel-a`→`jeweled-gold-1`, `gpt-panel-b`→`slim-gold-1`, `basic-panel-a`→`plain-dark-1`,
+  FRAMES: `basic-panel-a`→`plain-dark-1`,
   `basic-panel-b`→`plain-dark-2`, `page-frame`→`ruled-gold-1`. `debug-r*`/`none` kept (functional states).
   Also `.poe-search`→`.poe-input`; PoeInput stories `Ornate`+`Plain`→one `Gallery`; PoeSegmentBar `Variants`→`Gallery`;
   fixed `LayerContract` invalid `surface:'stone'`→`cracked-stone-1`. PNGs `git mv`'d; tools/masks/* names left as-is.

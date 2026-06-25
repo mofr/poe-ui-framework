@@ -1,8 +1,7 @@
 {
-  "name": "panel-slim-dark-3",
+  "name": "PoePanel.slim-dark-3",
   "image": "inspiration/reference-1680.png",
   "build": "assemble",
-  "out": "src/components/primitives/PoePanel.slim-dark-3.png",
   "comment": "Contribution Health panel (slim-dark-3): wide, separate corner+edge contours → assemble (gapless), small corners.",
   "contours": [
     {
@@ -635,5 +634,6 @@
       "note": "looks unusual, maybe make the upper part transparent",
       "round": 0
     }
-  ]
+  ],
+  "fade": 2
 }

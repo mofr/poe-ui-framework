@@ -15,5 +15,5 @@
 .poe-panel[data-surface='smooth-slate-1']  { --src-surface: url('../../assets/backgrounds/smooth-slate-1.png');  --surface-tile: 1024px; }
 
 /* debug surface — grid tile + a DEBUG inner-2px edge marker (the one-off extra, not part of the render). */
-.poe-panel[data-surface='debug']           { --src-surface: url('../../assets/panels/debug/debug-surface.png');  --surface-tile: 64px; }
+.poe-panel[data-surface='debug']           { --src-surface: url('./PoePanel.debug-surface.png');  --surface-tile: 64px; }
 .poe-panel[data-surface='debug'] > .poe-panel__surface { box-shadow: inset 0 0 0 2px rgba(150, 255, 170, .95); }

@@ -18,10 +18,14 @@
    inside that (on thin frames the side gap is only a few px); wrap it in PoePanelBody for extra
    breathing room (--body-pad). PoePanelHeader is the title bar. Per-instance: `contentPad` prop. */
 
-@import './PoePanel.frames.css';        /* mask-less frames (debug, jeweled-gold-1, slim-gold-1) */
-@import './PoePanel.slim-dark-1.css';   /* masked frames: each colocated with its mask + raster */
+@import './PoePanel.debug-r0.css';
+@import './PoePanel.debug-r4.css';
+@import './PoePanel.debug-r8.css';
+@import './PoePanel.debug-r24.css';
+@import './PoePanel.slim-dark-1.css';
 @import './PoePanel.slim-dark-2.css';
 @import './PoePanel.slim-dark-3.css';
+@import './PoePanel.slim-dark-4.css';
 @import './PoePanel.ruled-gold-1.css';
 @import './PoePanel.cracked-stone-2.css';
 @import './PoePanel.surfaces.css';
@@ -43,9 +47,9 @@
   --content-pad: calc(var(--band) * var(--frame-scale));     /* per-frame clearance consumed by
                                            PoePanelHeader/Body so their content clears the (scaled) frame;
                                            per-frame/instance overridable (contentPad prop) */
-  --src-frame:    url('../../assets/panels/debug/frame-r8.png');
-  --src-integration-shadow:   url('../../assets/panels/debug/shadow-r8.png');
-  --src-integration-specular: url('../../assets/panels/debug/specular-r8.png');
+  --src-frame:    url('./PoePanel.debug-r8.png');
+  --src-integration-shadow:   url('./PoePanel.debug-r8.integration-shadow.png');
+  --src-integration-specular: url('./PoePanel.debug-r8.integration-specular.png');
   /* default SURFACE = none. Set on the root (not just the layer) so a nested panel can't inherit a
      parent's --src-surface; each panel re-declares via its own data-surface (see PoePanel.surfaces.css). */
   --src-surface: none; --surface-tile: 64px;
@@ -112,7 +116,7 @@
 .poe-panel__accent {
   position: absolute; z-index: 7; pointer-events: none;
   width: calc(48px * var(--accent-scale)); height: calc(48px * var(--accent-scale));  /* 48 = native px */
-  background: url('../../assets/panels/debug/debug-accent.png') center / contain no-repeat;
+  background: url('./PoePanel.debug-accent.png') center / contain no-repeat;
   filter: drop-shadow(0 0 9px rgba(255, 225, 140, .9));
 }
 .poe-panel__accent--t { top: 0;    left: 50%; transform: translate(-50%, -50%); }

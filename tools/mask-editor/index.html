@@ -12,14 +12,17 @@
   select, input, button { font: inherit; background: #262a31; color: #d7dae0; border: 1px solid #3a404b; border-radius: 4px; padding: 4px 8px; }
   button { cursor: pointer; }
   button:hover { background: #2f343d; }
+  button:disabled { opacity: 0.5; cursor: default; }
   button.primary { background: #2f6b4f; border-color: #3a8a64; }
+  button.danger { background: #5a2a2a; border-color: #7a3a3a; }
+  button.danger:hover { background: #6a3030; }
   #help { color: #6f7682; flex: 1; min-width: 120px; }
   .right { margin-left: auto; display: flex; gap: 8px; }
   #status { padding: 4px 10px; color: #8b919c; background: #1a1d22; border-bottom: 1px solid #2c313a; }
-  #wrap { position: absolute; inset: 0; top: 86px; overflow: hidden; }
+  #wrap { position: absolute; inset: 0; top: 38px; overflow: hidden; }
   canvas { display: block; cursor: crosshair; }
   kbd { background: #2c313a; border-radius: 3px; padding: 0 4px; color: #aeb4bd; }
-  #panel { position: absolute; top: 10px; left: 10px; width: 252px; max-height: calc(100% - 20px); overflow: auto;
+  #panel { position: absolute; top: 10px; left: 10px; width: 520px; max-height: calc(100% - 20px); overflow: auto;
     background: rgba(24,27,32,0.93); border: 1px solid #2c313a; border-radius: 6px; padding: 8px; backdrop-filter: blur(3px); }
   #phead { display: flex; align-items: center; justify-content: space-between; }
   #phead h4 { margin: 2px 4px 6px; color: #8b919c; font-weight: 600; }
@@ -34,7 +37,11 @@
   .crow .pts { color: #6f7682; flex: none; min-width: 16px; text-align: right; }
   .crow .x { color: #7d8590; padding: 0 4px; border-radius: 3px; flex: none; }
   .crow .x:hover { background: #5a2a2a; color: #fff; }
-  #addc { width: 100%; margin: 6px 0; }
+  #maskbar { display: flex; gap: 6px; align-items: center; margin-bottom: 10px; }
+  #maskbar > select { flex: 1; min-width: 0; }
+  #maskbar > button { flex: none; }
+  #phead .addc { background: none; border: none; color: #8b919c; cursor: pointer; padding: 2px 6px; font-size: 18px; line-height: 1; border-radius: 3px; }
+  #phead .addc:hover { background: #2c313a; color: #d7dae0; }
   /* GLOBAL config — visually boxed + offset so the whole-mask comment is never confused with a contour note. */
   #globalcfg { border: 1px solid #3a4250; background: #20252e; border-radius: 6px; padding: 8px 10px; margin-bottom: 12px; }
   #globalcfg h4 { margin: 0 0 6px; }
@@ -43,29 +50,45 @@
   #comment { width: 100%; resize: vertical; font: inherit; }
   #details { border-top: 1px solid #2c313a; margin-top: 4px; padding-top: 8px; }
   #details.hidden { display: none; }
+  .hidden { display: none !important; }
   .det { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
-  .det > label { color: #8b919c; width: 46px; flex: none; }
-  .det > select, .det > input[type=text] { flex: 1; min-width: 0; }
+  .det > label { color: #8b919c; width: 60px; flex: none; }
+  .det > select, .det > input:not([type=range]) { flex: 1; min-width: 0; }
   .det > input[type=range] { flex: 1; min-width: 0; }
   .det .rv { color: #6f7682; width: 40px; flex: none; text-align: right; }
+  .btnrow { display: flex; gap: 6px; margin: 8px 0 4px; }
+  .btnrow > button { flex: 1; }
+  #modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.55); align-items: center; justify-content: center; }
+  #modal.open { display: flex; }
+  #modal-box { background: #1d2026; border: 1px solid #2c313a; border-radius: 8px; width: min(640px, 90vw); max-height: 80vh; display: flex; flex-direction: column; }
+  #modal-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid #2c313a; }
+  #modal-head h3 { margin: 0; flex: 1; font-size: 14px; font-weight: 600; }
+  #modal-head .status-badge { font-size: 12px; padding: 2px 8px; border-radius: 4px; }
+  #modal-head .status-badge.ok { background: #1f4a30; color: #4caf78; }
+  #modal-head .status-badge.fail { background: #4a1f1f; color: #e06050; }
+  #modal-close { background: none; border: none; color: #8b919c; cursor: pointer; font-size: 18px; padding: 2px 6px; border-radius: 3px; }
+  #modal-close:hover { background: #2c313a; color: #d7dae0; }
+  #modal-log { padding: 10px 14px; overflow: auto; flex: 1; font-family: monospace; font-size: 12px; line-height: 1.5; white-space: pre-wrap; color: #b0b6c0; }
+  #modal-log .err { color: #e06050; }
 </style>
 </head>
 <body>
 <div id="bar">
-  <label>image</label><select id="image"></select>
-  <label>mask</label><select id="maskSel"></select>
-  <input id="name" size="12" placeholder="new name" />
-  <button id="newfile" title="start a new empty mask">new</button>
-  <button id="delfile" title="delete the current mask file">delete</button>
-  <span id="help">click=add point (nearest edge) · drag=move · <kbd>del</kbd>=remove · <kbd>n</kbd>=new contour · set a contour to <b>hole</b> to cut an opening · <kbd>h</kbd> hide overlay · wheel zoom · space-drag pan · <kbd>ctrl+z</kbd> undo</span>
-  <div class="right"><button id="fit">fit <kbd>f</kbd></button><button id="actual" title="100% — 1 image px = 1 screen px (1)">100%</button><button id="recut" title="rebuild this mask's asset via build-mask (inpaint → cut, patches CSS)">recut</button><button id="save" class="primary">save</button></div>
+  <span id="help">click=add point (nearest edge) · drag=move · <kbd>del</kbd>=remove · set a contour to <b>hole</b> to cut an opening · <kbd>h</kbd> hide overlay · wheel zoom · space-drag pan · <kbd>ctrl+z</kbd> undo</span>
+  <div class="right"><button id="fit">fit <kbd>f</kbd></button><button id="actual" title="100% — 1 image px = 1 screen px (1)">100%</button></div>
 </div>
 <div id="status">no image</div>
 <div id="wrap">
   <canvas id="cv"></canvas>
   <div id="panel">
+    <div id="maskbar">
+      <select id="maskSel"></select>
+      <button id="newfile" title="start a new empty mask">new</button>
+    </div>
     <div id="globalcfg">
-      <h4>mask config <span class="scope">— whole file</span></h4>
+      <h4>mask config</h4>
+      <div class="det"><label>image</label><select id="image"></select></div>
+      <div class="det"><label>name</label><input id="name" type="text" placeholder="path/to/mask-name" /></div>
       <div class="det"><label>build</label><select id="build">
         <option value="">(unset — required to rebuild)</option>
         <option value="assemble">assemble · corner+edge frame (gapless)</option>
@@ -73,12 +96,22 @@
         <option value="mask">mask · silhouette / --each</option>
         <option value="bg">bg · seamless texture tile</option>
       </select></div>
-      <label class="cfglabel">comment — whole mask</label>
+      <div class="det"><label>fade</label><input id="fade" type="number" min="0" max="20" step="0.5" value="2" /><span class="rv">px</span></div>
+      <div class="det" id="det-out"><label>output</label><input id="out" type="text" /></div>
+      <div id="grp-panel-out">
+        <div class="det"><label>frame</label><input id="out-frame" type="text" /></div>
+        <div class="det"><label>integ.</label><input id="out-integration" type="text" /></div>
+      </div>
+      <label class="cfglabel">comment</label>
       <textarea id="comment" rows="2" placeholder="what this mask is / how it's built…"></textarea>
+      <div class="btnrow">
+        <button id="delfile" class="danger" title="delete the current mask file">delete</button>
+        <button id="save" class="primary">save</button>
+        <button id="savecut" title="save + rebuild this mask's asset (inpaint → cut, patches CSS)">save and cut</button>
+      </div>
     </div>
-    <div id="phead"><h4>contours</h4><span id="meye" class="eye" title="show/hide all overlay (h)"></span></div>
+    <div id="phead"><h4>contours</h4><span id="meye" class="eye" title="show/hide all overlay (h)"></span><button class="addc" id="addc" title="add a new contour">+</button></div>
     <div id="clist"></div>
-    <button id="addc">+ contour <kbd>n</kbd></button>
     <div id="details"></div>
   </div>
 </div>
@@ -313,7 +346,7 @@ function renderDetails() {
 }
 function status() {
   $('status').textContent = img
-    ? `${$('image').value} · ${imgW}×${imgH} · contours ${contours.length} (active #${active + 1} "${contours[active].name || ''}" ${contours[active].op}, ${contours[active].points.length} pts) · zoom ${view.zoom.toFixed(2)}`
+    ? `${$('image').value} · ${imgW}×${imgH} · ${$('name').value || '(unnamed)'} · contours ${contours.length} (active #${active + 1} "${contours[active].name || ''}" ${contours[active].op}, ${contours[active].points.length} pts) · zoom ${view.zoom.toFixed(2)}`
     : 'no image';
 }
 
@@ -332,9 +365,22 @@ async function loadMask(name) {
   if (!m) return;
   contours = (m.contours && m.contours.length) ? m.contours.map(c => ({ ...blank(), ...c })) : [blank()];
   active = 0; sel = null; history = [];
-  $('name').value = m.name || name;
+  // Show the full relative path (without .mask.json) in the name field
+  const masks = await (await fetch('/api/masks')).json();
+  const entry = masks.find(e => e.name === name);
+  $('name').value = entry ? entry.path.replace(/\.mask\.json$/, '') : (m.name || name);
   $('build').value = m.build || '';
   $('comment').value = m.comment || '';
+  $('fade').value = m.fade != null ? m.fade : 2;
+  toggleOutputFields();
+  updatePlaceholders();
+  if ($('build').value === 'panel' || $('build').value === 'assemble') {
+    $('out-frame').value = (m.out && m.out.frame) || '';
+    $('out-integration').value = (m.out && m.out.integration) || '';
+  } else {
+    $('out').value = m.out ? (typeof m.out === 'object' ? JSON.stringify(m.out) : m.out) : '';
+  }
+  $('maskSel').value = name;
   if (m.image && m.image !== $('image').value) { $('image').value = m.image; await setImage(m.image); }
   renderList(); draw(); status();
 }
@@ -345,47 +391,112 @@ $('addc').onclick = newContour;
 $('meye').onclick = toggleOverlay;
 $('fit').onclick = fit;
 $('actual').onclick = actualSize;
+$('name').addEventListener('input', updatePlaceholders);
+function toggleOutputFields() {
+  const showGrp = $('build').value === 'panel' || $('build').value === 'assemble';
+  $('det-out').classList.toggle('hidden', showGrp);
+  $('grp-panel-out').classList.toggle('hidden', !showGrp);
+  $('fade').parentElement.classList.toggle('hidden', false);
+}
+function updatePlaceholders() {
+  let base = $('name').value.trim();
+  if (!base) {
+    $('out').placeholder = 'path/to/output.png';
+    $('out-frame').placeholder = 'path/to/frame.png';
+    $('out-integration').placeholder = 'path/to/integration-shadow.png';
+    return;
+  }
+  $('out').placeholder = base + '.png';
+  $('out-frame').placeholder = base + '.png';
+  $('out-integration').placeholder = base + '.integration-shadow.png';
+}
+$('build').addEventListener('change', () => { toggleOutputFields(); updatePlaceholders(); if ($('build').value === 'panel') { $('fade').value = 2; } });
 function newFile() {                       // start a fresh empty mask (file is written on save)
   contours = [blank()]; active = 0; sel = null; history = [];
-  $('name').value = ''; $('maskSel').value = ''; $('build').value = ''; $('comment').value = '';
+  $('name').value = ''; $('maskSel').value = ''; $('build').value = ''; $('comment').value = ''; $('out').value = ''; $('out-frame').value = ''; $('out-integration').value = ''; $('fade').value = 2;
+  toggleOutputFields(); updatePlaceholders();
   renderList(); draw(); status(); $('name').focus();
 }
 $('newfile').onclick = newFile;
 $('delfile').onclick = async () => {       // delete the current mask file
   const n = ($('maskSel').value || $('name').value).trim();
   if (!n) { alert('select or name a saved mask to delete'); return; }
-  if (!confirm(`Delete mask "${n}.json"? This cannot be undone.`)) return;
+  const shortName = n.split('/').pop();
+  if (!confirm(`Delete mask "${shortName}.json"? This cannot be undone.`)) return;
   const r = await fetch('/delete', { method: 'POST', body: JSON.stringify({ name: n }) });
-  if (r.ok) { await refreshMaskList(); newFile(); $('status').textContent = `deleted ${n}.json`; }
+  if (r.ok) { await refreshMaskList(); newFile(); $('status').textContent = `deleted ${shortName}.json`; }
   else $('status').textContent = 'delete failed';
 };
+function buildOut() {
+  if ($('build').value === 'panel' || $('build').value === 'assemble') {
+    const out = {};
+    const f = $('out-frame').value.trim();
+    const i = $('out-integration').value.trim();
+    if (f) out.frame = f;
+    if (i) out.integration = i;
+    return Object.keys(out).length ? out : undefined;
+  }
+  const raw = $('out').value.trim();
+  if (!raw) return undefined;
+  if (raw.startsWith('{') || raw.startsWith('[')) {
+    try { return JSON.parse(raw); } catch { /* fall through to string */ }
+  }
+  return raw;
+}
 $('save').onclick = async () => {
   const name = $('name').value.trim();
   if (!name) { alert('name the mask first'); return; }
-  const body = JSON.stringify({ name, image: $('image').value, build: $('build').value, comment: $('comment').value, contours });
+  const out = buildOut();
+  const fade = parseFloat($('fade').value) || undefined;
+  const body = JSON.stringify({ name, image: $('image').value, build: $('build').value, comment: $('comment').value, contours, out, fade });
   const r = await fetch('/save', { method: 'POST', body });
-  if (r.ok) { await refreshMaskList(name); $('status').textContent = `saved ${name} — rebuild: node tools/build-mask.mjs ${name}`; }
+  const shortName = name.split('/').pop();
+  if (r.ok) { await refreshMaskList(shortName); $('status').textContent = `saved — rebuild: node tools/build-mask.mjs ${shortName}`; }
   else $('status').textContent = 'save failed';
 };
-$('recut').onclick = async () => {
-  const name = ($('maskSel').value || $('name').value).trim();
-  if (!name) { alert('select or name a saved mask to recut'); return; }
-  $('status').textContent = `recutting ${name}…`;
-  const res = await (await fetch('/build', { method: 'POST', body: JSON.stringify({ name }) })).json();
-  // show the last meaningful line of the build log (asset dims / spill / errors)
-  const last = (res.log || '').trim().split('\n').filter(l => l.trim()).pop() || '';
-  $('status').textContent = `${res.ok ? '✓ recut' : '✗ recut failed'} ${name} — ${last}`;
-  if (!res.ok) console.error(res.log);
+$('savecut').onclick = async () => {
+  // Save first, then cut
+  const name = $('name').value.trim();
+  if (!name) { alert('name the mask first'); return; }
+  const btn = $('savecut');
+  btn.disabled = true; btn.textContent = 'saving…';
+  const out = buildOut();
+  const fade = parseFloat($('fade').value) || undefined;
+  const body = JSON.stringify({ name, image: $('image').value, build: $('build').value, comment: $('comment').value, contours, out, fade });
+  const r = await fetch('/save', { method: 'POST', body });
+  if (!r.ok) { btn.disabled = false; btn.textContent = 'save and cut'; $('status').textContent = 'save failed'; return; }
+  const shortName = name.split('/').pop();
+  await refreshMaskList(shortName);
+  btn.textContent = 'cutting…';
+  $('status').textContent = `cutting ${shortName}…`;
+  let res;
+  try { res = await (await fetch('/build', { method: 'POST', body: JSON.stringify({ name }) })).json(); }
+  catch { res = { ok: false, log: 'build request failed (server unreachable)' }; }
+  btn.disabled = false; btn.textContent = 'save and cut';
+  // Show result modal
+  const ok = res && res.ok;
+  $('modal-title').textContent = `${ok ? '✓' : '✗'} ${shortName}`;
+  const badge = $('modal-badge');
+  badge.textContent = ok ? 'succeeded' : 'failed';
+  badge.className = 'status-badge ' + (ok ? 'ok' : 'fail');
+  const log = (res.log || '').trim();
+  $('modal-log').textContent = log || '(no output)';
+  $('modal').classList.add('open');
+  $('status').textContent = `${ok ? '✓ cut' : '✗ cut failed'} ${shortName}`;
+  if (!ok && res && res.log) console.error(res.log);
 };
+$('modal-close').onclick = () => $('modal').classList.remove('open');
+$('modal').onclick = e => { if (e.target === $('modal')) $('modal').classList.remove('open'); };
 
 (async function init() {
   const imgs = await (await fetch('/api/images')).json();
   $('image').innerHTML = imgs.map(p => `<option${/ref-master-w1680/.test(p) ? ' selected' : ''}>${p}</option>`).join('');
   await refreshMaskList();
   setMeye();
-  resize(); renderList();
+  resize(); renderList(); toggleOutputFields(); updatePlaceholders();
   if (imgs.length) await setImage($('image').value);
 })();
 </script>
+<div id="modal"><div id="modal-box"><div id="modal-head"><h3 id="modal-title">build result</h3><span id="modal-badge" class="status-badge"></span><button id="modal-close">✕</button></div><div id="modal-log"></div></div></div>
 </body>
 </html>

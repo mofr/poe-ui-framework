@@ -1,5 +1,5 @@
 {
-  "name": "panel-slim-dark-2",
+  "name": "PoePanel.slim-dark-2",
   "out": {
     "frame": "src/components/primitives/PoePanel.slim-dark-2.png",
     "integration": "src/components/primitives/PoePanel.slim-dark-2.integration-shadow.png"
@@ -944,5 +944,6 @@
       "note": "",
       "round": 0
     }
-  ]
+  ],
+  "fade": 2
 }

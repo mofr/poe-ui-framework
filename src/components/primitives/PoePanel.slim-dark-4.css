@@ -1,0 +1,14 @@
+/* PoePanel frame: slim-dark-4 — assemble (separate corner+edge contours) + integration shadow.
+   Colocated with its mask + raster. Regenerate: `node tools/build-mask.mjs src/components/primitives/PoePanel.slim-dark-4`. */
+.poe-panel[data-frame='slim-dark-4'] {
+  --band: 48px;
+  --slice: 48;
+  --content-pad: calc(10px * var(--frame-scale));
+  --surface-radius: 4px;
+  --edge-repeat: repeat;
+  --overhang: 0px;
+  --integration-spill: 8px;   /* auto-patched by tools/cut-panel.mjs on re-cut */
+  --src-frame: url('./PoePanel.slim-dark-4.png');
+  --src-integration-shadow: url('./PoePanel.slim-dark-4.integration-shadow.png');
+  --src-integration-specular: none;
+}

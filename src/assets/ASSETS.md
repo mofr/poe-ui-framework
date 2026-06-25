@@ -21,10 +21,9 @@ This `src/assets/` tree holds only the **shared / mask-less** rasters:
   `cracked-stone-1`, `worn-leather-1`, `solid-black-1`, `matte-stone-1`, `matte-stone-2` (crisper super-res
   of `-1`), `smooth-slate-1`; `matte-stone-soft` (blurred colour field — a Storybook backdrop only) and
   `blueprint-grid` (grid overlay).
-- `panels/` — the mask-less PoePanel frames `jeweled-gold-1`, `slim-gold-1` (full 1:1 raster frames). Plus
-  `panels/debug/` — all PoePanel debug scaffolding in one place: `debug-surface`, `debug-accent`, and the
-  `frame`/`shadow`/`specular` layer sets at several corner radii (`-r0/-r4/-r8/-r24`).
-  (The masked frames `slim-dark-1/2/3` and `ruled-gold-1` now live with the component — see above.)
+- `panels/` — legacy mask-less PoePanel frames (now deleted). Debug scaffolding
+  (`debug-surface`, `debug-accent`, and the `frame`/`shadow`/`specular` layer sets) is now
+  colocated with the component in `src/components/primitives/`.
 
 ## Usage rules
 - Put ornament on frames, headers, dividers, and selected states.

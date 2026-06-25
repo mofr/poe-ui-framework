@@ -39,33 +39,53 @@ createServer(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
   try {
     if (req.method === 'POST' && url.pathname === '/save') {
-      const { name, image, contours, build = '', comment = '' } = JSON.parse(await readBody(req));
-      if (!name || !/^[\w-]+$/.test(name)) return send(res, 400, 'text/plain', 'bad name');
-      // Write back to the mask's existing file (wherever it lives); a brand-new name lands in inspiration/.
-      // MERGE over the existing file so fields the editor doesn't manage (e.g. `out` routing) survive a
-      // save — otherwise every re-trace silently drops them and the next build falls back to a wrong path.
-      let target, prev = {};
-      try { target = await findMaskPath(name); prev = JSON.parse(await readFile(target, 'utf8')); }
-      catch { target = resolve(NEW_MASK_DIR, `${name}.mask.json`); }
+      const { name: fullName, image, contours, build = '', comment = '', out, fade } = JSON.parse(await readBody(req));
+      if (!fullName) return send(res, 400, 'text/plain', 'bad name');
+      // The name input carries a path-like value:  dir/dir/name  — split into directory and internal name.
+      const parts = fullName.split('/');
+      const name = parts.pop();
+      if (!name || !/^[\w.-]+$/.test(name)) return send(res, 400, 'text/plain', 'bad name');
+      // Determine target path: explicit directory from the input, or find existing, or default to inspiration/.
+      let target;
+      if (parts.length > 0) {
+        target = resolve(ROOT, ...parts, `${name}.mask.json`);
+      } else {
+        try { target = await findMaskPath(name); }
+        catch { target = resolve(NEW_MASK_DIR, `${name}.mask.json`); }
+      }
       await mkdir(dirname(target), { recursive: true });
-      // GLOBAL config first (name/image/build/comment + preserved out/…), then per-contour data.
+      // Merge over existing file so fields the editor doesn't manage survive a save.
+      let prev = {};
+      try { prev = JSON.parse(await readFile(target, 'utf8')); } catch {}
       const merged = { ...prev, name, image, build, comment, contours };
+      if (out !== undefined) merged.out = out;
+      if (fade !== undefined) merged.fade = fade;
       await writeFile(target, JSON.stringify(merged, null, 2));
       return send(res, 200, 'application/json', JSON.stringify({ ok: true }));
     }
     if (req.method === 'POST' && url.pathname === '/build') {
       // Recut this mask's asset via build-mask.mjs (reads the mask's `build` field, runs inpaint if needed,
       // then the right cut tool; cut-panel patches --integration-spill into the CSS). Returns the log.
-      const { name } = JSON.parse(await readBody(req));
-      if (!name || !/^[\w-]+$/.test(name)) return send(res, 400, 'text/plain', 'bad name');
-      const out = await new Promise(r => execFile('node', [resolve(ROOT, 'tools/build-mask.mjs'), name],
+      const { name: fullName } = JSON.parse(await readBody(req));
+      const name = fullName.split('/').pop();
+      if (!name || !/^[\w.-]+$/.test(name)) return send(res, 400, 'text/plain', 'bad name');
+      const out = await new Promise(r => execFile('node', [resolve(ROOT, 'tools/build-mask.mjs'), fullName],
         { cwd: ROOT, maxBuffer: 8 << 20 }, (err, so, se) => r({ ok: !err, log: (so || '') + (se || '') })));
       return send(res, 200, 'application/json', JSON.stringify(out));
     }
     if (req.method === 'POST' && url.pathname === '/delete') {
-      const { name } = JSON.parse(await readBody(req));
-      if (!name || !/^[\w-]+$/.test(name)) return send(res, 400, 'text/plain', 'bad name');
-      try { await unlink(await findMaskPath(name)); } catch { /* already gone / not found */ }
+      const { name: fullName } = JSON.parse(await readBody(req));
+      if (!fullName) return send(res, 400, 'text/plain', 'bad name');
+      const parts = fullName.split('/');
+      const name = parts.pop();
+      if (!name || !/^[\w.-]+$/.test(name)) return send(res, 400, 'text/plain', 'bad name');
+      let target;
+      if (parts.length > 0) {
+        target = resolve(ROOT, ...parts, `${name}.mask.json`);
+      } else {
+        try { target = await findMaskPath(name); } catch { target = ''; }
+      }
+      try { if (target) await unlink(target); } catch { /* already gone / not found */ }
       return send(res, 200, 'application/json', JSON.stringify({ ok: true }));
     }
     if (url.pathname === '/api/images') return send(res, 200, 'application/json', JSON.stringify(await listImages()));

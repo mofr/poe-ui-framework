@@ -2,7 +2,6 @@
   "name": "list",
   "image": "inspiration/reference-1680.png",
   "build": "assemble",
-  "out": "src/components/primitives/PoeList.list.png",
   "comment": "List frame ornament: top edge + corner ornaments (header rule). Sides/lower corners fade — trace later; same asset gains them.",
   "contours": [
     {
