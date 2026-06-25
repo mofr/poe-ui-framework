@@ -4,7 +4,7 @@
 .poe-panel[data-frame='ruled-gold-1'] {
   --band: 120px;
   --slice: 120;
-  --content-pad: calc(25px * var(--frame-scale));
+  --content-pad: calc(7px * var(--frame-scale));
   --surface-radius: 6px;
   --edge-repeat: repeat;
   --overhang: 0px;

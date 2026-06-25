@@ -68,6 +68,7 @@ export const Debug = {
         <Cell surface="none" label="surface none" />
         <Cell surface="debug" label="surface debug" />
         <Cell surface="cracked-stone-1" surfaceScale={0.2} label="cracked-stone-1 (scale 0.2)" />
+        <Cell surface="cracked-stone-2" surfaceScale={0.2} label="cracked-stone-2 (scale 0.2)" />
         <Cell surface="worn-leather-1" surfaceScale={0.2} label="worn-leather-1 (scale 0.2)" />
         <Cell surface="solid-black-1" label="solid-black-1 (dashboard inner panels)" />
         <Cell surface="matte-stone-1" surfaceScale={0.3} label="matte-stone-1 (dashboard page)" />
@@ -130,6 +131,8 @@ export const Gallery = {
         label="slim-dark-3 · matte-stone-1 (wide)">{questContent}</Cell>
       <Cell color="#cbb" w={820} h={420} frame="ruled-gold-1" integration="none" surface="matte-stone-2"
         label="ruled-gold-1 · matte-stone-2 (page frame)">{questContent}</Cell>
+      <Cell color="#cbb" w={360} h={250} frame="cracked-stone-2-frame" surface="cracked-stone-2"
+        label="cracked-stone-2-frame · cracked-stone-2 (9-slice surface)">{questContent}</Cell>
     </div>
   ),
 };
@@ -162,11 +165,11 @@ export const Playground = {
   argTypes: {
     frame: {
       control: 'select',
-      options: ['none', 'debug-r0', 'debug-r4', 'debug-r8', 'debug-r24', 'jeweled-gold-1', 'slim-gold-1', 'slim-dark-1', 'slim-dark-2', 'slim-dark-3', 'ruled-gold-1'],
+      options: ['none', 'debug-r0', 'debug-r4', 'debug-r8', 'debug-r24', 'jeweled-gold-1', 'slim-gold-1', 'slim-dark-1', 'slim-dark-2', 'slim-dark-3', 'ruled-gold-1', 'cracked-stone-2-frame'],
       description: 'Real 1:1 frames render best when width/height stay near their native proportions.',
     },
     frameScale: SCALE,
-    surface: { control: 'inline-radio', options: ['none', 'debug', 'cracked-stone-1', 'worn-leather-1', 'solid-black-1', 'matte-stone-1', 'matte-stone-2', 'smooth-slate-1'] },
+    surface: { control: 'inline-radio', options: ['none', 'debug', 'cracked-stone-1', 'cracked-stone-2', 'worn-leather-1', 'solid-black-1', 'matte-stone-1', 'matte-stone-2', 'smooth-slate-1'] },
     surfaceScale: SCALE,
     innerShadowSize: { control: { type: 'range', min: 0, max: 60, step: 1 }, description: 'Inner-shadow blur radius (px).' },
     innerShadowColor: { control: 'color', description: 'Inner-shadow colour incl. opacity (opacity = intensity).' },

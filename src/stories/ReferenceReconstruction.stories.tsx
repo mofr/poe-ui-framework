@@ -50,7 +50,8 @@ const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap
 
 export const Dashboard = {
   render: () => (
-    <PoePanel frame="ruled-gold-1" surface="cracked-stone-2" integration="none" innerShadowSize={64} innerShadowColor="rgba(0,0,0,1.0)" style={{ maxWidth: 1680, margin: '0 auto' }}>
+    <PoePanel frame="ruled-gold-1" surface="none" integration="none" innerShadowSize={64} innerShadowColor="rgba(0,0,0,1.0)" style={{ maxWidth: 1680, margin: '0 auto' }}>
+      <PoePanel frame="cracked-stone-2" surface="cracked-stone-2" style={{ width: '100%', height: '100%' }}>
       <PoePanelBody>
         <div style={col}>
 
@@ -108,6 +109,7 @@ export const Dashboard = {
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>{actions.map((a, i) => <PoeButton key={a} selected={i === 0}>{a}</PoeButton>)}</div>
         </div>
       </PoePanelBody>
+      </PoePanel>
     </PoePanel>
   ),
 };
