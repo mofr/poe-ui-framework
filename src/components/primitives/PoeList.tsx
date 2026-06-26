@@ -17,7 +17,6 @@ export function PoeList({ children, className = '', ...props }: PoeListProps) {
   return (
     <div className={`poe-list ${className}`.trim()} {...props}>
       <div className="poe-list__body">
-        <div className="poe-list__rule" />               {/* rule — the ornament's top edge */}
         {rows.map((row, i) => (
           <React.Fragment key={i}>
             {i > 0 && <span className="poe-list__sep" />} {/* divider — between rows only */}

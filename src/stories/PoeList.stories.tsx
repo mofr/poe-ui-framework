@@ -104,7 +104,6 @@ export const Structure = {
   ),
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const list = canvasElement.querySelector('.poe-list')!;
-    await expect(list.querySelector('.poe-list__rule')).not.toBeNull();
     await expect(list.querySelectorAll('.poe-list-row')).toHaveLength(commits.length);
     await expect(list.querySelectorAll('.poe-list__sep')).toHaveLength(commits.length - 1);
   },

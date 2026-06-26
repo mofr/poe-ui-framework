@@ -130,6 +130,8 @@ export const Gallery = {
         label="ruled-gold-1 · matte-stone-2 (page frame)">{questContent}</Cell>
       <Cell color="#cbb" w={360} h={250} frame="cracked-stone-2" surface="cracked-stone-2"
         label="cracked-stone-2 · cracked-stone-2 (9-slice surface)">{questContent}</Cell>
+      <Cell color="#cbb" w={420} h={240} frame="thin-ornament-1" surface="solid-black-1"
+        label="thin-ornament-1 · solid-black-1 (top/left ornament)">{questContent}</Cell>
     </div>
   ),
 };
@@ -162,7 +164,7 @@ export const Playground = {
   argTypes: {
     frame: {
       control: 'select',
-      options: ['none', 'debug-r0', 'debug-r4', 'debug-r8', 'debug-r24', 'slim-dark-1', 'slim-dark-2', 'slim-dark-3', 'ruled-gold-1', 'cracked-stone-2-frame'],
+      options: ['none', 'debug-r0', 'debug-r4', 'debug-r8', 'debug-r24', 'slim-dark-1', 'slim-dark-2', 'slim-dark-3', 'ruled-gold-1', 'cracked-stone-2-frame', 'thin-ornament-1'],
       description: 'Real 1:1 frames render best when width/height stay near their native proportions.',
     },
     frameScale: SCALE,

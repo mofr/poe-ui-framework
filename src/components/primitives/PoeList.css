@@ -20,24 +20,7 @@
   background: var(--list-bg);
 }
 
-.poe-list__body { position: relative; padding-top: var(--list-rule-pad); }
-
-/* header RULE — the ornament's top edge: corner ornaments fixed at the ends, line tiled between.
-   Horizontal 3-slice (top/bottom slice 0 ⇒ full height is the "middle"; left/right = the corners).
-   Out of flow (absolute) at the body top so the corner tails don't push the first row down — the row
-   clears the line via --list-rule-pad. */
-.poe-list__rule {
-  position: absolute; top: 0; left: 0; right: 0;
-  height: var(--list-rule-h);
-  pointer-events: none;
-  border: 0 solid transparent;
-  border-left-width: calc(var(--list-cap) * 1px);
-  border-right-width: calc(var(--list-cap) * 1px);
-  border-image-source: url('./PoeList.list.png');
-  border-image-slice: 0 var(--list-cap) fill;
-  border-image-width: 0 calc(var(--list-cap) * 1px);
-  border-image-repeat: round;
-}
+.poe-list__body { position: relative; }
 
 /* divider — between rows only (PoeList injects it; not above the first / below the last).
    No corners, faded ends → stretch full width (ends stay at the row edges). */

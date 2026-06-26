@@ -40,7 +40,7 @@ body {
     0 0 0.06em rgba(255, 235, 140, 0.16);
 }
 .poe-text-label, .poe-label    { font-family: var(--poe-font-display); font-size: var(--poe-fs-label); letter-spacing: .01em; color: #8d8464; }
-.poe-text-body                 { font-family: var(--poe-font-ui); font-size: var(--poe-fs-body); color: #a8a9a6; line-height: 1.45; }
+.poe-text-body                 { font-family: var(--poe-font-ui); font-size: var(--poe-fs-body); color: #EFF1EA; line-height: 1.45; }
 .poe-text-meta, .poe-subtle    { font-size: var(--poe-fs-meta); color: #84898c; }
 .poe-text-number, .poe-number  { font-family: var(--poe-font-number); font-size: var(--poe-fs-number); font-variant-numeric: tabular-nums; color: var(--poe-gold-4); }
 .poe-text-rune                 { font-family: var(--poe-font-rune); letter-spacing: .08em; text-transform: uppercase; color: var(--poe-magic); text-shadow: 0 0 10px rgba(75, 141, 255, .28); }
