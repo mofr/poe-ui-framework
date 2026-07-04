@@ -41,20 +41,22 @@ const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap
 export const Dashboard = {
   render: () => (
     <PoePanel frame="ruled-gold-1" surface="none" integration="none" innerShadowSize={64} innerShadowColor="rgba(0,0,0,1.0)" style={{ maxWidth: 1680, margin: '0 auto' }}>
+
+      {/* header — outside stone bg, no frame, matte-stone-2 surface */}
+      <PoePanel frame="none" integration="none" surface="matte-stone-2" innerShadowSize={24} innerShadowColor="rgba(0,0,0,1.0)" style={{ width: '100%' }}>
+        <PoePanelBody>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div><PoeText variant="display" as="span">gaearon</PoeText> <PoeText variant="meta" style={{ marginLeft: 8 }}>The Interface Mage</PoeText></div>
+            <PoeInput ornate placeholder="Search or jump to..." style={{ flex: 1, maxWidth: 420 }} />
+            <div style={{ display: 'flex', gap: 12 }}>{['Code', 'Issues', 'Pull Requests', 'Actions', 'Wiki'].map((t, i) => <PoeText key={t} variant="label" as="span" style={i === 0 ? { color: 'var(--poe-magic, #4b8dff)' } : undefined}>{t}</PoeText>)}</div>
+          </div>
+        </PoePanelBody>
+      </PoePanel>
+
+      {/* main content — with stone background */}
       <PoePanel frame="cracked-stone-2" surface="cracked-stone-2" style={{ width: '100%', height: '100%' }}>
       <PoePanelBody>
         <div style={col}>
-
-          {/* header */}
-          <PoePanel frame="slim-dark-3" surface="solid-black-1" integration="raster" style={{ width: '100%' }}>
-            <PoePanelBody>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div><PoeText variant="display" as="span">gaearon</PoeText> <PoeText variant="meta" style={{ marginLeft: 8 }}>The Interface Mage</PoeText></div>
-                <PoeInput ornate placeholder="Search or jump to..." style={{ flex: 1, maxWidth: 420 }} />
-                <div style={{ display: 'flex', gap: 12 }}>{['Code', 'Issues', 'Pull Requests', 'Actions', 'Wiki'].map((t, i) => <PoeText key={t} variant="label" as="span" style={i === 0 ? { color: 'var(--poe-magic, #4b8dff)' } : undefined}>{t}</PoeText>)}</div>
-              </div>
-            </PoePanelBody>
-          </PoePanel>
 
           <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
             {/* left */}
