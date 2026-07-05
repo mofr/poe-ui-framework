@@ -1,4 +1,4 @@
-export * from './primitives/PoeAvatar.tsx';
+export * from './primitives/PoeCircleFrame.tsx';
 export * from './primitives/PoeBadge.tsx';
 export * from './primitives/PoeButton.tsx';
 export * from './primitives/PoeTab.tsx';

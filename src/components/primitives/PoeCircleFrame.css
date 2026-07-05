@@ -1,0 +1,68 @@
+/* PoeCircleFrame — circular frame container (the round analog of PoePanel's frame). CSS-baseline
+   metallic ring (a painterly raster ring is a later manual pass). Ring thickness derives from
+   --poe-circle-frame-size so one component serves the hero portrait, the user chip, and the level orb. */
+.poe-circle-frame {
+  --poe-circle-frame-size: 96px;
+  --poe-circle-frame-ring: max(4px, calc(var(--poe-circle-frame-size) * .085));
+  --poe-circle-frame-accent: var(--poe-blue);
+  position: relative;
+  display: inline-flex;
+  width: var(--poe-circle-frame-size);
+  height: var(--poe-circle-frame-size);
+  flex: none;
+  vertical-align: middle;
+}
+/* the gold ring: conic sheen + dark seat rim + top highlight, seated with a soft drop shadow */
+.poe-circle-frame__ring {
+  width: 100%;
+  height: 100%;
+  padding: var(--poe-circle-frame-ring);
+  border-radius: 50%;
+  background:
+    conic-gradient(from 218deg,
+      #5b4321 0deg, #d8b874 60deg, #8a6a34 130deg, #f0d89a 190deg,
+      #6f5127 250deg, #caa661 320deg, #5b4321 360deg);
+  box-shadow:
+    0 2px 7px rgba(0, 0, 0, .6),
+    inset 0 0 0 1px rgba(0, 0, 0, .55),
+    inset 0 1px 2px rgba(255, 240, 200, .4);
+}
+/* inner disc: clips the content, holds an inset rim; glow lights the accent behind an image/label */
+.poe-circle-frame__inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 42%, #17140e, #05070d 82%);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .6), inset 0 2px 6px rgba(0, 0, 0, .55);
+  color: var(--poe-gold-4);
+  font-family: var(--poe-font-number);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.poe-circle-frame.is-glowing .poe-circle-frame__inner {
+  background: radial-gradient(circle at 50% 45%, var(--poe-circle-frame-accent), #060912 78%);
+  box-shadow:
+    inset 0 0 0 2px rgba(0, 0, 0, .55),
+    inset 0 0 18px var(--poe-circle-frame-accent);
+}
+.poe-circle-frame__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* presence dot — seated in the ring at the lower-right, sized off the diameter */
+.poe-circle-frame__status {
+  position: absolute;
+  right: 4%;
+  bottom: 4%;
+  width: max(9px, calc(var(--poe-circle-frame-size) * .18));
+  height: max(9px, calc(var(--poe-circle-frame-size) * .18));
+  border-radius: 50%;
+  border: 2px solid #0a0908;
+  box-shadow: 0 0 6px currentColor;
+  background: currentColor;
+}
+.poe-circle-frame__status[data-status='online']  { color: var(--poe-green); }
+.poe-circle-frame__status[data-status='away']    { color: var(--poe-amber); }
+.poe-circle-frame__status[data-status='busy']    { color: var(--poe-red); }
+.poe-circle-frame__status[data-status='offline'] { color: #6a6a6a; }

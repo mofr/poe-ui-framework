@@ -6,7 +6,7 @@ import { PoeButton } from '../components/primitives/PoeButton.tsx';
 import { PoeBadge } from '../components/primitives/PoeBadge.tsx';
 import { PoeInput } from '../components/primitives/PoeInput.tsx';
 import { PoeList, PoeListRow } from '../components/primitives/PoeList.tsx';
-import { PoeAvatar } from '../components/primitives/PoeAvatar.tsx';
+import { PoeCircleFrame } from '../components/primitives/PoeCircleFrame.tsx';
 import { PoeTab, PoeTabBar } from '../components/primitives/PoeTab.tsx';
 import { GitCommitVertical, Search, Bell, Mail, Code, CircleAlert, GitPullRequest, Play, FolderGit2, BookOpen, Shield, Settings } from 'lucide-react';
 import castleNight from '../assets/backgrounds/castle-night-2.jpg';
@@ -70,7 +70,7 @@ export const Dashboard = {
             Left gutter for the avatar; right edge flush; small vertical gutter for the ~125px height. */}
         <div style={{ display: 'flex', alignItems: 'stretch', gap: 16, padding: '6px 0 6px 22px' }}>
             {/* avatar = circular frame ring with the portrait nested inside, on an accent glow */}
-            <PoeAvatar src={portrait} alt="gaearon" size={122} glow style={{ alignSelf: 'center' }} />
+            <PoeCircleFrame src={portrait} alt="gaearon" size={122} glow style={{ alignSelf: 'center' }} />
 
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
 
@@ -88,7 +88,7 @@ export const Dashboard = {
                   <Ph w={44} h={40} r={6}><Mail size={18} color="#c9a25e" /></Ph>
                   {/* user panel = portrait circle + name/status, matching the mask's taller box */}
                   <Ph w={240} h={64} r={6} style={{ justifyContent: 'flex-start', gap: 10, paddingLeft: 10 }}>
-                    <PoeAvatar src={portrait} alt="gaearon" size={44} status="online" />
+                    <PoeCircleFrame src={portrait} alt="gaearon" size={44} status="online" />
                     <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                       <span style={ctrl(15, '#fefefd')}>gaearon</span>
                       <span style={{ ...ctrl(12, '#459d33'), display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -104,7 +104,7 @@ export const Dashboard = {
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 {/* level orb overlaps the left end of the xp bar (orb on top) */}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <PoeAvatar size={40} style={{ position: 'relative', zIndex: 1, marginRight: -12, fontSize: 18, color: '#e9e3bc' }}>60</PoeAvatar>
+                  <PoeCircleFrame size={40} style={{ position: 'relative', zIndex: 1, marginRight: -12, fontSize: 18, color: '#e9e3bc' }}>60</PoeCircleFrame>
                   <div style={{ width: 178 }}>
                     <PoeSegmentBar variant="blue" value={0.6875} label="68,750 / 100,000 XP" />
                   </div>
