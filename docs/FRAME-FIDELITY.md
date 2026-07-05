@@ -780,3 +780,19 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   inputs/frame.png, buttons→buttons/ornate.png, progress-bar `frame`→segment-bar/rail.png + `segment 1`→
   fill-blue.png, backgrounds `basic panel background`→solid-black-1.png. cut-panel also derives the
   `[data-frame='…']` CSS-patch id from the frame's `out` basename.
+- 2026-07-05: PAGE HEADER reconstruction (first full element brought to fidelity). Rebuilt to the
+  reference's two-row header: full-height avatar (frame ring + inset image) on the left; top row =
+  name/subtitle · centered search · notification cluster (bell/mail/user panel); bottom row = level orb +
+  XP bar sharing the nav-tab rail. MEASUREMENT, not eyeballing: user authored
+  `inspiration/ref-header-elements.mask.json` (normalized element boxes); `tools/dom-boxes.mjs` dumps the
+  rendered DOM boxes normalized to the same 1680×945 master, diffed in px (all header elements within
+  ~1–2px of the mask). `tools/shoot.mjs` = one-shot Storybook screenshot helper. Reduced permission
+  prompts via gitignored `.claude/settings.local.json` (allow node/python3). TYPOGRAPHY: added a
+  `subtitle` role (`--poe-fs-subtitle:18px` + `.poe-text-subtitle`, IM Fell serif, neutral default) so the
+  header epithet decouples from the mis-scaled `meta` (11px) role — purely additive, nothing shared
+  touched. Deferred as a separate slice: rename `meta`→`caption`, `display`→`title`, and make the
+  Foundations catalog show true sizes. TEXT-vs-CONTROL boundary set: author-placed content = PoeText roles
+  (title/subtitle/…); control-internal labels (nav tabs, level orb, XP bar, user menu) are
+  **component-owned** typography, NOT PoeText (like PoeButton). Until those components exist they're stood
+  in via a local `ctrl()` helper in the story. Still placeholder (raster out of scope this session): the
+  avatar/orb/tab/bar frames and bell/mail icons.

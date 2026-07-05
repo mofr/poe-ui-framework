@@ -3,7 +3,7 @@ import React from 'react';
 // Semantic typography. `variant` maps to a .poe-text-* role (font/size/colour come from the role +
 // the --poe-fs-* / --poe-font-* tokens — never hard-code sizes at the call site). Override the element
 // with `as` (default: block for display/heading/label, inline for body/meta/number).
-export type PoeTextVariant = 'display' | 'heading' | 'label' | 'body' | 'meta' | 'number' | 'rune';
+export type PoeTextVariant = 'display' | 'subtitle' | 'heading' | 'label' | 'body' | 'meta' | 'number' | 'rune';
 
 export interface PoeTextProps extends React.HTMLAttributes<HTMLElement> {
   variant?: PoeTextVariant;

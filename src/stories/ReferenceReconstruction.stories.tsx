@@ -6,7 +6,7 @@ import { PoeButton } from '../components/primitives/PoeButton.tsx';
 import { PoeBadge } from '../components/primitives/PoeBadge.tsx';
 import { PoeInput } from '../components/primitives/PoeInput.tsx';
 import { PoeList, PoeListRow } from '../components/primitives/PoeList.tsx';
-import { GitCommitHorizontal, GitCommitVertical } from 'lucide-react';
+import { GitCommitVertical } from 'lucide-react';
 import castleNight from '../assets/backgrounds/castle-night-2.jpg';
 // Reference reconstruction — rebuild the @d4m1n.max "Interface Mage" dashboard from OUR framework.
 // Semantic text only (PoeText → role tokens, no inline sizes); PoePanel is auto-height (inner panels AND
@@ -20,6 +20,21 @@ export default {
 const BodyRow = ({ children }: { children?: React.ReactNode }) => (
   <div style={{ display: 'flex', justifyContent: 'space-between', gap: 8, padding: '3px 0' }}>{children}</div>
 );
+
+// Dumb placeholder for elements whose real components don't exist yet (avatar, level pill, XP bar,
+// notification icons, user chip). Layout-only round — swap these for real components/rasters later.
+const Ph = ({ w, h, r = 4, label, style, children }: { w: number | string; h: number | string; r?: number | string; label?: string; style?: React.CSSProperties; children?: React.ReactNode }) => (
+  <div style={{ width: w, height: h, borderRadius: r, border: '1px dashed #6b5a2e', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#8a7645', fontSize: 10, fontFamily: 'system-ui', flex: 'none', whiteSpace: 'nowrap', ...style }}>{children ?? label}</div>
+);
+
+// Control-owned text stand-in: the label typography a real component (PoeTab, level orb, XP bar, user
+// menu) would own internally — NOT a PoeText role. Values match the reference's color/size; the eventual
+// component absorbs this styling. Fonts are a separate pass.
+const ctrl = (fontSize: number, color: string, mono = false): React.CSSProperties => ({
+  fontFamily: mono ? 'var(--poe-font-number)' : 'var(--poe-font-display)', fontSize, color, whiteSpace: 'nowrap',
+});
+
+const nav = ['Code', 'Issues', 'Pull Requests', 'Actions', 'Projects', 'Wiki', 'Security', 'Settings'];
 
 const repos = ['react', 'github', 'fixtures', 'packages', 'scripts', 'compiler'];
 const commits = [
@@ -42,15 +57,74 @@ export const Dashboard = {
   render: () => (
     <PoePanel frame="ruled-gold-1" surface="none" integration="none" innerShadowSize={64} innerShadowColor="rgba(0,0,0,1.0)" style={{ maxWidth: 1680, margin: '0 auto' }}>
 
-      {/* header — outside stone bg, no frame, matte-stone-2 surface */}
-      <PoePanel frame="none" integration="none" surface="matte-stone-2" innerShadowSize={24} innerShadowColor="rgba(0,0,0,1.0)" style={{ width: '100%' }}>
-        <PoePanelBody>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div><PoeText variant="display" as="span">gaearon</PoeText> <PoeText variant="meta" style={{ marginLeft: 8 }}>The Interface Mage</PoeText></div>
-            <PoeInput ornate placeholder="Search or jump to..." style={{ flex: 1, maxWidth: 420 }} />
-            <div style={{ display: 'flex', gap: 12 }}>{['Code', 'Issues', 'Pull Requests', 'Actions', 'Wiki'].map((t, i) => <PoeText key={t} variant="label" as="span" style={i === 0 ? { color: 'var(--poe-magic, #4b8dff)' } : undefined}>{t}</PoeText>)}</div>
+      {/* header — outside stone bg, no frame, matte-stone-2 surface. Two rows: identity·search·actions, then nav rail. */}
+      <PoePanel frame="none" integration="none" contentPad={0} surface="matte-stone-2" innerShadowSize={24} innerShadowColor="rgba(0,0,0,1.0)" style={{ width: '100%' }}>
+        {/* full-bleed (no PoePanelBody comfort padding) so the user panel reaches the frame border.
+            Left gutter for the avatar; right edge flush; small vertical gutter for the ~125px height. */}
+        <div style={{ display: 'flex', alignItems: 'stretch', gap: 16, padding: '6px 0 6px 22px' }}>
+            {/* avatar = circular frame ring with the portrait image nested inside it */}
+            <Ph w={122} h={122} r="50%" style={{ alignSelf: 'center' }}>
+              <Ph w={90} h={90} r="50%" label="IMG" />
+            </Ph>
+
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
+
+              {/* top row — name/subtitle · search · notifications */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <PoeText variant="display" as="span">gaearon</PoeText>
+                  <PoeText variant="subtitle" style={{ color: '#3fa2ed' }}>The Interface Mage</PoeText>
+                </div>
+                <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                  <PoeInput ornate placeholder="Search or jump to..." style={{ width: '100%', maxWidth: 460 }} />
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
+                  <Ph w={44} h={40} r={6} label="BELL 3" />
+                  <Ph w={44} h={40} r={6} label="MAIL" />
+                  {/* user panel = portrait circle + name/status, matching the mask's taller box */}
+                  <Ph w={240} h={64} r={6} style={{ justifyContent: 'flex-start', gap: 10, paddingLeft: 10 }}>
+                    <Ph w={44} h={44} r="50%" label="IMG" />
+                    <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      <span style={ctrl(15, '#fefefd')}>gaearon</span>
+                      <span style={{ ...ctrl(12, '#459d33'), display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#459d33' }} />Online
+                      </span>
+                    </span>
+                  </Ph>
+                </div>
+              </div>
+
+              {/* bottom row — level + XP share the line with the nav rail. Nav buttons are placeholder
+                  tabs (PoeButton is the wrong shape); they dock at the header's bottom edge. */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                {/* level orb overlaps the left end of the xp bar (orb on top) */}
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Ph w={40} h={40} r="50%" style={{ position: 'relative', zIndex: 1, marginRight: -12 }}>
+                    <span style={ctrl(18, '#e9e3bc', true)}>60</span>
+                  </Ph>
+                  <Ph w={178} h={24} r={4}><span style={ctrl(13, '#e5eaed', true)}>68,750 / 100,000 XP</span></Ph>
+                </div>
+                <div style={{ flex: 1, display: 'flex', gap: 8, flexWrap: 'nowrap' }}>
+                  {nav.map((t, i) => (
+                    <Ph
+                      key={t}
+                      w="auto"
+                      h={42}
+                      r={5}
+                      style={{
+                        padding: '0 20px',
+                        gap: 8,
+                        ...(i === 0 ? { borderColor: 'var(--poe-magic, #4b8dff)', boxShadow: 'inset 0 0 10px rgba(75,141,255,.35)' } : {}),
+                      }}
+                    >
+                      <span style={{ opacity: 0.45, fontSize: 13 }}>◈</span>
+                      <span style={ctrl(16, i === 0 ? 'var(--poe-magic, #4b8dff)' : '#e5e6e5')}>{t}</span>
+                    </Ph>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        </PoePanelBody>
       </PoePanel>
 
       {/* main content — with stone background */}

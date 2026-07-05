@@ -17,6 +17,9 @@ body {
 /* Typography roles — .poe-text-* are canonical (PoeText `variant`); the short aliases (.poe-title …)
    are kept for convenience. Role classes intentionally carry their default colours. */
 .poe-title, .poe-text-display  { font-family: var(--poe-font-display); font-size: var(--poe-fs-display); font-weight: 400; letter-spacing: .02em; color: #e9e3d2; text-shadow: 0 2px 3px rgba(0, 0, 0, .7); }
+/* subtitle — secondary line paired under a display/title (an entity's epithet/tagline). Neutral default
+   colour; callers tint per context (e.g. the header's blue). Decoupled from meta so it sizes on its own. */
+.poe-text-subtitle             { font-family: var(--poe-font-display); font-size: var(--poe-fs-subtitle); letter-spacing: .01em; color: #9a9382; }
 .poe-text-heading, .poe-heading {
   font-family: var(--poe-font-title);
   font-size: var(--poe-fs-heading);
