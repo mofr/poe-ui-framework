@@ -6,8 +6,11 @@ import { PoeButton } from '../components/primitives/PoeButton.tsx';
 import { PoeBadge } from '../components/primitives/PoeBadge.tsx';
 import { PoeInput } from '../components/primitives/PoeInput.tsx';
 import { PoeList, PoeListRow } from '../components/primitives/PoeList.tsx';
-import { GitCommitVertical } from 'lucide-react';
+import { PoeAvatar } from '../components/primitives/PoeAvatar.tsx';
+import { PoeTab, PoeTabBar } from '../components/primitives/PoeTab.tsx';
+import { GitCommitVertical, Search, Bell, Mail, Code, CircleAlert, GitPullRequest, Play, FolderGit2, BookOpen, Shield, Settings } from 'lucide-react';
 import castleNight from '../assets/backgrounds/castle-night-2.jpg';
+import portrait from '../assets/backgrounds/elder-shaper.jpg';
 // Reference reconstruction — rebuild the @d4m1n.max "Interface Mage" dashboard from OUR framework.
 // Semantic text only (PoeText → role tokens, no inline sizes); PoePanel is auto-height (inner panels AND
 // the outer ruled-gold-1 container). The page stone is the OUTER PANEL'S SURFACE (matte-stone-1), not an
@@ -34,7 +37,11 @@ const ctrl = (fontSize: number, color: string, mono = false): React.CSSPropertie
   fontFamily: mono ? 'var(--poe-font-number)' : 'var(--poe-font-display)', fontSize, color, whiteSpace: 'nowrap',
 });
 
-const nav = ['Code', 'Issues', 'Pull Requests', 'Actions', 'Projects', 'Wiki', 'Security', 'Settings'];
+const nav: [string, React.ReactNode][] = [
+  ['Code', <Code size={16} />], ['Issues', <CircleAlert size={16} />], ['Pull Requests', <GitPullRequest size={16} />],
+  ['Actions', <Play size={16} />], ['Projects', <FolderGit2 size={16} />], ['Wiki', <BookOpen size={16} />],
+  ['Security', <Shield size={16} />], ['Settings', <Settings size={16} />],
+];
 
 const repos = ['react', 'github', 'fixtures', 'packages', 'scripts', 'compiler'];
 const commits = [
@@ -62,10 +69,8 @@ export const Dashboard = {
         {/* full-bleed (no PoePanelBody comfort padding) so the user panel reaches the frame border.
             Left gutter for the avatar; right edge flush; small vertical gutter for the ~125px height. */}
         <div style={{ display: 'flex', alignItems: 'stretch', gap: 16, padding: '6px 0 6px 22px' }}>
-            {/* avatar = circular frame ring with the portrait image nested inside it */}
-            <Ph w={122} h={122} r="50%" style={{ alignSelf: 'center' }}>
-              <Ph w={90} h={90} r="50%" label="IMG" />
-            </Ph>
+            {/* avatar = circular frame ring with the portrait nested inside, on an accent glow */}
+            <PoeAvatar src={portrait} alt="gaearon" size={122} glow style={{ alignSelf: 'center' }} />
 
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
 
@@ -76,14 +81,14 @@ export const Dashboard = {
                   <PoeText variant="subtitle" style={{ color: '#3fa2ed' }}>The Interface Mage</PoeText>
                 </div>
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-                  <PoeInput ornate placeholder="Search or jump to..." style={{ width: '100%', maxWidth: 460 }} />
+                  <PoeInput ornate leading={<Search size={16} />} trailing="/" placeholder="Search or jump to..." style={{ width: '100%', maxWidth: 460 }} />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
-                  <Ph w={44} h={40} r={6} label="BELL 3" />
-                  <Ph w={44} h={40} r={6} label="MAIL" />
+                  <Ph w={44} h={40} r={6}><Bell size={18} color="#c9a25e" /></Ph>
+                  <Ph w={44} h={40} r={6}><Mail size={18} color="#c9a25e" /></Ph>
                   {/* user panel = portrait circle + name/status, matching the mask's taller box */}
                   <Ph w={240} h={64} r={6} style={{ justifyContent: 'flex-start', gap: 10, paddingLeft: 10 }}>
-                    <Ph w={44} h={44} r="50%" label="IMG" />
+                    <PoeAvatar src={portrait} alt="gaearon" size={44} status="online" />
                     <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                       <span style={ctrl(15, '#fefefd')}>gaearon</span>
                       <span style={{ ...ctrl(12, '#459d33'), display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -99,28 +104,17 @@ export const Dashboard = {
               <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                 {/* level orb overlaps the left end of the xp bar (orb on top) */}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Ph w={40} h={40} r="50%" style={{ position: 'relative', zIndex: 1, marginRight: -12 }}>
-                    <span style={ctrl(18, '#e9e3bc', true)}>60</span>
-                  </Ph>
-                  <Ph w={178} h={24} r={4}><span style={ctrl(13, '#e5eaed', true)}>68,750 / 100,000 XP</span></Ph>
+                  <PoeAvatar size={40} style={{ position: 'relative', zIndex: 1, marginRight: -12, fontSize: 18, color: '#e9e3bc' }}>60</PoeAvatar>
+                  <div style={{ width: 178 }}>
+                    <PoeSegmentBar variant="blue" value={0.6875} label="68,750 / 100,000 XP" />
+                  </div>
                 </div>
-                <div style={{ flex: 1, display: 'flex', gap: 8, flexWrap: 'nowrap' }}>
-                  {nav.map((t, i) => (
-                    <Ph
-                      key={t}
-                      w="auto"
-                      h={42}
-                      r={5}
-                      style={{
-                        padding: '0 20px',
-                        gap: 8,
-                        ...(i === 0 ? { borderColor: 'var(--poe-magic, #4b8dff)', boxShadow: 'inset 0 0 10px rgba(75,141,255,.35)' } : {}),
-                      }}
-                    >
-                      <span style={{ opacity: 0.45, fontSize: 13 }}>◈</span>
-                      <span style={ctrl(16, i === 0 ? 'var(--poe-magic, #4b8dff)' : '#e5e6e5')}>{t}</span>
-                    </Ph>
-                  ))}
+                <div style={{ flex: 1 }}>
+                  <PoeTabBar>
+                    {nav.map(([label, icon], i) => (
+                      <PoeTab key={label} icon={icon} selected={i === 0}>{label}</PoeTab>
+                    ))}
+                  </PoeTabBar>
                 </div>
               </div>
             </div>

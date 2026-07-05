@@ -13,8 +13,10 @@
   font-weight: 600;
   letter-spacing: .045em;
   text-transform: uppercase;
+  transition: filter .12s, transform .06s;
 }
 .poe-button:active:not(:disabled) { transform: translateY(1px); }
+.poe-button:focus-visible { outline: none; }
 .poe-button:disabled { cursor: not-allowed; opacity: .45; filter: saturate(.6); }
 .poe-button.poe-button--ornate {
   border: 9px solid transparent;
@@ -25,3 +27,5 @@
 }
 .poe-button.poe-button--ornate:hover:not(:disabled) { filter: brightness(1.12); }
 .poe-button.poe-button--ornate.is-selected { filter: brightness(1.2); }
+/* keyboard focus ring — the border-image consumes `outline`, so glow via drop-shadow instead */
+.poe-button.poe-button--ornate:focus-visible { filter: brightness(1.14) drop-shadow(0 0 6px rgba(201, 162, 94, .55)); }

@@ -1,24 +1,54 @@
-/* PoeInput — plain inset field + ornate 9-slice raster variant (PoeInput.big-input.png, CSS fill behind). */
+/* PoeInput — a framed wrapper (plain inset field, or the ornate 9-slice raster frame) holding a
+   borderless <input> plus optional leading/trailing adornments. */
 .poe-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   width: 100%;
   height: 34px;
+  padding: 0 12px;
   border: 1px solid var(--poe-border-dim);
   border-radius: 3px;
   background: linear-gradient(180deg, #070606, #11100f);
-  color: var(--poe-text);
-  padding: 0 12px;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, .75);
-  font-family: var(--poe-font-ui);
-  font-weight: 500;
 }
-.poe-input::placeholder { color: rgba(189, 162, 119, .58); font-style: italic; }
-.poe-input:focus {
-  outline: none;
+.poe-input:focus-within {
   border-color: var(--poe-gold-2);
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, .75), var(--poe-glow-gold);
 }
+.poe-input[data-disabled] { opacity: .5; cursor: not-allowed; }
+.poe-input__field {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--poe-text);
+  font-family: var(--poe-font-ui);
+  font-weight: 500;
+}
+.poe-input__field:focus { outline: none; }
+.poe-input__field::placeholder { color: rgba(189, 162, 119, .58); font-style: italic; }
+.poe-input__field:disabled { cursor: not-allowed; }
+.poe-input__adornment {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  color: rgba(189, 162, 119, .7);
+}
+.poe-input__trailing {
+  font-family: var(--poe-font-number);
+  font-size: 12px;
+  padding: 1px 6px;
+  border: 1px solid var(--poe-border-dim);
+  border-radius: 4px;
+  color: var(--poe-gold-3);
+}
+
+/* ornate variant — the extracted 9-slice raster frame replaces the inset border */
 .poe-input.poe-input--ornate {
   height: 46px;
+  padding: 0 14px;
   border: 12px solid transparent;
   border-image: url('./PoeInput.big-input.png') 12 / 12px repeat;
   border-radius: 0;
@@ -26,7 +56,4 @@
   background-clip: padding-box;
   box-shadow: none;
 }
-.poe-input.poe-input--ornate:focus {
-  box-shadow: none;
-  border-image: url('./PoeInput.big-input.png') 12 / 12px repeat;
-}
+.poe-input.poe-input--ornate:focus-within { box-shadow: none; }

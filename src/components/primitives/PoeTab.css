@@ -1,0 +1,41 @@
+/* PoeTab — nav / tab button. CSS-baseline gold plate; `is-selected` = magic-blue glow (the reference's
+   active tab). PoeTabBar lays tabs in a row on a shared baseline rail. */
+.poe-tab-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--poe-border-dim);
+}
+.poe-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 18px;
+  border: 1px solid var(--poe-border-dim);
+  border-radius: 5px;
+  background: linear-gradient(180deg, rgba(46, 37, 20, .55), rgba(12, 10, 8, .72));
+  color: #e2d3a6;
+  font-family: var(--poe-font-title);
+  font-size: 16px;
+  letter-spacing: .015em;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255, 235, 170, .07), inset 0 -3px 8px rgba(0, 0, 0, .4);
+  transition: color .12s, border-color .12s, box-shadow .12s, filter .12s;
+}
+.poe-tab__icon { display: inline-flex; align-items: center; opacity: .68; color: var(--poe-gold-3); }
+.poe-tab:hover:not(:disabled) { color: #fff5df; border-color: var(--poe-border); filter: brightness(1.08); }
+.poe-tab:hover:not(:disabled) .poe-tab__icon { opacity: 1; }
+.poe-tab:active:not(:disabled) { transform: translateY(1px); }
+.poe-tab:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(0, 0, 0, .6), var(--poe-glow-gold); }
+.poe-tab:disabled { cursor: not-allowed; opacity: .45; filter: saturate(.6); }
+.poe-tab.is-selected {
+  color: var(--poe-magic);
+  border-color: var(--poe-magic);
+  background: linear-gradient(180deg, rgba(30, 58, 120, .5), rgba(11, 23, 52, .72));
+  box-shadow: inset 0 0 12px rgba(75, 141, 255, .38), 0 0 0 1px rgba(75, 141, 255, .3);
+}
+.poe-tab.is-selected .poe-tab__icon { opacity: 1; color: var(--poe-magic); }

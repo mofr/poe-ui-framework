@@ -15,5 +15,6 @@ export interface PoeButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEle
 export function PoeButton({ children, className = '', variant = 'ornate', selected = false, ...props }: PoeButtonProps) {
   const classes = ['poe-button', `poe-button--${variant}`, selected && 'is-selected', className].filter(Boolean).join(' ');
   // type="button" so a PoeButton inside a <form> never submits by accident; callers can override.
-  return <button type="button" className={classes} data-selected={selected || undefined} {...props}>{children}</button>;
+  // aria-pressed exposes `selected` as a toggle state to assistive tech; data-selected is a styling hook.
+  return <button type="button" className={classes} aria-pressed={selected || undefined} data-selected={selected || undefined} {...props}>{children}</button>;
 }
