@@ -240,9 +240,11 @@ export const Dashboard = {
     </PoePanel>
 
       {/* corner medallion — NOT a header child: absolutely positioned over the dashboard's top-left, so
-          its bottom naturally overhangs into the body (geometry, no negative-margin nudge). z above panels.
+          its bottom naturally overhangs into the body (geometry, no negative-margin nudge). It paints over
+          the panel (incl. its gold frame) simply by being the last positioned sibling — the panel seals its
+          own z-indexes behind `isolation: isolate`, so no explicit z-index is needed here.
           Its own outer shadow is off; the shadow is cast by the shadowOnly layer behind the frame (above). */}
-      <PoeCircleFrame {...medallion} src={portrait} alt="gaearon" style={{ ...medallionPos, zIndex: 5, '--poe-cf-outer-shadow': 'none' } as React.CSSProperties} />
+      <PoeCircleFrame {...medallion} src={portrait} alt="gaearon" style={{ ...medallionPos, '--poe-cf-outer-shadow': 'none' } as React.CSSProperties} />
     </div>
   ),
 };
