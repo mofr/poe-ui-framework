@@ -77,7 +77,11 @@ export const Dashboard = {
         {/* full-bleed (no PoePanelBody comfort padding) so the user panel reaches the frame border.
             Left gutter reserves space for the corner medallion (rendered outside the header, below).
             Tight vertical padding — the reference header is compact; content nearly touches top/bottom. */}
-        <div style={{ display: 'flex', alignItems: 'stretch', padding: '0 0 2px 172px' }}>
+        {/* fade overlay: the matte-stone tile reads flat vs the reference's graded stone, which is lit
+            toward the identity/medallion (left) and darkens to the right. Fade left→right (paints over
+            the surface, under this row's content). */}
+        <div style={{ display: 'flex', alignItems: 'stretch', padding: '0 0 2px 172px',
+          background: 'linear-gradient(to right, rgba(0,0,0,0) 35%, rgba(0,0,0,.38) 70%)' }}>
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
 
               {/* top row — name/subtitle · search · notifications */}
