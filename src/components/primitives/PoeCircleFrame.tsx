@@ -24,10 +24,14 @@ export interface PoeCircleFrameProps extends React.HTMLAttributes<HTMLSpanElemen
   accent?: string;
   /** Use a cut raster ring (a `[data-raster=…]` name, e.g. "big-ornate-1") instead of the CSS ring. */
   raster?: string;
+  /** Render ONLY the outer-shadow caster layer (no ring/content). Lets you place the frame's contact
+   *  shadow behind other decoration — e.g. a page frame — so the frame occludes it instead of being
+   *  darkened by it. Pair with a full frame (same position) that has `--poe-cf-outer-shadow: none`. */
+  shadowOnly?: boolean;
 }
 
 export function PoeCircleFrame({
-  src, alt = '', size = 96, status, glow = false, accent, raster, children, className = '', style, ...props
+  src, alt = '', size = 96, status, glow = false, accent, raster, shadowOnly = false, children, className = '', style, ...props
 }: PoeCircleFrameProps) {
   const classes = ['poe-circle-frame', raster && 'poe-circle-frame--raster', glow && 'is-glowing', className].filter(Boolean).join(' ');
   const vars = {
@@ -38,13 +42,18 @@ export function PoeCircleFrame({
   return (
     <span className={classes} data-raster={raster || undefined} style={{ ...vars, ...style }} {...props}>
       {raster ? (
-        // outer-shadow caster (below the content, so its inner-edge shadow hides under it),
-        // then content, then the cut ring art on top
-        <>
+        shadowOnly ? (
+          // just the shadow caster — placed behind a page frame so the frame occludes it
           <span className="poe-circle-frame__shadow" aria-hidden="true" />
-          <span className="poe-circle-frame__inner">{content}</span>
-          <span className="poe-circle-frame__art" aria-hidden="true" />
-        </>
+        ) : (
+          // outer-shadow caster (below the content, so its inner-edge shadow hides under it),
+          // then content, then the cut ring art on top
+          <>
+            <span className="poe-circle-frame__shadow" aria-hidden="true" />
+            <span className="poe-circle-frame__inner">{content}</span>
+            <span className="poe-circle-frame__art" aria-hidden="true" />
+          </>
+        )
       ) : (
         // CSS ring wraps the content
         <span className="poe-circle-frame__ring">

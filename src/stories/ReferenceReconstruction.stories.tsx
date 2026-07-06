@@ -226,11 +226,17 @@ export const Dashboard = {
         </div>
       </PoePanelBody>
       </PoePanel>
+
+      {/* medallion's contact shadow — rendered as the outer panel's LAST child so it sits below the
+          ruled-gold-1 frame layer: the gold border-image occludes the shadow (frame stays clean) while
+          the interior surface shows it. Same coords as the medallion below. */}
+      <PoeCircleFrame raster="big-ornate-1" shadowOnly size={128} style={{ position: 'absolute', top: 13, left: 24 }} />
     </PoePanel>
 
       {/* corner medallion — NOT a header child: absolutely positioned over the dashboard's top-left, so
-          its bottom naturally overhangs into the body (geometry, no negative-margin nudge). z above panels. */}
-      <PoeCircleFrame raster="big-ornate-1" src={portrait} alt="gaearon" size={128} style={{ position: 'absolute', top: 13, left: 24, zIndex: 5 }} />
+          its bottom naturally overhangs into the body (geometry, no negative-margin nudge). z above panels.
+          Its own outer shadow is off; the shadow is cast by the shadowOnly layer behind the frame (above). */}
+      <PoeCircleFrame raster="big-ornate-1" src={portrait} alt="gaearon" size={128} style={{ position: 'absolute', top: 13, left: 24, zIndex: 5, '--poe-cf-outer-shadow': 'none' } as React.CSSProperties} />
     </div>
   ),
 };
