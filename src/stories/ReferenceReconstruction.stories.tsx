@@ -69,8 +69,9 @@ export const Dashboard = {
       {/* header — outside stone bg, no frame, matte-stone-2 surface. Two rows: identity·search·actions, then nav rail. */}
       <PoePanel frame="none" integration="none" contentPad={0} surface="matte-stone-2" innerShadowSize={24} innerShadowColor="rgba(0,0,0,1.0)" style={{ width: '100%' }}>
         {/* full-bleed (no PoePanelBody comfort padding) so the user panel reaches the frame border.
-            Left gutter reserves space for the corner medallion (rendered outside the header, below). */}
-        <div style={{ display: 'flex', alignItems: 'stretch', padding: '6px 0 6px 172px' }}>
+            Left gutter reserves space for the corner medallion (rendered outside the header, below).
+            Tight vertical padding — the reference header is compact; content nearly touches top/bottom. */}
+        <div style={{ display: 'flex', alignItems: 'stretch', padding: '0 0 2px 172px' }}>
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
 
               {/* top row — name/subtitle · search · notifications */}
@@ -229,7 +230,7 @@ export const Dashboard = {
 
       {/* corner medallion — NOT a header child: absolutely positioned over the dashboard's top-left, so
           its bottom naturally overhangs into the body (geometry, no negative-margin nudge). z above panels. */}
-      <PoeCircleFrame raster="big-ornate-1" src={portrait} alt="gaearon" size={128} style={{ position: 'absolute', top: 24, left: 24, zIndex: 5 }} />
+      <PoeCircleFrame raster="big-ornate-1" src={portrait} alt="gaearon" size={128} style={{ position: 'absolute', top: 13, left: 24, zIndex: 5 }} />
     </div>
   ),
 };
