@@ -60,6 +60,12 @@ const stats = [['Stars', '226k'], ['Forks', '45.6k'], ['Watchers', '6.2k'], ['Is
 const actions = ['Repos', 'Issues', 'PRs', 'Actions', 'Review', 'Merge', 'Fork', 'Star', 'Settings', 'Create'];
 const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 12 };
 
+// Corner medallion geometry — shared by the on-top ring and its behind-the-frame shadow layer so the two
+// stay aligned (single source of truth). size=128 is big-ornate-1's native raster width: crisp at that
+// size, larger just upscales the PNG.
+const medallion = { raster: 'big-ornate-1', size: 128 } as const;
+const medallionPos: React.CSSProperties = { position: 'absolute', top: 13, left: 24 };
+
 export const Dashboard = {
   render: () => (
     // the dashboard is the positioning context; the avatar medallion overlays its top-left corner
@@ -229,14 +235,14 @@ export const Dashboard = {
 
       {/* medallion's contact shadow — rendered as the outer panel's LAST child so it sits below the
           ruled-gold-1 frame layer: the gold border-image occludes the shadow (frame stays clean) while
-          the interior surface shows it. Same coords as the medallion below. */}
-      <PoeCircleFrame raster="big-ornate-1" shadowOnly size={128} style={{ position: 'absolute', top: 13, left: 24 }} />
+          the interior surface shows it. Shares medallion geometry with the ring below. */}
+      <PoeCircleFrame {...medallion} shadowOnly style={medallionPos} />
     </PoePanel>
 
       {/* corner medallion — NOT a header child: absolutely positioned over the dashboard's top-left, so
           its bottom naturally overhangs into the body (geometry, no negative-margin nudge). z above panels.
           Its own outer shadow is off; the shadow is cast by the shadowOnly layer behind the frame (above). */}
-      <PoeCircleFrame raster="big-ornate-1" src={portrait} alt="gaearon" size={128} style={{ position: 'absolute', top: 13, left: 24, zIndex: 5, '--poe-cf-outer-shadow': 'none' } as React.CSSProperties} />
+      <PoeCircleFrame {...medallion} src={portrait} alt="gaearon" style={{ ...medallionPos, zIndex: 5, '--poe-cf-outer-shadow': 'none' } as React.CSSProperties} />
     </div>
   ),
 };
