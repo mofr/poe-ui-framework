@@ -62,16 +62,15 @@ const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap
 
 export const Dashboard = {
   render: () => (
-    <PoePanel frame="ruled-gold-1" surface="none" integration="none" innerShadowSize={64} innerShadowColor="rgba(0,0,0,1.0)" style={{ maxWidth: 1680, margin: '0 auto' }}>
+    // the dashboard is the positioning context; the avatar medallion overlays its top-left corner
+    <div style={{ position: 'relative', maxWidth: 1680, margin: '0 auto' }}>
+    <PoePanel frame="ruled-gold-1" surface="none" integration="none" innerShadowSize={64} innerShadowColor="rgba(0,0,0,1.0)" style={{ width: '100%' }}>
 
       {/* header — outside stone bg, no frame, matte-stone-2 surface. Two rows: identity·search·actions, then nav rail. */}
       <PoePanel frame="none" integration="none" contentPad={0} surface="matte-stone-2" innerShadowSize={24} innerShadowColor="rgba(0,0,0,1.0)" style={{ width: '100%' }}>
         {/* full-bleed (no PoePanelBody comfort padding) so the user panel reaches the frame border.
-            Left gutter for the avatar; right edge flush; small vertical gutter for the ~125px height. */}
-        <div style={{ display: 'flex', alignItems: 'stretch', gap: 16, padding: '6px 0 6px 22px' }}>
-            {/* avatar = circular frame ring with the portrait nested inside, on an accent glow */}
-            <PoeCircleFrame src={portrait} alt="gaearon" size={122} glow style={{ alignSelf: 'center' }} />
-
+            Left gutter reserves space for the corner medallion (rendered outside the header, below). */}
+        <div style={{ display: 'flex', alignItems: 'stretch', padding: '6px 0 6px 172px' }}>
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
 
               {/* top row — name/subtitle · search · notifications */}
@@ -227,5 +226,10 @@ export const Dashboard = {
       </PoePanelBody>
       </PoePanel>
     </PoePanel>
+
+      {/* corner medallion — NOT a header child: absolutely positioned over the dashboard's top-left, so
+          its bottom naturally overhangs into the body (geometry, no negative-margin nudge). z above panels. */}
+      <PoeCircleFrame raster="big-ornate-1" src={portrait} alt="gaearon" size={128} style={{ position: 'absolute', top: 24, left: 24, zIndex: 5 }} />
+    </div>
   ),
 };

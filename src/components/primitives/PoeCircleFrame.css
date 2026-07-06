@@ -66,3 +66,38 @@
 .poe-circle-frame__status[data-status='away']    { color: var(--poe-amber); }
 .poe-circle-frame__status[data-status='busy']    { color: var(--poe-red); }
 .poe-circle-frame__status[data-status='offline'] { color: #6a6a6a; }
+
+/* ── raster variant ──────────────────────────────────────────────────────────
+   The cut ring PNG (trimmed to the ring bbox) overlays on top; the content sits BEHIND it, anchored to
+   the hole. The image + content-box (hole bbox ÷ ring bbox, from the mask) are set per-raster below. */
+.poe-circle-frame--raster .poe-circle-frame__inner {
+  position: absolute;
+  left: var(--poe-cf-content-left, 16%);
+  top: var(--poe-cf-content-top, 16%);
+  width: var(--poe-cf-content-w, 68%);
+  height: var(--poe-cf-content-h, 68%);
+  /* circular inner shadow (inset on the round inner) — off by default, opt in via the var */
+  box-shadow: var(--poe-cf-inner-shadow, none);
+}
+/* `size` is the width; height follows the cut's native aspect so the ring renders at 1:1 (no per-axis
+   resample / squish). Set `size` to the PNG's native width (e.g. 128 for big-ornate-1) for pixel-crisp. */
+.poe-circle-frame--raster { height: auto; aspect-ratio: var(--poe-cf-aspect, 1); }
+.poe-circle-frame__art {
+  position: absolute;
+  inset: 0;
+  background: var(--poe-cf-ring-img) center / 100% 100% no-repeat;
+  pointer-events: none;
+  /* outer shadow follows the ring's ALPHA — drop-shadow, not box-shadow (which would be square) */
+  filter: drop-shadow(var(--poe-cf-outer-shadow, 0 2px 5px rgba(0, 0, 0, .5)));
+}
+
+/* big-ornate-1 — image + content-box from PoeCircleFrame.big-ornate-1.mask.json (hole ÷ keep bbox).
+   Regenerating the cut updates the PNG automatically; re-derive these % only if you reshape the hole. */
+.poe-circle-frame[data-raster='big-ornate-1'] {
+  --poe-cf-ring-img: url('./PoeCircleFrame.big-ornate-1.png');
+  --poe-cf-aspect: 128 / 124;   /* native trimmed dims — element adopts these so the art isn't resampled */
+  --poe-cf-content-left: 15.3%;
+  --poe-cf-content-top: 12.9%;
+  --poe-cf-content-w: 70.1%;
+  --poe-cf-content-h: 72.1%;
+}

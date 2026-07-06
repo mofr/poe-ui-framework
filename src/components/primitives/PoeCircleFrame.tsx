@@ -1,10 +1,13 @@
 import React from 'react';
 import './PoeCircleFrame.css';
 
-// Circular frame container: the round analog of PoePanel's decorative frame — a metallic ring (CSS
-// baseline; a painterly raster ring is a later manual pass) wrapping arbitrary content. Pass `src` for a
-// clipped image, or `children` for anything else (a number → level orb, initials, an icon). `status` adds
-// a corner presence dot; `glow` lights the inner accent ring.
+// Circular frame container: the round analog of PoePanel's decorative frame — a metallic ring wrapping
+// arbitrary content. Pass `src` for a clipped image, or `children` for anything else (a number → level
+// orb, initials, an icon). `status` adds a corner presence dot; `glow` lights the inner accent ring.
+//
+// Two looks: the CSS-baseline metallic ring (default), or a cut raster ring via `raster` — a trimmed
+// annulus PNG that overlays on top while the content sits behind it, anchored to the mask's hole. The
+// per-raster image + content-box live in a `[data-raster=…]` block in the CSS.
 export type PoeCircleFrameStatus = 'online' | 'away' | 'busy' | 'offline';
 
 export interface PoeCircleFrameProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -19,23 +22,33 @@ export interface PoeCircleFrameProps extends React.HTMLAttributes<HTMLSpanElemen
   glow?: boolean;
   /** Accent colour for the inner glow / default status hue (default: --poe-blue). */
   accent?: string;
+  /** Use a cut raster ring (a `[data-raster=…]` name, e.g. "big-ornate-1") instead of the CSS ring. */
+  raster?: string;
 }
 
 export function PoeCircleFrame({
-  src, alt = '', size = 96, status, glow = false, accent, children, className = '', style, ...props
+  src, alt = '', size = 96, status, glow = false, accent, raster, children, className = '', style, ...props
 }: PoeCircleFrameProps) {
-  const classes = ['poe-circle-frame', glow && 'is-glowing', className].filter(Boolean).join(' ');
+  const classes = ['poe-circle-frame', raster && 'poe-circle-frame--raster', glow && 'is-glowing', className].filter(Boolean).join(' ');
   const vars = {
     '--poe-circle-frame-size': `${size}px`,
     ...(accent ? { '--poe-circle-frame-accent': accent } : null),
   } as React.CSSProperties;
+  const content = src ? <img className="poe-circle-frame__img" src={src} alt={alt} /> : children;
   return (
-    <span className={classes} style={{ ...vars, ...style }} {...props}>
-      <span className="poe-circle-frame__ring">
-        <span className="poe-circle-frame__inner">
-          {src ? <img className="poe-circle-frame__img" src={src} alt={alt} /> : children}
+    <span className={classes} data-raster={raster || undefined} style={{ ...vars, ...style }} {...props}>
+      {raster ? (
+        // content behind, cut ring art on top
+        <>
+          <span className="poe-circle-frame__inner">{content}</span>
+          <span className="poe-circle-frame__art" aria-hidden="true" />
+        </>
+      ) : (
+        // CSS ring wraps the content
+        <span className="poe-circle-frame__ring">
+          <span className="poe-circle-frame__inner">{content}</span>
         </span>
-      </span>
+      )}
       {status && <span className="poe-circle-frame__status" data-status={status} aria-label={status} />}
     </span>
   );
