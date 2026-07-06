@@ -58,9 +58,14 @@ if (build === 'panel' || build === 'assemble') {
   args.push(`--out-frame=${frame}`, `--out-integration=${integ}`);
   if (mask.fade != null) args.push(`--fade=${mask.fade}`);
 } else if (build !== 'bg') {
-  // Single-output tools: cut-mask
-  const out = (typeof mask.out === 'string' && mask.out) || defaultOut(base);
-  args.push(`--out=${out}`);
+  // cut-mask. An object `out` (contour name → path) means per-region cuts, each TRIMMED to its own
+  // silhouette and routed by the map → --each. A string/absent `out` is one untrimmed full-frame cut.
+  if (mask.out && typeof mask.out === 'object') {
+    args.push('--each');
+  } else {
+    const out = (typeof mask.out === 'string' && mask.out) || defaultOut(base);
+    args.push(`--out=${out}`);
+  }
 }
 run(TOOLS[build], args);
 console.log(`\n✓ built "${name}" via ${build}${hasInpaint ? ' (inpaint → ' + build + ')' : ''}`);
