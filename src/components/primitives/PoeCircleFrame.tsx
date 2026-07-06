@@ -38,8 +38,10 @@ export function PoeCircleFrame({
   return (
     <span className={classes} data-raster={raster || undefined} style={{ ...vars, ...style }} {...props}>
       {raster ? (
-        // content behind, cut ring art on top
+        // outer-shadow caster (below the content, so its inner-edge shadow hides under it),
+        // then content, then the cut ring art on top
         <>
+          <span className="poe-circle-frame__shadow" aria-hidden="true" />
           <span className="poe-circle-frame__inner">{content}</span>
           <span className="poe-circle-frame__art" aria-hidden="true" />
         </>

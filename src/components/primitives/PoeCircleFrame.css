@@ -1,6 +1,11 @@
 /* PoeCircleFrame — circular frame container (the round analog of PoePanel's frame). CSS-baseline
    metallic ring (a painterly raster ring is a later manual pass). Ring thickness derives from
-   --poe-circle-frame-size so one component serves the hero portrait, the user chip, and the level orb. */
+   --poe-circle-frame-size so one component serves the hero portrait, the user chip, and the level orb.
+
+   Two looks share this base: the CSS metallic ring (default) and the raster ring (`--raster`). Each
+   raster ring is a variant file colocated with its PNG/mask, imported here — like PoePanel.<frame>.css. */
+@import './PoeCircleFrame.big-ornate-1.css';
+
 .poe-circle-frame {
   --poe-circle-frame-size: 96px;
   --poe-circle-frame-ring: max(4px, calc(var(--poe-circle-frame-size) * .085));
@@ -76,28 +81,32 @@
   top: var(--poe-cf-content-top, 16%);
   width: var(--poe-cf-content-w, 68%);
   height: var(--poe-cf-content-h, 68%);
-  /* circular inner shadow (inset on the round inner) — off by default, opt in via the var */
+}
+/* circular inner shadow — off by default, opt in via the var. Painted on an overlay ABOVE the img:
+   an inset box-shadow on __inner itself would sit behind the <img> child and be invisible. */
+.poe-circle-frame--raster .poe-circle-frame__inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
   box-shadow: var(--poe-cf-inner-shadow, none);
 }
 /* `size` is the width; height follows the cut's native aspect so the ring renders at 1:1 (no per-axis
    resample / squish). Set `size` to the PNG's native width (e.g. 128 for big-ornate-1) for pixel-crisp. */
 .poe-circle-frame--raster { height: auto; aspect-ratio: var(--poe-cf-aspect, 1); }
-.poe-circle-frame__art {
+.poe-circle-frame__art,
+.poe-circle-frame__shadow {
   position: absolute;
   inset: 0;
   background: var(--poe-cf-ring-img) center / 100% 100% no-repeat;
   pointer-events: none;
-  /* outer shadow follows the ring's ALPHA — drop-shadow, not box-shadow (which would be square) */
-  filter: drop-shadow(var(--poe-cf-outer-shadow, 0 2px 5px rgba(0, 0, 0, .5)));
 }
-
-/* big-ornate-1 — image + content-box from PoeCircleFrame.big-ornate-1.mask.json (hole ÷ keep bbox).
-   Regenerating the cut updates the PNG automatically; re-derive these % only if you reshape the hole. */
-.poe-circle-frame[data-raster='big-ornate-1'] {
-  --poe-cf-ring-img: url('./PoeCircleFrame.big-ornate-1.png');
-  --poe-cf-aspect: 128 / 124;   /* native trimmed dims — element adopts these so the art isn't resampled */
-  --poe-cf-content-left: 15.3%;
-  --poe-cf-content-top: 12.9%;
-  --poe-cf-content-w: 70.1%;
-  --poe-cf-content-h: 72.1%;
+/* Outer shadow caster: a second copy of the ring BELOW the content. Its shadow follows the ring's
+   ALPHA (drop-shadow, not box-shadow which would be square); the inner-edge spill lands under the
+   opaque content and is hidden, so only the outer silhouette shadow shows. --poe-cf-outer-shadow is a
+   full `filter` value (chain drop-shadow()s to deepen it — drop-shadow has no spread). */
+.poe-circle-frame__shadow {
+  filter: var(--poe-cf-outer-shadow, drop-shadow(0 2px 5px rgba(0, 0, 0, .5)));
 }
+/* per-raster data (image, content-box, shadows) lives in PoeCircleFrame.<raster>.css, imported at top. */

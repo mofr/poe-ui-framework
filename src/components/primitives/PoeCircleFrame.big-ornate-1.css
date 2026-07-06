@@ -1,0 +1,18 @@
+/* PoeCircleFrame raster: big-ornate-1 — image + content-box from PoeCircleFrame.big-ornate-1.mask.json
+   (hole ÷ keep bbox). Colocated with its mask + raster, like the PoePanel.<frame>.css files.
+   Regenerating the cut updates the PNG automatically; re-derive these % only if you reshape the hole. */
+.poe-circle-frame[data-raster='big-ornate-1'] {
+  --poe-cf-ring-img: url('./PoeCircleFrame.big-ornate-1.png');
+  --poe-cf-aspect: 128 / 124;   /* native trimmed dims — element adopts these so the art isn't resampled */
+  --poe-cf-content-left: 15.3%;
+  --poe-cf-content-top: 12.9%;
+  --poe-cf-content-w: 70.1%;
+  --poe-cf-content-h: 72.1%;
+  /* portrait sits recessed in the deep hole: a top-seated depth layer + a soft dark rim all around.
+     Both layers carry blur so the rim never resolves to a crisp line at the bottom edge. */
+  --poe-cf-inner-shadow: inset 0 3px 7px rgba(0, 0, 0, .9), inset 0 0 5px rgba(0, 0, 0, .85);
+  /* heavy contour-following outer shadow (full filter): a wide soft cast + a tight dense pass so the
+     whole ornate frame sits proud of the panel. Cast from the __shadow layer, so it never touches the
+     inner image. Chain more/deeper drop-shadow()s to darken further. */
+  --poe-cf-outer-shadow: drop-shadow(0 10px 22px rgba(0, 0, 0, 1)) drop-shadow(0 5px 10px rgba(0, 0, 0, 1));
+}
