@@ -1091,3 +1091,11 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   regenerated at pre-blur=1 (crisper contact, still cancels the texture mismatch, stays neutral off-stone).
   PoC story now a 2-way: legacy stone map vs bg-baseline neutral, both normal. Live reconstruction verified
   unchanged.
+- 2026-07-09 (pt.29): Fixed bg-baseline blur (user: "still blurred" + "expected the BASELINE blurred, not
+  obs"). Root cause explained: --pre-blur blurred BOTH observed and baseline; blurring the OBSERVED is what
+  softened the shadow. The LaMa baseline was never blurred — LaMa rebuilt the MATCHING texture so it
+  cancelled cleanly. Our surface is a DIFFERENT texture, so it can't cancel sharp; instead blur ONLY the
+  baseline to a smooth ambient tone (new --base-blur, default 8) and keep the observed SHARP → factor =
+  sharp obs / smooth tone = a CRISP shadow, no mismatch noise. Confirmed via a blur-both/baseline-only/
+  neither comparison. PoC regenerated (base-blur=8, pre-blur=0): crisp neutral contact on every surface,
+  clean off-stone. Also confirmed the INPUT pipeline is untouched (still LaMa; map unmodified since 6faba9a).

@@ -72,6 +72,12 @@ if baseline:
     ol = lum(obs[:, :, :3]); amb = halo & (ol > np.percentile(ol[halo], 60))   # the UNSHADOWED stone
     for c in range(3):
         cln[:, :, c] *= obs[:, :, c][amb].mean() / max(cln[:, :, c][amb].mean(), 1e-3)
+    # Blur ONLY the baseline to a smooth ambient TONE — our surface texture ≠ the reference's, so keeping it
+    # sharp injects mismatch noise into obs/clean. Smoothing the baseline (not the observed) leaves the
+    # SHADOW crisp: factor = sharp obs / smooth tone. (Pair with --pre-blur=0, the default.)
+    base_blur = float(opt.get('base-blur', 8))
+    if base_blur > 0:
+        cln = np.array(Image.fromarray(np.clip(cln, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(base_blur))).astype(np.float32)
 else:
     m = Image.new('L', (W, H), 0); ImageDraw.Draw(m).polygon(pts, fill=255)
     mask_grow = int(opt.get('mask-grow', 2))                 # grow the inpaint mask past the integration
