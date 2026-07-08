@@ -1062,3 +1062,14 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   need blur (~1–1.5) — their LaMa baseline is noisier than the input's (blur=0 was speckly). (3) Neutrality
   confirmed: off-stone the legacy halo tints brown, the neutral stays a clean colour-neutral shadow. To
   polish before going live: blur value (crisp↔smooth) and --strength (neutral reads a touch weak vs legacy).
+- 2026-07-08 (pt.26): PoC iteration (user eyeballing). (a) 3-way comparison on the REAL reconstruction
+  surfaces (cracked-stone-2/matte-stone-2/solid-black-1) + foreign colours: old×multiply, old×normal,
+  new×normal. Finding: old×normal is NOT identical to old×multiply (differs at the strong inner ring, mean
+  1.9 light bg / 7.1 dark bg) — it paints stone opaquely off-stone, so the old map stays locked to multiply;
+  the target is new×normal. (b) Fixed the neutral map's missing CONTACT ring ("1px transparent border at
+  the frame"): the pipeline BINARISED the frame footprint (alpha>40 → hard exclude), so the frame's soft AA
+  edge fully cut the darkest contact shadow. Now masks by the SOFT frame alpha (hard-fill the inner opening
+  only) — matches cut-panel's `× (1−frameFill/255)`. Inner ring recovered (row-18 alpha 5→40, visible
+  contact row-17 stays 241). (c) Full pipeline breakdown emitted to asset-review/…/pipeline-<name>/ (20
+  stages) for eyeballing. Remaining polish: contact still a touch weaker than the stone map + a LaMa
+  factor-noise dip — the crisp(blur 0)↔smooth tension. Live components still untouched.

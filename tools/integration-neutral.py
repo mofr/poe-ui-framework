@@ -93,12 +93,17 @@ sx = (obs.shape[1] - fr.width) // 2
 sy = (obs.shape[0] - fr.height) // 2
 frame_a = Image.new('L', (obs.shape[1], obs.shape[0]), 0)
 frame_a.paste(fr.split()[3], (sx, sy))
-# Exclude the ENTIRE frame interior (band + inner opening), not just the opaque band — else the halo
-# spills into the opening. Fill the band's interior holes to get the whole footprint.
+# Exclude the frame FOOTPRINT so the halo is only the surface. Use the frame's SOFT alpha at the band's
+# outer edge (NOT a hard >40 threshold): the darkest CONTACT ring sits right under the frame's anti-aliased
+# edge, so binarising ate it and left a transparent gap. Soft edge keeps it (transitioning under the frame,
+# which draws over the overlap). Only the inner OPENING is hard-filled (no halo inside the frame). This
+# matches cut-panel's stone cut, which masks by `× (1 − frameFill/255)`.
 from scipy import ndimage
-frame_area = ndimage.binary_fill_holes(np.array(frame_a) > 40).astype(np.float32)
-# frame-dilate=0 (default): the halo sticks to the frame exactly. Dilating gaps it off — a round-trip
-# reconstruction (baseline+shadow+highlight+frame vs reference) shows the error rising with every px.
+fa = np.array(frame_a).astype(np.float32)
+frame_bin = fa > 40
+interior = ndimage.binary_fill_holes(frame_bin) & ~frame_bin   # the frame's inner opening only
+frame_area = np.where(interior, 1.0, fa / 255.0)               # soft band edge + hard interior
+# frame-dilate=0 (default): grows the footprint (gaps the halo OFF the frame). Rarely wanted.
 frame_dilate = int(opt.get('frame-dilate', 0))
 if frame_dilate:
     frame_area = np.array(Image.fromarray((frame_area*255).astype(np.uint8)).filter(ImageFilter.MaxFilter(frame_dilate*2+1))).astype(np.float32)/255.0
