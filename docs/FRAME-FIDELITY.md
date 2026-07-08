@@ -1117,3 +1117,12 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   precedence over --baseline=<png>. Same stone ⇒ exact tone/character, no external asset. cut-panel ignores
   the op. Verified end-to-end with a throwaway contour (sampled 101x57, reverted). NEXT: user traces the
   real baseline patches in the slim-dark masks, then regenerate the PoC (generator auto-uses them).
+- 2026-07-09 (pt.33): Baseline op reworded + traced on all PoC panels; PoC wrapped. Renamed the mask-editor
+  option to "baseline (integration bg reference)" and reworded the generator/editor comments — it's the
+  background the integration is EXTRACTED AGAINST (observed ÷ baseline), not merely a "clean-stone sample".
+  User traced a baseline region on slim-dark-1; copied the same contour to slim-dark-2/4/5 (user will adjust
+  later if a panel needs its own). Regenerated all 4 PoC maps from the traced reference regions (solid tone),
+  no external cracked-stone-2 dependency. Story caption updated. NEUTRAL-PANELS PoC status: pipeline +
+  mechanism proven (cut → traced-bg baseline → factor → one normal-composited relight map). Open before
+  going live: the 1px frame↔halo gap (bright-bg only, postponed) and wiring integration:"neutral" +
+  --integration-blend into the slim-dark masks/build. Live components remain on the legacy stone map.

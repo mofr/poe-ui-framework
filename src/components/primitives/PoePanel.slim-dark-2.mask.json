@@ -6,7 +6,7 @@
   },
   "image": "inspiration/reference-1680.png",
   "build": "panel",
-  "comment": "Quest Log panel (slim-dark-2): frame (keep−hole, two buttons inpainted) + integration ring.",
+  "comment": "Quest Log panel (slim-dark-2): frame (keep\u2212hole, two buttons inpainted) + integration ring.",
   "contours": [
     {
       "points": [
@@ -949,6 +949,30 @@
       ],
       "name": "top button",
       "op": "inpaint",
+      "note": "",
+      "round": 0
+    },
+    {
+      "points": [
+        {
+          "x": 0.4434372986399335,
+          "y": 0.8144111775595678
+        },
+        {
+          "x": 0.44397130997881673,
+          "y": 0.8284141415569518
+        },
+        {
+          "x": 0.4868257199242005,
+          "y": 0.8286514799297888
+        },
+        {
+          "x": 0.48562419441171306,
+          "y": 0.8155978694237529
+        }
+      ],
+      "name": "bg",
+      "op": "baseline",
       "note": "",
       "round": 0
     }

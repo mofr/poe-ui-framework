@@ -211,7 +211,8 @@ function draw() {
   // inpaint regions — to be reconstructed (LaMa), not part of the cut: show as a distinct red wash
   const di = buildPathD(contours.filter(c => !c.hidden && c.op === 'inpaint'), imgW, imgH);
   if (di) { ctx.fillStyle = 'rgba(235,90,80,0.35)'; ctx.fill(new Path2D(di)); }
-  // baseline regions — a clean-stone patch sampled as the neutral pipeline's flat baseline: blue wash
+  // baseline — the background the integration is EXTRACTED AGAINST (observed ÷ baseline); sampled from
+  // this region of the reference. Trace a UI-free patch of the surface. Blue wash.
   const db = buildPathD(contours.filter(c => !c.hidden && c.op === 'baseline'), imgW, imgH);
   if (db) { ctx.fillStyle = 'rgba(80,160,235,0.32)'; ctx.fill(new Path2D(db)); }
   // active control polygon (faint) + per-contour outlines + points
@@ -334,7 +335,7 @@ function renderDetails() {
   d.className = '';
   const sv = Math.sqrt((c.round || 0) / MAX_ROUND);
   d.innerHTML =
-    `<div class="det"><label>do</label><select id="d-op"><option value="keep">keep (solid)</option><option value="hole">hole (cut out)</option><option value="inpaint">inpaint (reconstruct)</option><option value="integration">integration (contact shadow)</option><option value="baseline">baseline (clean-stone sample)</option></select></div>`
+    `<div class="det"><label>do</label><select id="d-op"><option value="keep">keep (solid)</option><option value="hole">hole (cut out)</option><option value="inpaint">inpaint (reconstruct)</option><option value="integration">integration (contact shadow)</option><option value="baseline">baseline (integration bg reference)</option></select></div>`
     + `<div class="det"><label>smooth</label><input id="d-smooth" type="range" min="0" max="1" step="0.005"><span class="rv" id="d-rv"></span></div>`
     + `<div class="det"><label>note</label><input id="d-note" type="text" placeholder="note for THIS contour"></div>`;
   $('d-op').value = c.op || 'keep';

@@ -58,8 +58,9 @@ OH, OW = obs.shape[0], obs.shape[1]
 lum = lambda a: 0.2126 * a[..., 0] + 0.7152 * a[..., 1] + 0.0722 * a[..., 2]
 
 # ── 2. clean flat baseline — sources, in precedence order:
-#   op:"baseline" contour(s) in the mask: sample CLEAN STONE straight from the reference itself (traced to a
-#     UI-free patch). Same stone ⇒ exact tone/character, no external asset. Preferred.
+#   op:"baseline" contour(s): the background the integration is EXTRACTED AGAINST (observed ÷ baseline),
+#     sampled straight from the reference itself (trace a UI-free patch of the surface). Same source ⇒ exact
+#     tone/character, no external asset. Preferred.
 #   --baseline=<png>: an external surface texture (e.g. cracked-stone-2).
 #   else: LaMa inpaint of the plate (fine when the surroundings reconstruct cleanly).
 # Either premade source is tiled, tone-matched (per channel) to the observed's UNSHADOWED stone, and
