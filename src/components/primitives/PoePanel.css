@@ -70,9 +70,9 @@
 /* integration shares the frame's slice/band, but SPILLS past the frame as decoration: its outset =
    overhang + --integration-spill (how far it was traced beyond the frame). Same slice/band + uniform extra
    outset keeps it locked to the frame; the frame's own geometry is untouched.
-   MULTIPLY blend: darkens the surface (contact shadow) — panels use the legacy stone map (dark stone ≈ page
-   tone). (PoeInput uses a single normal-composited relight map instead; see PoeInput.css.) */
-.poe-panel__integration   { z-index: 3; border-image-source: var(--src-integration); mix-blend-mode: multiply;
+   NORMAL composite (no blend mode): on the dark stone the panels sit on, this is indistinguishable from
+   multiply (measured), and it drops the last mix-blend-mode — matching PoeInput, robust under any nesting. */
+.poe-panel__integration   { z-index: 3; border-image-source: var(--src-integration);
   border-image-outset: calc(var(--overhang) + var(--integration-spill, 0px)); }
 
 /* CONTENT — flow wrapper (drives auto-height). INNATE padding = --content-pad, the frame's visible-art

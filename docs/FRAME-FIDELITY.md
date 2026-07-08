@@ -1083,3 +1083,11 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   src/stories/neutral-poc/*.bgneutral.png (cracked-stone-2 baseline). Live components untouched. Knob to
   tune: --pre-blur (texture-cancel vs crispness). NOTE: the committed live input predates pt.26's soft-frame
   fix, so a future regen would slightly strengthen its contact ring (left as-is until approved).
+- 2026-07-09 (pt.28): Three directives (user). (1) LIVE: panels' integration multiply → NORMAL — measured
+  indistinguishable on the dark stone they sit on (reconstruction mean diff 0.29, 1.2% of px changed >8),
+  and it drops the LAST mix-blend-mode in the system (everything is normal composite now → robust under
+  nesting, matches PoeInput). (2) Dropped LaMa for panels entirely (can't reconstruct clean stone under the
+  dense reference) — removed the LaMa PoC maps + variant. (3) bg-baseline was TOO blurred at pre-blur=3 →
+  regenerated at pre-blur=1 (crisper contact, still cancels the texture mismatch, stays neutral off-stone).
+  PoC story now a 2-way: legacy stone map vs bg-baseline neutral, both normal. Live reconstruction verified
+  unchanged.
