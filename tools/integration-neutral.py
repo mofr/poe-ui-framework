@@ -72,10 +72,11 @@ if baseline:
     ol = lum(obs[:, :, :3]); amb = halo & (ol > np.percentile(ol[halo], 60))   # the UNSHADOWED stone
     for c in range(3):
         cln[:, :, c] *= obs[:, :, c][amb].mean() / max(cln[:, :, c][amb].mean(), 1e-3)
-    # Blur ONLY the baseline to a smooth ambient TONE — our surface texture ≠ the reference's, so keeping it
-    # sharp injects mismatch noise into obs/clean. Smoothing the baseline (not the observed) leaves the
-    # SHADOW crisp: factor = sharp obs / smooth tone. (Pair with --pre-blur=0, the default.)
-    base_blur = float(opt.get('base-blur', 8))
+    # OPTIONAL: blur ONLY the baseline (not the observed) to a smooth ambient tone. Our surface texture
+    # (e.g. cracked-stone-2's cracks) doesn't line up 1:1 with the reference, so leaving it sharp injects
+    # that mismatch into obs/clean; smoothing just the baseline removes it while the SHADOW stays crisp.
+    # Off by default — enable with --base-blur=N when the mismatch noise bothers you.
+    base_blur = float(opt.get('base-blur', 0))
     if base_blur > 0:
         cln = np.array(Image.fromarray(np.clip(cln, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(base_blur))).astype(np.float32)
 else:

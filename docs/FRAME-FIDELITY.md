@@ -1099,3 +1099,9 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   sharp obs / smooth tone = a CRISP shadow, no mismatch noise. Confirmed via a blur-both/baseline-only/
   neither comparison. PoC regenerated (base-blur=8, pre-blur=0): crisp neutral contact on every surface,
   clean off-stone. Also confirmed the INPUT pipeline is untouched (still LaMa; map unmodified since 6faba9a).
+- 2026-07-09 (pt.30): Clarified + de-blurred (user). The bg pipeline IS the LaMa pipeline with ONE stage
+  swapped — clean baseline = premade cracked-stone-2 instead of a LaMa inpaint (plus a tone-match, since
+  LaMa's fill already comes out at the reference's tone). "factor" (obs/clean) is the SAME step in both
+  (LaMa breakdown stage 08); it was only mislabeled as novel. Turned blur OFF: --base-blur default 0 (kept
+  as an opt-in for when the surface's non-matching detail — e.g. cracked-stone-2's cracks — shows as noise;
+  it didn't here). PoC regenerated with no blur: crisp clean neutral halo on every surface.
