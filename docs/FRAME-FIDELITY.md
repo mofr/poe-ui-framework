@@ -1105,3 +1105,9 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   (LaMa breakdown stage 08); it was only mislabeled as novel. Turned blur OFF: --base-blur default 0 (kept
   as an opt-in for when the surface's non-matching detail — e.g. cracked-stone-2's cracks — shows as noise;
   it didn't here). PoC regenerated with no blur: crisp clean neutral halo on every surface.
+- 2026-07-09 (pt.31): Baseline → SOLID (user). Added --base-blur=solid (flat ambient tone). Key insight
+  clarified: the beautiful natural noise in the halo comes from the SHARP observed, not the baseline — so a
+  textureless (solid) baseline PRESERVES all of it and removes the baseline's own non-matching detail
+  (cracked-stone-2's cracks) entirely; a noisy baseline would instead cancel some of the observed's noise.
+  Sweep (0/8/30/solid) confirmed solid is cleanest. PoC regenerated at base-blur=solid. (Next: the 1px
+  frame↔halo gap.)

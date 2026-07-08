@@ -1,7 +1,7 @@
 import React from 'react';
 import { PoePanel } from '../components/primitives/PoePanel.tsx';
 // PoC bg-baseline neutral maps — clean baseline = OUR cracked-stone-2 surface (LaMa dropped for panels),
-// tone-matched, no blur. NOT wired into the live component (see docs/FRAME-FIDELITY.md).
+// tone-matched, solid (flat) baseline. NOT wired into the live component (see docs/FRAME-FIDELITY.md).
 import b1 from './neutral-poc/slim-dark-1.bgneutral.png';
 import b2 from './neutral-poc/slim-dark-2.bgneutral.png';
 import b4 from './neutral-poc/slim-dark-4.bgneutral.png';
@@ -57,7 +57,7 @@ export const Comparison = {
       <p style={{ font: '11px/1.5 system-ui', color: '#aab4c0', margin: 0, maxWidth: 760 }}>
         <code>surface="none"</code>, so only frame + halo show. <b>legacy stone map</b> = the committed stone
         raster (now composited normal, live). <b>bg baseline</b> = neutral relight map using OUR
-        cracked-stone-2 surface as the clean baseline (tone-matched, no blur), LaMa-free. Should match on
+        cracked-stone-2 surface as the clean baseline (tone-matched, solid flat baseline), LaMa-free. Should match on
         the stone rows; off-stone the legacy drags stone colour, the neutral stays clean.
       </p>
       {BACKGROUNDS.map(bg => <Row key={bg.name} bg={bg} frame={args.frame} />)}

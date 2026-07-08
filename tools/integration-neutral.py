@@ -76,9 +76,11 @@ if baseline:
     # (e.g. cracked-stone-2's cracks) doesn't line up 1:1 with the reference, so leaving it sharp injects
     # that mismatch into obs/clean; smoothing just the baseline removes it while the SHADOW stays crisp.
     # Off by default — enable with --base-blur=N when the mismatch noise bothers you.
-    base_blur = float(opt.get('base-blur', 0))
-    if base_blur > 0:
-        cln = np.array(Image.fromarray(np.clip(cln, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(base_blur))).astype(np.float32)
+    base_blur = opt.get('base-blur', '0')
+    if base_blur == 'solid':                       # flat ambient tone — the smoothest possible baseline. The
+        cln[:] = cln.reshape(-1, 3).mean(0)        # beautiful natural noise comes from the SHARP observed,
+    elif float(base_blur) > 0:                     # so a textureless baseline loses nothing and adds no
+        cln = np.array(Image.fromarray(np.clip(cln, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(float(base_blur)))).astype(np.float32)  # mismatch.
 else:
     m = Image.new('L', (W, H), 0); ImageDraw.Draw(m).polygon(pts, fill=255)
     mask_grow = int(opt.get('mask-grow', 2))                 # grow the inpaint mask past the integration
