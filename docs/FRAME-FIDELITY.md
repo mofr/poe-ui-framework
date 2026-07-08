@@ -1111,3 +1111,9 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   (cracked-stone-2's cracks) entirely; a noisy baseline would instead cancel some of the observed's noise.
   Sweep (0/8/30/solid) confirmed solid is cleanest. PoC regenerated at base-blur=solid. (Next: the 1px
   frame↔halo gap.)
+- 2026-07-09 (pt.32): Baseline from a TRACED REFERENCE REGION instead of a separate PNG (user). Added
+  op:"baseline" — trace a clean, UI-free stone patch in the mask editor (blue wash); integration-neutral.py
+  samples that region straight from the reference/plate as the clean baseline (bbox crop, tiled), taking
+  precedence over --baseline=<png>. Same stone ⇒ exact tone/character, no external asset. cut-panel ignores
+  the op. Verified end-to-end with a throwaway contour (sampled 101x57, reverted). NEXT: user traces the
+  real baseline patches in the slim-dark masks, then regenerate the PoC (generator auto-uses them).

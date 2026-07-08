@@ -57,30 +57,36 @@ obs = np.array(Image.open(observed_scratch).convert('RGBA')).astype(np.float32)
 OH, OW = obs.shape[0], obs.shape[1]
 lum = lambda a: 0.2126 * a[..., 0] + 0.7152 * a[..., 1] + 0.0722 * a[..., 2]
 
-# ── 2. clean flat baseline — TWO sources:
-#   --baseline=<png>: OUR OWN surface texture. Use when LaMa can't reconstruct clean stone under a dense
-#     reference (UI/text packed around the frame). We KNOW the surface rendered behind the panel, so tile it
-#     and tone-match (per channel) to the observed's UNSHADOWED stone → obs/clean isolates only the
-#     shadow/highlight transfer. The two stone TEXTURES differ, so pair with --pre-blur to cancel them.
-#   else: LaMa inpaint of the plate (fine when the surroundings are clean enough to reconstruct).
-baseline = opt.get('baseline')
-if baseline:
-    bpath = baseline if os.path.isabs(baseline) else os.path.join(ROOT, baseline)
-    tile = np.array(Image.open(bpath).convert('RGB')).astype(np.float32)
+# ── 2. clean flat baseline — sources, in precedence order:
+#   op:"baseline" contour(s) in the mask: sample CLEAN STONE straight from the reference itself (traced to a
+#     UI-free patch). Same stone ⇒ exact tone/character, no external asset. Preferred.
+#   --baseline=<png>: an external surface texture (e.g. cracked-stone-2).
+#   else: LaMa inpaint of the plate (fine when the surroundings reconstruct cleanly).
+# Either premade source is tiled, tone-matched (per channel) to the observed's UNSHADOWED stone, and
+# optionally smoothed (--base-blur; =solid → flat tone). The halo's natural noise comes from the SHARP
+# observed, so the baseline only needs to supply the right tone.
+base_contours = [c for c in (mask.get('contours') or []) if c.get('op') == 'baseline']
+baseline_png = opt.get('baseline')
+if base_contours or baseline_png:
+    if base_contours:
+        bp = [(p['x'] * W, p['y'] * H) for bc in base_contours for p in bc['points']]
+        bx0, by0 = int(min(x for x, y in bp)), int(min(y for x, y in bp))
+        bx1, by1 = int(max(x for x, y in bp)), int(max(y for x, y in bp))
+        tile = np.array(Image.open(plate).convert('RGB').crop((bx0, by0, bx1, by1))).astype(np.float32)
+        print(f'{name}: baseline = traced reference region {bx1 - bx0}x{by1 - by0}')
+    else:
+        bpath = baseline_png if os.path.isabs(baseline_png) else os.path.join(ROOT, baseline_png)
+        tile = np.array(Image.open(bpath).convert('RGB')).astype(np.float32)
     cln = np.tile(tile, ((OH // tile.shape[0]) + 1, (OW // tile.shape[1]) + 1, 1))[:OH, :OW, :]
     halo = obs[:, :, 3] > 60
     ol = lum(obs[:, :, :3]); amb = halo & (ol > np.percentile(ol[halo], 60))   # the UNSHADOWED stone
     for c in range(3):
         cln[:, :, c] *= obs[:, :, c][amb].mean() / max(cln[:, :, c][amb].mean(), 1e-3)
-    # OPTIONAL: blur ONLY the baseline (not the observed) to a smooth ambient tone. Our surface texture
-    # (e.g. cracked-stone-2's cracks) doesn't line up 1:1 with the reference, so leaving it sharp injects
-    # that mismatch into obs/clean; smoothing just the baseline removes it while the SHADOW stays crisp.
-    # Off by default — enable with --base-blur=N when the mismatch noise bothers you.
     base_blur = opt.get('base-blur', '0')
-    if base_blur == 'solid':                       # flat ambient tone — the smoothest possible baseline. The
-        cln[:] = cln.reshape(-1, 3).mean(0)        # beautiful natural noise comes from the SHARP observed,
-    elif float(base_blur) > 0:                     # so a textureless baseline loses nothing and adds no
-        cln = np.array(Image.fromarray(np.clip(cln, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(float(base_blur)))).astype(np.float32)  # mismatch.
+    if base_blur == 'solid':                       # flat ambient tone (smoothest baseline)
+        cln[:] = cln.reshape(-1, 3).mean(0)
+    elif float(base_blur) > 0:
+        cln = np.array(Image.fromarray(np.clip(cln, 0, 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(float(base_blur)))).astype(np.float32)
 else:
     m = Image.new('L', (W, H), 0); ImageDraw.Draw(m).polygon(pts, fill=255)
     mask_grow = int(opt.get('mask-grow', 2))                 # grow the inpaint mask past the integration
