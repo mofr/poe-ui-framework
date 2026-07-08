@@ -796,3 +796,253 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   **component-owned** typography, NOT PoeText (like PoeButton). Until those components exist they're stood
   in via a local `ctrl()` helper in the story. Still placeholder (raster out of scope this session): the
   avatar/orb/tab/bar frames and bell/mail icons.
+- 2026-07-07: PoeInput (big search bar) brought to fidelity + integration wired. INTERNALS tuned to the
+  reference "Search or jump to…" bar (measured off reference-1680.png): placeholder is an UPRIGHT neutral
+  GREY serif (#92958f, was gold italic), soft dark text halo, warm-dark interior gradient (#17140d→#0d0b07,
+  ref ≈ #14110a), warm gold search glyph (#b0905a), search icon 16→20, bar widened 460→560. FRAME 1:1 FIX:
+  the raster's bronze band is only ~5px thick but the border-image sliced 12px — dragging the frame's
+  TRANSPARENT interior cut into the border so the page showed through as an "ugly black strip"; now slice
+  6 / 6px (strictly 1:1, repeat) with the padding-box fill starting exactly at the bronze inner edge.
+  INTEGRATION: user traced an `op:integration` outline; switched build `mask`→`panel` (cut-panel emits
+  frame + integration halo), out keys `frame`/`integration`. Rendered as a `::before` 9-slice behind the
+  frame (inset:-8px to match the 8px spill, slice 14/14px 1:1) → seats the bar into the stone. NAMING
+  CLARIFIED (user): integration is the soft transition halo = shadow AND/OR highlight, NOT only a "contact
+  shadow"; renamed the tool default output `-integration-shadow.png`→`.integration.png` (cut-panel.mjs +
+  build-mask.mjs) and rewrote the comments. PoePanel's two-layer `--src-integration-shadow`/`-specular`
+  split kept (those names denote blend role — darken vs screen — legitimately); a fuller PoePanel var
+  rename is available if wanted. AWAITING user judgment.
+- 2026-07-07 (pt.2): Removed the never-implemented SPECULAR (highlight) integration layer + collapsed the
+  remaining single layer's name to neutral "integration". Rationale (user): the shadow/specular split was
+  a two-blend-mode design (darken + screen) but NO real specular raster ever existed (only debug
+  placeholders); all real frames had `--src-integration-specular: none`. Easy to re-add later (isolated).
+  Changes: deleted the 4 `PoePanel.debug-r*.integration-specular.png` placeholders; `git mv`'d every
+  `*.integration-shadow.png`→`*.integration.png` (frame rasters); global rename `integration-shadow`→
+  `integration` across CSS vars (`--src-integration`), classes (`.poe-panel__integration`), url()s, mask
+  `out.integration` paths, story layer-lists; removed the `.poe-panel__integration-specular` div (tsx),
+  its shared+display:none CSS selectors, and all `--src-integration-specular` decls; cut-panel.mjs/
+  build-mask.mjs default output already neutral (`.integration.png`), comments rewritten (integration =
+  the soft halo = shadow AND/OR highlight, never "shadow"). Reconstruction + PoePanel gallery verified
+  (all frames+integration intact, zero console errors). NOTE on the INPUT integration: it renders but is
+  near-imperceptible on the reconstruction's dark stone header (contact-shadow on dark ≈ no contrast);
+  it's faithful — awaiting user call on whether to strengthen it for this backdrop.
+- 2026-07-07 (pt.3): FIXED "integration invisible" — root cause was a LATENT BUG, not subtlety: the
+  integration raster carries REFERENCE STONE pixels (measured RGB ≈ [25,19,11]) ≈ the page tone, and the
+  runtime composited it with NORMAL blend (opacity 1) → same-tone-over-same-tone repaint = a no-op. The
+  locked architecture had specified integration = a DARKEN layer, but the impl used normal blend. Fix:
+  `mix-blend-mode: multiply` on the integration layer (PoeInput `::before` + PoePanel `.poe-panel__integration`)
+  so the halo DARKENS the surface into a real contact shadow that reads on ANY backdrop. Now every panel
+  visibly seats into the stone (contact-shadow recess) and the search bar reads as inset. User re-traced a
+  slightly larger input integration outline (rebuilt: frame 569×41, integration 585×57, spill 8px). Verified
+  across PoePanel gallery + PoeInput gallery + reconstruction: visible seating, zero console errors. If a
+  future frame needs a HIGHLIGHT (screen) half, re-add a second integration layer with mix-blend-mode:screen
+  (the removed specular slot) — the multiply layer is the shadow half.
+- 2026-07-07 (pt.4): Input integration STILL invisible after multiply — real cause found via a red-halo
+  probe: the `::before` was at `z-index:-1`, which buries it under the field's own opaque background
+  (only a faint sliver of an 8px spill survived). Pseudo-element also wasn't a findable DOM node (user
+  couldn't locate it). FIX: restructured ornate PoeInput to PoePanel's LAYER MODEL — real sibling spans
+  `.poe-input__integration` (z1, multiply) and `.poe-input__frame` (z3), content raised to z2; the frame
+  moved off the element border onto its own layer; wrapper kept as a NON-stacking-context (position:
+  relative only, no z-index/isolation) so the multiply halo blends with the PAGE, not just the field fill.
+  Result: with/without diff jumped 14.6k→27.3k changed px (max Δ 49→79) — a clearly perceptible contact
+  shadow seating the bar into the stone; integration is now a real inspectable element. Plain variant
+  untouched (no layers). Zero console errors.
+- 2026-07-07 (pt.5): PoC — BACKGROUND-NEUTRAL integration via inpainting. To store the light-transfer
+  (attenuation/highlight) instead of the reference stone pixels (which mismatch off-stone): LaMa-inpaint
+  the input/panel OUT of the reference → flat baseline; re-cut integration from the clean plate (same
+  code path ⇒ pixel-aligned); factor = observed/clean; write two neutral 9-slice maps — `*.integration-
+  neutral.png` (black, α=darken, multiply) + `*.integration-highlight.png` (white, α=lighten, screen).
+  Frame footprint excluded (bronze/stone read as false highlight) via the cut frame's alpha. Tool:
+  `tools/integration-neutral.py <mask>`. Generated for PoeInput.big-input + PoePanel.slim-dark-1/2/4/5.
+  Runtime: re-added the highlight layer (`--src-integration-highlight`, screen) to PoePanel + PoeInput;
+  integration source is var-overridable per instance (old stone default; new = neutral via inline vars).
+  STORY `PoC/Integration (neutral vs raster) › Compare`: each component × {old stone, new neutral} across
+  5 backgrounds (page stone / warm / blue / green / parchment). Result: new preserves the backdrop hue,
+  old bakes the stone — clearest on blue/green/parchment. Highlight component is real (α up to ~250 pre-
+  exclusion) — validates the two-layer split. NOT yet the default; awaiting user judgment to productionize
+  (swap each frame's `--src-integration` to the neutral map + set the highlight, re-cut). Caveats: minor
+  LaMa noise in the maps (blurred); slim-dark-1 cell overlaps slightly in the story (cosmetic).
+- 2026-07-07 (pt.6): Integration compare story reworked + convention fix (user feedback). (1) The "broken
+  layout" was ONLY the story using frameScale=0.45 — that scales the raster off 1:1 AND drifts the ring
+  (overhang scales, --integration-spill doesn't). Rebuilt at native 1:1 (frameScale 1): frame + integration
+  now lock together. Verified committed panels were already consistent (rasters byte-identical to HEAD,
+  spills 18/12/8 = raster-derived) and the reconstruction is untouched — no real panel bug. (2) Story now:
+  7 backgrounds (repo textures matte-stone-1 / cracked-stone-1 / worn-leather-1 / smooth-slate-1 + solid
+  blue/green/parchment), each COMPONENT as one ROW of three cells: old · stone raster | new · neutral |
+  none. Parchment makes the win obvious: old bakes a dark border, new preserves the sheet. (3) CONVENTION
+  FIX (user: empty `out` is intentional): build-mask default output now COLOCATES next to the mask
+  (<mask-dir>/<name>.png) instead of repo root — so masks without `out` build correctly; reverted the `out`
+  I'd added to slim-dark-5. Open aesthetic notes for productionization: neutral highlight (screen) rim is a
+  touch strong on light backdrops; residual LaMa noise in the maps (blurred, not fully gone).
+- 2026-07-07 (pt.7): PoC iteration on user feedback. (1) INPAINT REVIEW: integration-neutral.py now writes
+  a sanity crop (plate on top, LaMa-clean below) to asset-review/integration-neutral/<name>.inpaint-check.png
+  so the flat baseline is inspectable. Confirms LaMa removes the frame+shadow and fills plausible stone
+  (faint interior ghosting, but that region is excluded). (2) BACKGROUNDS: added the reconstruction contexts
+  to the compare story — solid-black-1 (panel surface), matte-stone-1/2, cracked-stone-2 — plus the existing
+  textures + solids (10 total). solid-black-1 shows the integration is genuinely subtle on the near-black
+  panel surface (as in the dashboard). (3) HIGHLIGHT "too bright" FIX: was normalising to white×alpha (blew
+  out on light bg). Now EXTRACTS the actual added light delta = clip(observed−clean) — real intensity + hue —
+  applied by screen (self-limits on bright backdrops). Widened frame-edge exclusion (MaxFilter 5→11) to drop
+  bronze fringe hotspots. Parchment no longer washes; reads as a soft shadow with the sheet preserved.
+  Knob: `--hi <k>` scales highlight strength. Remaining: residual LaMa noise in halos (tunable via blur).
+- 2026-07-07 (pt.8): FOCUS ON INPUT (user: panels inpaint poorly — the reference UI is too dense to
+  reconstruct a flat baseline between neighbours; the input inpaints near-flawlessly so it's the proof case).
+  New diagnostic `tools/integration-viz.py <mask>` → asset-review/integration-neutral/<name>.pipeline.png:
+  a labelled, spatially-aligned montage of EVERY step so the pipeline is eyeball-able: 1 reference crop ·
+  2 traced contours (frame/hole/integration) · 3 frame cut · 4 integration observed (stone+coverage) ·
+  5 inpaint mask · 6 LaMa clean plate · 8 factor=observed/clean (blue=shadow/red=highlight) · 9 surface mask
+  (frame excluded) · 10 shadow α=1−factor · 11 highlight=delta×coverage · 12 result OLD|NEW|none over
+  stone/blue/parchment (with frame). Reveals the input's integration is a genuinely subtle signal — factor≈1
+  except a thin contact-shadow line at the bottom + a faint rim; inpaint baseline is clean for the input.
+- 2026-07-07 (pt.9): Pipeline levers + separate-frame viz (input-focused). (1) PRECISE FRAME CUT: coverage
+  = traced integration MINUS the frame footprint (was an approximate dilated raster) — exact & safe since
+  the frame is a separate top layer. (2) NOISE LEVER `--pre-blur` (default 2.5): the shadow/highlight is a
+  low-frequency field, but LaMa fill texture ≠ reference texture so the raw ratio is noisy — blurring both
+  before dividing smooths the maps. Baked into integration-neutral.py + integration-viz.py. (3) Explained
+  "step 8 only bottom": new RAW unmasked observed−clean frame (07) shows the bar is lit from above, so the
+  only surface DARKENING is the bottom contact shadow; top/sides have ~no shadow (and the trace hugs the
+  frame there) — physically correct, not a bug. (4) integration-viz.py now emits a SET of uniformly-sized,
+  registered PNGs (asset-review/integration-neutral/pipeline-<name>/NN-*.png, 14 frames) to flip through
+  for spatial checking, instead of one montage. LaMa panels still deferred (dense UI can't be flattened).
+- 2026-07-07 (pt.10): Fixed pipeline-viz bugs found by user. (1) MAJOR alignment: the observed/clean crops
+  were placed from the POLYGON frame bbox (570×42) while the raster is 569×41 → a 1px shift that both
+  displaced step 4 AND misregistered the factor (dividing 1px-off images = noise). Now template-match the
+  integration raster back into the reference (SAD 0.00, exact origin) and centre the frame within it.
+  (2) Step 4 now shows INTEGRATION ONLY — the frame raster alpha is cut out (frame is a separate top layer),
+  so you see just the halo (a thin bottom contact-shadow strip). (3) INPAINT MASK shrunk: was integration
+  outline +6px (looked oversized); now +2px via `--mask-grow` (default 2), in both viz + generator.
+  (4) Clearer labels + a RAW unmasked diff (07) that explains steps 8-11. Registration fix also cleaned up
+  the factor/shadow noticeably. Input-only focus retained.
+- 2026-07-07 (pt.11): ROUND-TRIP RECONSTRUCTION validation (user idea) + fixes. integration-viz.py now
+  reconstructs the reference back — baseline → ×shadow(multiply) → +highlight(screen) → +frame — and diffs
+  vs the reference (steps 15-20, each a separate registered file; metric excludes the interior search
+  field, which is component content not part of this decomposition). Result: with the EXACT decomposition
+  (pre-blur 0, frame-dilate 0) mean|diff| = **0.48/255** — essentially perfect; the only visible diff is the
+  interior text/icon. So positioning + shadow/highlight math are correct. FIXES from what the test exposed:
+  (1) the "miscut / doesn't stick to the frame" was `frame-dilate` gapping the halo off the frame — sweep
+  showed error rising 0.48→1.39→1.67 per +2px; default now **0** in viz + integration-neutral.py (halo
+  meets the frame exactly). (2) pre-blur is a noise/fidelity knob: 0.48(exact)→2.33(blur 2.5); the extra
+  "diff" is the high-freq texture/noise we intentionally drop from the shadow. Input shadow α_max now 44
+  (halo reaches the frame). Metric printed each run: `RECONSTRUCTION mean|diff| ...`.
+- 2026-07-08 (pt.12): Two fixes from user review. (1) RECON DIFF now over INTEGRATION PIXELS ONLY
+  (coverage-weighted; frame 20 masks the diff to the halo) — interior/frame excluded. Honest metric:
+  0.72/255 exact vs 6.78/255 at pre-blur 2.5 (whole-image avg had diluted it to 2.33). The 6.78 sits at the
+  shadow edge = the high-freq the blur softens; so pre-blur is now a clearly-measurable fidelity knob.
+  (2) SPILL INTO OPENING fixed: was excluding only the frame BAND (transparent centre leaks the halo into
+  the inner opening). Now exclude the ENTIRE frame interior — traced frame outer outline (viz) / binary_fill_holes
+  on the band (generator). Coverage is a clean ring, opening stays empty. Input maps regen (shadow α 44).
+  Open decision: pre-blur value for the input (0 = pixel-exact/noisier, ~2.5 = smooth/6.78 halo error).
+- 2026-07-08 (pt.13): User caught a real measurement flaw + the "lightens on dark bg" bug. (1) The
+  reconstruction-on-clean metric is NEAR-TRIVIAL — clean×(obs/clean)=obs reproduces the reference whether a
+  halo is encoded as shadow or highlight — so 0.82/255 did NOT prove background-neutrality. Also the metric
+  was coverage-WEIGHTED (diluting edge error); fixed to a binary integration-mask straight accumulation
+  (prints pixels/accumulated|err|/mean/max). (2) Added a BACKGROUND-NEUTRALITY measurement: apply the
+  integration to dark/mid/light bgs, report net luma (want <=0 for a shadow), brightest spot, and % of
+  pixels that lighten. It exposes the bug: WITH highlight, on a dark bg 14% of halo px LIGHTEN, brightest
+  spot +22 — LaMa baseline noise (obs>clean spots) becomes a `screen` highlight, and screen lightens hard
+  on dark backgrounds → the visible bright specks. Measured halo balance: mean obs 11.2 vs clean 13.8 →
+  genuinely a SHADOW (69% shadow / 30% noise-highlight px). FIX: input integration is now SHADOW-ONLY
+  (--hi 0). Shadow-only → net darkens on all bgs, brightest spot +0.0, 0% lighten. Committed input maps
+  regenerated shadow-only (pre-blur 1). Likely implication: highlight should be OPT-IN (only a verified lit
+  rim), not default — screen-on-dark + LaMa noise makes it a net liability otherwise.
+- 2026-07-08 (pt.14): Added SIGNED diff map (frame 20: red=recon too light, blue=too dark) — user was right,
+  it showed a red ring hugging the frame = shadow UNDER-applied at its darkest point (recon too light).
+  Two causes found + fixed: (a) PRE-BLUR bled the bright frame bronze into the halo → inflated obs/clean →
+  weak shadow at the frame edge. Fix (viz + generator): replace the frame footprint with clean stone BEFORE
+  blurring. Dropped mean 2.85→2.22. (b) residual ring is the blur itself softening the sharp contact-shadow
+  onset — at pre-blur=0 the diff is essentially flat (mean 0.94, ring gone). Also switched the frame mask to
+  a HARD exact footprint (binary_fill_holes) so darken isn't multiplied down next to the frame. Committed
+  input maps regenerated shadow-only + pre-blur 0 (accurate). Net on dark/mid/light bg = -2.9/-11.8/-42.6,
+  0% pixels lighten. Remaining tension: pre-blur denoises but softens the shadow edge (ring); pre-blur 0 is
+  exact but keeps LaMa texture noise. Sharp-edge-preserving denoise (edge-aware) is the next lever if needed.
+- 2026-07-08 (pt.15): Corrected my shadow-only mistake (user caught it). The "highlight" is NOT noise —
+  it's a REAL lit rim at the BOTTOM (the frame's illuminated bottom edge spilling light onto the stone
+  below; obs>clean there). Per-region measure: below-frame highlight max +18 (37% px) vs above-frame +3
+  (22%) — highlights genuinely live at the bottom. Shadow-only left that rim TOO DARK (the 22% too-dark /
+  min -18 I'd earlier dismissed). RESTORED shadow+highlight, NO blur: reconstruction mean 0.94→**0.37/255,
+  max 5** — best yet, because the bottom rim now reproduces. On dark bg the rim correctly lightens ~8% of
+  px (up to +16.8) — that IS the reference's lit bottom edge, not an artifact. Committed input maps: shadow
+  + highlight, pre-blur 0. Also fixed the diff colormap (was pink/purple; now gray=0, pure RED=too light,
+  pure BLUE=too dark). Earlier "no blur" note stands: the user wants no blur; pre-blur 0 is the config.
+- 2026-07-08 (pt.16): Applied the full pipeline to PANELS (slim-dark-1/2/4/5): shadow+highlight, no blur.
+  Fixed the viz to register/reconstruct against the INPAINTED PLATE (panels were cut from it, not the raw
+  ref) — registration SAD 0.00 for all. Reconstruction on integration mask: slim-dark-1 mean 1.47/max 30,
+  slim-dark-2 2.58/56, slim-dark-5 6.60/118 (worse = LaMa on dense UI + `screen` under-reconstructing bright
+  highlights). Compare story (re-rendered): NEW panels preserve the backdrop well — on parchment OLD bakes a
+  dark stone box, NEW keeps the sheet + a soft contact shadow; on solid-black-1 clean, no dominant specks.
+  CAVEAT: panel highlights are much brighter than the input's (rgb 190-226 vs 32) — likely LaMa artifacts
+  from the dense UI; neutrality flags bright spots on dark bg (+45, 19% px) though they don't dominate
+  visually. slim-dark-5 is the weakest. Committed panel maps regenerated. AWAITING user's story review.
+- 2026-07-08 (pt.17): Per-mask integration method (user: keep panels as-is, input=neutral, minimal debt).
+  Added optional mask field `integration: "neutral"` (absent ⇒ legacy stone raster). build-mask.mjs: after
+  the normal frame+raster build, if integration==neutral it also runs integration-neutral.py. Runtime source
+  is chosen in the component CSS (single, obvious place): PoeInput.css now references the neutral maps
+  (shadow neutral + highlight), panels keep referencing their stone `*.integration.png`. Neutral generator
+  default pre-blur 2.5→0 (no blur, user-chosen). Verified: input renders the neutral halo at runtime (subtle
+  contact shadow + bottom rim), panels unchanged, zero console errors. NOTE: the panel *.integration-neutral/
+  *.integration-highlight maps from pt.16 are now PoC-only (compare story), not runtime — candidates for
+  cleanup if we trim the compare story to input-only.
+- 2026-07-08 (pt.18): Wired input to neutral at runtime + additive highlight + PoC cleanup. (1) Dashboard
+  input was still on the legacy stone raster (non-composable) while the gallery matched — root cause: the
+  runtime source is the component CSS, and I'd only switched it in the compare story. Fixed: PoeInput.css
+  now references the neutral maps by default → dashboard + gallery identical. (2) HIGHLIGHT blend screen→
+  ADD (mix-blend-mode: plus-lighter) in PoeInput + PoePanel: the map stores literal added light (obs−clean),
+  so base+delta reproduces the reference exactly (recon 0.37→0.35). (3) CLEANUP of PoC garbage: deleted the
+  IntegrationCompare story, the panel *.integration-neutral/-highlight maps (panels stay raster), and the
+  11M asset-review/integration-neutral diagnostics. KEPT: tools/integration-neutral.py + integration-viz.py,
+  the input's runtime neutral maps, the composable highlight layer in PoePanel (infra for future neutral
+  frames), and the `integration: neutral` mask field. Zero console errors across dashboard/input/panel.
+- 2026-07-08 (pt.19): FIXED "big dark box around dashboard input" (user was right — real bug, panel nesting).
+  Cause: the additive highlight uses mix-blend-mode: plus-lighter, which is only defined INSIDE an isolated
+  group. PoeInput was deliberately NON-isolated (pt.4, so its multiply reaches the page) — fine standalone
+  (gallery), but nested in the panel's isolated context the plus-lighter layer painted a dark rectangle the
+  size of its group. Wiring probes all read correct (neutral map, multiply+plus-lighter, stone png never
+  fetched) because the sources/blends WERE right — the defect was purely plus-lighter compositing without
+  isolation. FIX: isolation:isolate on .poe-input--ornate. Toggling the highlight layer off removed the box
+  (confirming culprit); isolate-input also removed it while keeping the shadow. Verified: dashboard box gone,
+  gallery unchanged, shadow/rim still seat the input, zero console errors. Lesson: plus-lighter/plus-darker
+  REQUIRE isolation — if PoePanel ever emits a neutral highlight, its highlight layer needs the same.
+- 2026-07-08 (pt.20): Reverted the isolation mistake + robust highlight blend + naming cleanup (user).
+  (1) plus-lighter (pt.18) was the real cause of the dashboard dark box — it's only defined inside an
+  isolated group and rendered as a dark rectangle when the input (deliberately non-isolated) was nested in
+  a panel; isolation:isolate (pt.19) then broke the shadow (over-dark) and lost the rim. FIX: dropped
+  isolation, highlight blend plus-lighter→SCREEN. screen is a standard separable blend that works in ANY
+  nesting context and browser (no isolation needed) — removes the box robustly. Trade-off vs additive:
+  screen slightly under-adds very bright rims, negligible for the input's subtle rim. (2) NAMING (user:
+  shadow layer was unlabelled + file said "neutral"): renamed the shadow LAYER/var/file to say SHADOW
+  everywhere — .poe-{input,panel}__integration-shadow (multiply) + __integration-highlight (screen);
+  --src-integration-shadow + --src-integration-highlight; input maps *.integration-shadow.png +
+  *.integration-highlight.png (was the confusing -neutral). Panels' shadow layer now points at their legacy
+  stone *.integration.png via --src-integration-shadow. Verified: dashboard box gone, panels/gallery render,
+  zero console errors. NOTE for user: hard-refresh — the box likely persisted in your browser because
+  plus-lighter is browser-fragile; screen is universal.
+- 2026-07-08 (pt.21): ROOT-CAUSE fix for the dashboard integration (user chose NORMAL-composite). CSS
+  mix-blend-mode only reaches the backdrop within its own stacking context, so nested in the panel the
+  input's halo could never blend with the stone surface → shadow survived (black multiply == plain
+  composite) but the rim (screen/add) vanished ("dark, no highlights"). FIX: drop mix-blend-mode on the
+  input's halo layers — plain NORMAL composite works through any nesting. Shadow = black-α map (darkens by
+  1−α, still background-neutral, identical look). Rim = BAKED warm-white [215,200,170] with α = rim-
+  brightness/185 (generator write_gray) — reproduces the reference rim AND lifts a brighter dashboard stone
+  (the reference's own lit-stone colour is darker than matte-stone-2 and would have darkened it). Verified:
+  dashboard == gallery now (shadow + subtle rim, no box), zero console errors. Also: the stone
+  integration.png had gone missing (broke the generator's `observed`); build-mask recreated it. Note: panels
+  keep multiply (their stone map isn't black, so multiply≠normal there). Trade-off accepted: the baked rim
+  is warm/fixed, so on a wildly different backdrop it tints slightly — fine for the input's stone home.
+- 2026-07-08 (pt.22): Consolidated input integration to ONE layer + ONE map (user Qs). (1) The three files
+  were: integration.png (stone raster WITH the frame — a build INTERMEDIATE, the generator's observed
+  reference, not used at runtime) + integration-shadow.png + integration-highlight.png. (2) One layer is
+  enough: per pixel the surface is EITHER darker (shadow) OR lighter (rim), never both, so a single RGBA
+  relight map (black-α where it darkens, warm-α where it lifts) normal-composited does both. Collapsed the
+  two-layer split (it only existed when shadow=multiply/rim=screen; both are normal now). Generator now cuts
+  the OBSERVED crop to scratch (not the committed png) so integration.png can BE the single output — no
+  stone intermediate committed. Runtime input files: PoeInput.big-input.png (frame) + .integration.png
+  (combined relight). Reverted the -shadow/-highlight names → one .poe-{input,panel}__integration layer +
+  --src-integration; removed the highlight layer/var/spans from PoeInput + PoePanel. Panels keep multiply +
+  their stone integration.png. Verified: dashboard + gallery consistent, panels unaffected, zero console errors.
+- 2026-07-08 (pt.23): Fixed the corrupted/"bigger lighter rim" from pt.22's consolidation. Bug: the combined
+  map put black (shadow) and warm (rim) in one RGBA and blurred them TOGETHER — the shadow's black bled into
+  the rim's warm, smearing + enlarging the rim (a warm glow hugging the frame, unlike the reference). The old
+  two-layer blurred each map on its own, avoiding this. Fix: blur darken (ds) and hi_alpha (dh) SEPARATELY,
+  then combine algebraically so one normal layer == "shadow then rim" exactly: α = ds+dh−ds·dh, rgb =
+  warm·dh/α  (⇒ out = bg·(1−ds)(1−dh)+warm·dh). Reconstruction on the halo: mean|diff| 4.83→1.63, max
+  42.9→6.8. Still ONE layer + ONE map; render now matches the reference (dark clean surround + subtle bottom
+  rim) on both dashboard and gallery, zero console errors.

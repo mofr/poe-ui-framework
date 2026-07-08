@@ -91,7 +91,7 @@ export const Dashboard = {
                   <PoeText variant="subtitle" style={{ color: '#3fa2ed' }}>The Interface Mage</PoeText>
                 </div>
                 <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-                  <PoeInput ornate leading={<Search size={16} />} trailing="/" placeholder="Search or jump to..." style={{ width: '100%', maxWidth: 460 }} />
+                  <PoeInput ornate leading={<Search size={20} />} trailing="/" placeholder="Search or jump to..." style={{ width: '100%', maxWidth: 560 }} />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
                   <Ph w={44} h={40} r={6}><Bell size={18} color="#c9a25e" /></Ph>

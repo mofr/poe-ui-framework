@@ -217,7 +217,7 @@ export const LayerContract = {
     await expect(panel).toHaveAttribute('data-surface', 'cracked-stone-1');
     await expect(panel).toHaveAttribute('data-integration', 'none');
 
-    for (const layer of ['surface', 'inner-shadow', 'integration-shadow', 'integration-specular', 'content', 'frame']) {
+    for (const layer of ['surface', 'inner-shadow', 'integration', 'content', 'frame']) {
       await expect(panel.querySelector(`.poe-panel__${layer}`)).not.toBeNull();
     }
 

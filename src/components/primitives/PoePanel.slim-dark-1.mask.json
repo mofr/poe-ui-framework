@@ -2,7 +2,7 @@
   "name": "PoePanel.slim-dark-1",
   "out": {
     "frame": "src/components/primitives/PoePanel.slim-dark-1.png",
-    "integration": "src/components/primitives/PoePanel.slim-dark-1.integration-shadow.png"
+    "integration": "src/components/primitives/PoePanel.slim-dark-1.integration.png"
   },
   "image": "inspiration/reference-1680.png",
   "build": "panel",

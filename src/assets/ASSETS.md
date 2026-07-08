@@ -10,7 +10,7 @@ options.
 ## Where the rasters live
 A raster CUT FROM A MASK is **colocated with its component** in `src/components/primitives/`, beside its
 `*.mask.json` and the matching `*.css` (the file is named to match the mask, e.g. `PoePanel.slim-dark-1.png`
-+ `…integration-shadow.png`, `PoeButton.buttons.png`, `PoeList.list*.png`, `PoeInput.big-input.png`,
++ `…integration.png`, `PoeButton.buttons.png`, `PoeList.list*.png`, `PoeInput.big-input.png`,
 `PoeSegmentBar.progress-bar*.png` / `…fill-green.png`). Each is a committed, hand-tweakable artifact;
 regenerate one deliberately with `node tools/build-mask.mjs <maskName>` — this is **never** wired into
 `npm run build` (cuts aren't pure functions of the mask: inpaint, AI textures and hand-finishing are in play).
@@ -22,7 +22,7 @@ This `src/assets/` tree holds only the **shared / mask-less** rasters:
   of `-1`), `smooth-slate-1`; `matte-stone-soft` (blurred colour field — a Storybook backdrop only) and
   `blueprint-grid` (grid overlay).
 - `panels/` — legacy mask-less PoePanel frames (now deleted). Debug scaffolding
-  (`debug-surface`, `debug-accent`, and the `frame`/`shadow`/`specular` layer sets) is now
+  (`debug-surface`, `debug-accent`, and the `frame`/`integration` layer sets) is now
   colocated with the component in `src/components/primitives/`.
 
 ## Usage rules

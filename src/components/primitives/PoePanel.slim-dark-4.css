@@ -9,6 +9,5 @@
   --overhang: 0px;
   --integration-spill: 8px;   /* auto-patched by tools/cut-panel.mjs on re-cut */
   --src-frame: url('./PoePanel.slim-dark-4.png');
-  --src-integration-shadow: url('./PoePanel.slim-dark-4.integration-shadow.png');
-  --src-integration-specular: none;
+  --src-integration: url('./PoePanel.slim-dark-4.integration.png');
 }

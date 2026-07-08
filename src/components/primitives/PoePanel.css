@@ -3,8 +3,8 @@
    there (a few var assignments), never touch this engine.
 
    TERMINOLOGY: PANEL = whole component · BOX = its layout rectangle · FRAME = ornamental border ·
-   SURFACE = interior fill · CONTENT = the flow wrapper (drives auto-height) · INTEGRATION =
-   shadow+specular blending frame→page · INNER SHADOW seats the surface · ACCENT = centre-edge medallion.
+   SURFACE = interior fill · CONTENT = the flow wrapper (drives auto-height) · INTEGRATION = the soft
+   halo (shadow AND/OR highlight) blending frame→page · INNER SHADOW seats the surface · ACCENT = centre-edge medallion.
    OVERHANG = how far the frame spills OUTSIDE the box edge.
 
    DECORATION MODEL: layout is just the BOX; every visual layer is decoration (absolute, inset:0, out of
@@ -50,8 +50,7 @@
                                            PoePanelHeader/Body so their content clears the (scaled) frame;
                                            per-frame/instance overridable (contentPad prop) */
   --src-frame:    url('./PoePanel.debug-r8.png');
-  --src-integration-shadow:   url('./PoePanel.debug-r8.integration-shadow.png');
-  --src-integration-specular: url('./PoePanel.debug-r8.integration-specular.png');
+  --src-integration:   url('./PoePanel.debug-r8.integration.png');
   /* default SURFACE = none. Set on the root (not just the layer) so a nested panel can't inherit a
      parent's --src-surface; each panel re-declares via its own data-surface (see PoePanel.surfaces.css). */
   --src-surface: none; --surface-tile: 64px;
@@ -59,8 +58,7 @@
 
 /* Every 9-slice layer shares EXACTLY this geometry — only source/z/blend differ. */
 .poe-panel__frame,
-.poe-panel__integration-shadow,
-.poe-panel__integration-specular {
+.poe-panel__integration {
   position: absolute; inset: 0; pointer-events: none;
   border: calc(var(--band) * var(--frame-scale)) solid transparent;
   border-image-slice: var(--slice);
@@ -69,11 +67,12 @@
   border-image-repeat: var(--edge-repeat);
 }
 .poe-panel__frame                { z-index: 6; border-image-source: var(--src-frame); }
-.poe-panel__integration-specular { z-index: 4; border-image-source: var(--src-integration-specular); mix-blend-mode: screen; }
 /* integration shares the frame's slice/band, but SPILLS past the frame as decoration: its outset =
    overhang + --integration-spill (how far it was traced beyond the frame). Same slice/band + uniform extra
-   outset keeps it locked to the frame; the frame's own geometry is untouched. */
-.poe-panel__integration-shadow   { z-index: 3; border-image-source: var(--src-integration-shadow); opacity: 1.0;
+   outset keeps it locked to the frame; the frame's own geometry is untouched.
+   MULTIPLY blend: darkens the surface (contact shadow) — panels use the legacy stone map (dark stone ≈ page
+   tone). (PoeInput uses a single normal-composited relight map instead; see PoeInput.css.) */
+.poe-panel__integration   { z-index: 3; border-image-source: var(--src-integration); mix-blend-mode: multiply;
   border-image-outset: calc(var(--overhang) + var(--integration-spill, 0px)); }
 
 /* CONTENT — flow wrapper (drives auto-height). INNATE padding = --content-pad, the frame's visible-art
@@ -133,8 +132,7 @@
 .poe-panel[data-frame='none']       > .poe-panel__frame                { display: none; }
 /* INTEGRATION (component-user choice): raster = the frame's cut PNGs; css = a drop-shadow on the frame
    silhouette (any frame, no asset); none = off. Raster layers show ONLY in raster mode. */
-.poe-panel:not([data-integration='raster']) > .poe-panel__integration-shadow,
-.poe-panel:not([data-integration='raster']) > .poe-panel__integration-specular { display: none; }
+.poe-panel:not([data-integration='raster']) > .poe-panel__integration { display: none; }
 .poe-panel[data-integration='css']  > .poe-panel__frame { filter: drop-shadow(var(--css-shadow)); }
 .poe-panel[data-surface='none']     > .poe-panel__surface,
 .poe-panel[data-surface='none']     > .poe-panel__inner-shadow         { display: none; }

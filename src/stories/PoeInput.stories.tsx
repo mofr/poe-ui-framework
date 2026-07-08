@@ -10,9 +10,9 @@ export default {
 
 export const Gallery = {
   render: () => (
-    <Stack gap={20} style={{ maxWidth: 460 }}>
+    <Stack gap={20} style={{ maxWidth: 560 }}>
       <div>
-        <PoeInput ornate leading={<Search size={16} />} trailing="/" placeholder="Search or jump to..." />
+        <PoeInput ornate leading={<Search size={20} />} trailing="/" placeholder="Search or jump to..." />
         <Caption>ornate + adornments — search icon & keyboard hint (used on the Reconstruction dashboard)</Caption>
       </div>
       <div>

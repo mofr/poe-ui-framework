@@ -10,6 +10,5 @@
   --overhang: 0px;
   --integration-spill: 11px;
   --src-frame: url('./PoePanel.slim-dark-3.png');
-  --src-integration-shadow: url('./PoePanel.slim-dark-3.integration-shadow.png');
-  --src-integration-specular: none;
+  --src-integration: url('./PoePanel.slim-dark-3.integration.png');
 }

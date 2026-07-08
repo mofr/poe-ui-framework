@@ -45,15 +45,65 @@
   color: var(--poe-gold-3);
 }
 
-/* ornate variant — the extracted 9-slice raster frame replaces the inset border */
+/* ornate variant — the extracted 9-slice raster frame + a single integration halo, as real sibling LAYERS
+   (integration z1 · content z2 · frame z3). Tuned to the reference "Search or jump to…" bar: thin bronze
+   frame, warm-dark interior, upright neutral-grey serif placeholder, gold search glyph. */
 .poe-input.poe-input--ornate {
-  height: 46px;
-  padding: 0 14px;
-  border: 12px solid transparent;
-  border-image: url('./PoeInput.big-input.png') 12 / 12px repeat;
+  position: relative;
+  height: 40px;
+  gap: 10px;
+  padding: 0 16px;
+  border: 0;                              /* frame is a LAYER now, not the element border */
   border-radius: 0;
-  background: #0a0908;
-  background-clip: padding-box;
+  /* warm near-black interior with a faint top-lit gradient (ref interior ≈ #14110a) */
+  background: linear-gradient(180deg, #17140d, #0d0b07);
   box-shadow: none;
+  /* integration = ONE background-agnostic relight map (shadow + lit-rim combined), normal-composited.
+     Regenerate via `mask.integration: "neutral"` (tools/integration-neutral.py). Panels use their legacy
+     stone raster instead — see docs/FRAME-FIDELITY.md. */
+  --src-integration: url('./PoeInput.big-input.integration.png');
 }
+.poe-input.poe-input--ornate > .poe-input__frame,
+.poe-input.poe-input--ornate > .poe-input__integration { position: absolute; pointer-events: none; }
+/* FRAME (z3, above content) — the frame band in the raster is ~5px thick, so slice AND render at 6px →
+   strictly 1:1 (no scaling). `repeat` (not stretch/round) keeps every tile pixel-for-pixel. */
+.poe-input.poe-input--ornate > .poe-input__frame {
+  inset: 0;
+  z-index: 3;
+  border: 6px solid transparent;
+  border-image: url('./PoeInput.big-input.png') 6 / 6px repeat;
+}
+/* INTEGRATION halo (z1, behind content+frame) — ONE relight map: black-α where it darkens, warm-α where it
+   lifts the rim. NORMAL composite (no mix-blend-mode) so it works THROUGH panel nesting — a blend mode only
+   reaches the backdrop within its own stacking context, so nested in a panel it couldn't blend with the
+   surface. The raster is the frame box grown by an 8px spill, so inset:-8px matches it 1:1, sliced at 14px
+   (8 spill + 6 band). */
+.poe-input.poe-input--ornate > .poe-input__integration {
+  inset: -8px;
+  z-index: 1;
+  border: 14px solid transparent;
+  border-image: var(--src-integration) 14 / 14px repeat;
+}
+/* content sits BETWEEN the halo and the frame */
+.poe-input.poe-input--ornate > .poe-input__field,
+.poe-input.poe-input--ornate > .poe-input__adornment { position: relative; z-index: 2; }
 .poe-input.poe-input--ornate:focus-within { box-shadow: none; }
+/* reference placeholder is an UPRIGHT neutral grey serif, not the gold italic of the plain field */
+.poe-input.poe-input--ornate .poe-input__field {
+  font-family: var(--poe-font-ui);
+  font-size: 17px;
+  color: #cdd0cb;
+  /* reference glyphs carry a soft dark halo/outline that seats them into the dark interior */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .9), 0 0 1px rgba(0, 0, 0, .8);
+}
+.poe-input.poe-input--ornate .poe-input__field::placeholder {
+  color: #92958f;
+  font-style: normal;
+}
+/* warm gold search glyph (ref icon ≈ #aa8f59) */
+.poe-input.poe-input--ornate .poe-input__leading { color: #b0905a; }
+.poe-input.poe-input--ornate .poe-input__trailing {
+  font-size: 13px;
+  color: #a9aca6;
+  border-color: rgba(146, 149, 143, .35);
+}

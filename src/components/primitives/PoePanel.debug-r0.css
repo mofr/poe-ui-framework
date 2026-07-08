@@ -2,6 +2,5 @@
 .poe-panel[data-frame='debug-r0'] {
   --surface-radius: 0px;
   --src-frame: url('./PoePanel.debug-r0.png');
-  --src-integration-shadow: url('./PoePanel.debug-r0.integration-shadow.png');
-  --src-integration-specular: url('./PoePanel.debug-r0.integration-specular.png');
+  --src-integration: url('./PoePanel.debug-r0.integration.png');
 }

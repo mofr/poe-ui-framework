@@ -9,6 +9,5 @@
   --edge-repeat: repeat;
   --overhang: 0px;
   --src-frame: url('./PoePanel.ruled-gold-1.png');
-  --src-integration-shadow: none;
-  --src-integration-specular: none;
+  --src-integration: none;
 }

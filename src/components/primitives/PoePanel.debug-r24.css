@@ -5,6 +5,5 @@
   --slice: 48;
   --surface-radius: 24px;
   --src-frame: url('./PoePanel.debug-r24.png');
-  --src-integration-shadow: url('./PoePanel.debug-r24.integration-shadow.png');
-  --src-integration-specular: url('./PoePanel.debug-r24.integration-specular.png');
+  --src-integration: url('./PoePanel.debug-r24.integration.png');
 }

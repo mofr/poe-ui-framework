@@ -403,12 +403,12 @@ function updatePlaceholders() {
   if (!base) {
     $('out').placeholder = 'path/to/output.png';
     $('out-frame').placeholder = 'path/to/frame.png';
-    $('out-integration').placeholder = 'path/to/integration-shadow.png';
+    $('out-integration').placeholder = 'path/to/integration.png';
     return;
   }
   $('out').placeholder = base + '.png';
   $('out-frame').placeholder = base + '.png';
-  $('out-integration').placeholder = base + '.integration-shadow.png';
+  $('out-integration').placeholder = base + '.integration.png';
 }
 $('build').addEventListener('change', () => { toggleOutputFields(); updatePlaceholders(); if ($('build').value === 'panel') { $('fade').value = 2; } });
 function newFile() {                       // start a fresh empty mask (file is written on save)

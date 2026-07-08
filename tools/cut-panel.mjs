@@ -1,17 +1,20 @@
-// Cut a PANEL mask into two layers locked together: the FRAME and the INTEGRATION shadow.
+// Cut a PANEL mask into two layers locked together: the FRAME and the INTEGRATION halo.
 // Two modes:
 //   panel   — frame from keep contours via SVG rasterisation (single continuous shape).
 //   assemble — frame from separate edge+corner contours, assembled gapless via tiling.
 // Both modes share the same integration (op:integration) rendering pipeline.
 //
-// Integration (op:integration — a decorative contact shadow that SPILLS past the frame).
+// Integration (op:integration) — the soft TRANSITION HALO that blends the frame into the surface it
+// sits on. NOT just a "contact shadow": whatever the reference painted around the frame is what gets
+// carried, which is commonly a darkening (contact shadow) BUT just as often a lit rim / specular
+// HIGHLIGHT (or both). Name it "integration", never "shadow", so the layer isn't misread as darken-only.
 // The FRAME defines all geometry; the integration is cut to the frame box grown by its own
 // outward overshoot, then rendered with the SAME slice/band but a larger outset (overhang + spill).
 // Integration is NOT clipped by the frame — overlap is intentional (frame draws over it at runtime;
 // the integration is made semi-transparent so they mix).
 //   node tools/cut-panel.mjs <maskName> [--src=plate] [--fade=N] [--out-frame=] [--out-integration=]
 // Output paths: --out-frame / --out-integration CLI args, then mask's `out` object
-// (out.frame / out.integration), then <name>.png / <name>-integration-shadow.png at repo root.
+// (out.frame / out.integration), then <name>.png / <name>.integration.png at repo root.
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -69,7 +72,7 @@ async function writeLayer(alpha, box, dest) {
   await sharp(buf).toFile(dest);
 }
 
-// ── Integration shadow output (shared by both modes) ──────────
+// ── Integration halo output (shared by both modes) ──────────
 
 async function writeIntegration(frameBox) {
   const integA = await alphaOf(all.filter(c => c.op === 'integration'), fade);
@@ -103,7 +106,7 @@ const framePath = opt['out-frame'] ? resolve(ROOT, opt['out-frame'])
   : resolve(ROOT, `${name}.png`);
 const integPath = opt['out-integration'] ? resolve(ROOT, opt['out-integration'])
   : maskOut.integration ? resolve(ROOT, maskOut.integration)
-  : resolve(ROOT, `${name}-integration-shadow.png`);
+  : resolve(ROOT, `${name}.integration.png`);   // neutral: integration = shadow AND/OR highlight, not "-shadow"
 const rel = p => p.replace(ROOT + '/', '');
 
 // ── Build mode dispatch ──────────────────────────────────────

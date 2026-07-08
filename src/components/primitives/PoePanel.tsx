@@ -97,8 +97,7 @@ export function PoePanel({
     >
       <div className="poe-panel__surface" />                     {/* D  surface */}
       <div className="poe-panel__inner-shadow" />                {/* inner shadow — seats the surface */}
-      <div className="poe-panel__integration-shadow" />          {/* C2 integration */}
-      <div className="poe-panel__integration-specular" />        {/* C1 integration (screen) */}
+      <div className="poe-panel__integration" />                 {/* C  integration halo — shadow (multiply) */}
       <div className="poe-panel__content">{children}</div>       {/* B  content — compose PoePanelHeader / PoePanelBody (parts self-pad) */}
       <div className="poe-panel__frame" />                       {/* A3 frame */}
       {accent('t', accentTop, accentTopScale)}
