@@ -1073,3 +1073,13 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   contact row-17 stays 241). (c) Full pipeline breakdown emitted to asset-review/…/pipeline-<name>/ (20
   stages) for eyeballing. Remaining polish: contact still a touch weaker than the stone map + a LaMa
   factor-noise dip — the crisp(blur 0)↔smooth tension. Live components still untouched.
+- 2026-07-08 (pt.27): LaMa alternative — BG-BASELINE clean source (user idea: LaMa can't reconstruct clean
+  stone under the dense reference, but we KNOW the surface we render). New `--baseline=<png>` in
+  integration-neutral.py: tile OUR surface texture, tone-match per-channel to the observed's unshadowed
+  stone, use as the clean baseline (skip LaMa). factor = obs/clean then isolates the shadow/highlight. The
+  two stone TEXTURES differ, so pair with --pre-blur (used 3) to cancel them. PoC story now compares 3:
+  legacy stone×multiply · neutral(LaMa) · neutral(bg baseline). Result: bg-baseline is noticeably CLEANER/
+  smoother than LaMa (no reconstruction speckle), especially on foreign backgrounds. Maps:
+  src/stories/neutral-poc/*.bgneutral.png (cracked-stone-2 baseline). Live components untouched. Knob to
+  tune: --pre-blur (texture-cancel vs crispness). NOTE: the committed live input predates pt.26's soft-frame
+  fix, so a future regen would slightly strengthen its contact ring (left as-is until approved).

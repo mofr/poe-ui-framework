@@ -47,43 +47,49 @@ plate = os.path.join(ROOT, f'assets-staging/sources/{name}-inpainted.png')
 if not os.path.exists(plate):
     plate = os.path.join(ROOT, mask['image'])
 
-# ── 1. inpaint the integration region out of the plate → clean flat baseline ──
+# ── 1. cut the OBSERVED halo crop from the plate (pixel-aligned via the same cut-panel code path) ──
 pts = [(p['x'] * W, p['y'] * H) for p in integ['points']]
-m = Image.new('L', (W, H), 0)
-ImageDraw.Draw(m).polygon(pts, fill=255)
-mask_grow = int(opt.get('mask-grow', 2))                     # grow the inpaint mask past the integration
-if mask_grow: m = m.filter(ImageFilter.MaxFilter(mask_grow*2+1))   # outline just enough for the soft edge
-inpaint_mask = f'{SCRATCH}/{name}.inpaint-mask.png'
-clean_full = f'{SCRATCH}/{name}.clean.png'
-m.save(inpaint_mask)
-subprocess.run(['python3', os.path.join(ROOT, 'tools/inpaint.py'),
-                plate, inpaint_mask, clean_full], check=True)
-
-# ── 2. cut BOTH the observed crop (from the plate) and the clean crop (from the LaMa fill) to scratch, via
-#    the same code path ⇒ pixel-aligned. Cutting observed here (rather than reading the committed
-#    integration.png) lets that file BE our single output — no separate stone intermediate to commit. ──
-clean_integ = f'{SCRATCH}/{name}.clean-integration.png'
 observed_scratch = f'{SCRATCH}/{name}.observed-integration.png'
-for src, out in [(clean_full, clean_integ), (plate, observed_scratch)]:
-    subprocess.run(['node', os.path.join(ROOT, 'tools/cut-panel.mjs'), name,
-                    f'--src={src}',
-                    f'--out-frame={SCRATCH}/{name}.throwaway-frame.png',
-                    f'--out-integration={out}',
-                    f"--fade={mask.get('fade', 2)}"], check=True, cwd=ROOT)
+subprocess.run(['node', os.path.join(ROOT, 'tools/cut-panel.mjs'), name,
+                f'--src={plate}', f'--out-frame={SCRATCH}/{name}.throwaway-frame.png',
+                f'--out-integration={observed_scratch}', f"--fade={mask.get('fade', 2)}"], check=True, cwd=ROOT)
+obs = np.array(Image.open(observed_scratch).convert('RGBA')).astype(np.float32)
+OH, OW = obs.shape[0], obs.shape[1]
+lum = lambda a: 0.2126 * a[..., 0] + 0.7152 * a[..., 1] + 0.0722 * a[..., 2]
 
-# inpaint sanity crop (element+halo region: plate on top, LaMa-clean below) → asset-review for eyeballing
-ar = os.path.join(ROOT, 'asset-review/integration-neutral'); os.makedirs(ar, exist_ok=True)
-xs = [p[0] for p in pts]; ys = [p[1] for p in pts]; pad = 22
-cl, ct, cr, cb = int(min(xs)) - pad, int(min(ys)) - pad, int(max(xs)) + pad, int(max(ys)) + pad
-P = Image.open(plate).convert('RGB').crop((cl, ct, cr, cb))
-Cl = Image.open(clean_full).convert('RGB').crop((cl, ct, cr, cb))
-chk = Image.new('RGB', (P.width, P.height * 2 + 6), (70, 70, 70)); chk.paste(P, (0, 0)); chk.paste(Cl, (0, P.height + 6))
-chk.save(os.path.join(ar, f'{name}.inpaint-check.png'))
+# ── 2. clean flat baseline — TWO sources:
+#   --baseline=<png>: OUR OWN surface texture. Use when LaMa can't reconstruct clean stone under a dense
+#     reference (UI/text packed around the frame). We KNOW the surface rendered behind the panel, so tile it
+#     and tone-match (per channel) to the observed's UNSHADOWED stone → obs/clean isolates only the
+#     shadow/highlight transfer. The two stone TEXTURES differ, so pair with --pre-blur to cancel them.
+#   else: LaMa inpaint of the plate (fine when the surroundings are clean enough to reconstruct).
+baseline = opt.get('baseline')
+if baseline:
+    bpath = baseline if os.path.isabs(baseline) else os.path.join(ROOT, baseline)
+    tile = np.array(Image.open(bpath).convert('RGB')).astype(np.float32)
+    cln = np.tile(tile, ((OH // tile.shape[0]) + 1, (OW // tile.shape[1]) + 1, 1))[:OH, :OW, :]
+    halo = obs[:, :, 3] > 60
+    ol = lum(obs[:, :, :3]); amb = halo & (ol > np.percentile(ol[halo], 60))   # the UNSHADOWED stone
+    for c in range(3):
+        cln[:, :, c] *= obs[:, :, c][amb].mean() / max(cln[:, :, c][amb].mean(), 1e-3)
+else:
+    m = Image.new('L', (W, H), 0); ImageDraw.Draw(m).polygon(pts, fill=255)
+    mask_grow = int(opt.get('mask-grow', 2))                 # grow the inpaint mask past the integration
+    if mask_grow: m = m.filter(ImageFilter.MaxFilter(mask_grow*2+1))
+    inpaint_mask = f'{SCRATCH}/{name}.inpaint-mask.png'; clean_full = f'{SCRATCH}/{name}.clean.png'; m.save(inpaint_mask)
+    subprocess.run(['python3', os.path.join(ROOT, 'tools/inpaint.py'), plate, inpaint_mask, clean_full], check=True)
+    clean_integ = f'{SCRATCH}/{name}.clean-integration.png'
+    subprocess.run(['node', os.path.join(ROOT, 'tools/cut-panel.mjs'), name,
+                    f'--src={clean_full}', f'--out-frame={SCRATCH}/{name}.throwaway-frame.png',
+                    f'--out-integration={clean_integ}', f"--fade={mask.get('fade', 2)}"], check=True, cwd=ROOT)
+    cln = np.array(Image.open(clean_integ).convert('RGBA').resize((OW, OH)))[:, :, :3].astype(np.float32)
+    ar = os.path.join(ROOT, 'asset-review/integration-neutral'); os.makedirs(ar, exist_ok=True)   # inpaint sanity crop
+    xs=[p[0] for p in pts]; ys=[p[1] for p in pts]; pad=22
+    cl,ct,cr,cb=int(min(xs))-pad,int(min(ys))-pad,int(max(xs))+pad,int(max(ys))+pad
+    P=Image.open(plate).convert('RGB').crop((cl,ct,cr,cb)); Cl=Image.open(clean_full).convert('RGB').crop((cl,ct,cr,cb))
+    chk=Image.new('RGB',(P.width,P.height*2+6),(70,70,70)); chk.paste(P,(0,0)); chk.paste(Cl,(0,P.height+6)); chk.save(os.path.join(ar,f'{name}.inpaint-check.png'))
 
 # ── 3. factor = observed / clean, but ONLY on the surface (exclude the frame footprint) ──
-obs = np.array(Image.open(observed_scratch).convert('RGBA')).astype(np.float32)
-cln = np.array(Image.open(clean_integ).convert('RGBA').resize(
-        (obs.shape[1], obs.shape[0]))).astype(np.float32)
 cov = obs[:, :, 3] / 255.0                                   # traced coverage (shape + fade)
 # The integration crop is the frame box grown by `spill` on every side; the frame raster tells us
 # exactly where the opaque ornament sits (its factor is meaningless — bronze/stone reads as a false
@@ -119,7 +125,6 @@ footprint = frame_area > 0.5
 obs_src = obs[:, :, :3].copy(); obs_src[footprint] = cln[:, :, :3][footprint]
 obs_b = obs_src if pre_blur <= 0 else _blur(obs_src)
 cln_b = cln[:, :, :3] if pre_blur <= 0 else _blur(cln[:, :, :3])
-lum = lambda a: 0.2126 * a[..., 0] + 0.7152 * a[..., 1] + 0.0722 * a[..., 2]
 # SHADOW = multiplicative attenuation (ratio), background-neutral: darken toward black by (1 − obs/clean).
 factor = lum(obs_b) / np.clip(lum(cln_b), 1.0, None)
 darken = np.clip((1.0 - factor) * strength, 0, 1) * cov
