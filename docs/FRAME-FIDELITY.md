@@ -1051,3 +1051,14 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   0.96 vs 1.63 at blur=0.6, visually identical); --blur=N stays as an opt-in knob. (Q2 frame-in-map) The
   panel integration map baked in the frame's own pixels (looked like a duplicate frame); cut-panel now
   subtracts the frame footprint so the map is only the surface halo. Both committed.
+- 2026-07-08 (pt.25): PoC for NEUTRAL panel integration, isolated in a story (no live components touched).
+  "Neutral" = store only the light-transfer (black shadow + warm rim), not the reference stone pixels, so
+  the halo darkens/lifts ANY surface without dragging stone colour/texture. Only panels with a traced
+  op:integration contour can go through the pipeline (slim-dark-1/2/4/5); slim-dark-3 (assembled, no contour)
+  and debug-r* (no mask) can't until one is traced. New: src/stories/PanelIntegrationNeutralPoC.stories.tsx
+  + src/stories/neutral-poc/*.neutral.png (generated at --blur=1.5). Story compares legacy stone×multiply vs
+  neutral×normal across 6 backgrounds. Findings: (1) mechanism works — neutral map is a drop-in for the same
+  9-slice geometry, wants NORMAL composite (going live = opt-in --integration-blend per frame). (2) Panels
+  need blur (~1–1.5) — their LaMa baseline is noisier than the input's (blur=0 was speckly). (3) Neutrality
+  confirmed: off-stone the legacy halo tints brown, the neutral stays a clean colour-neutral shadow. To
+  polish before going live: blur value (crisp↔smooth) and --strength (neutral reads a touch weak vs legacy).
