@@ -13,7 +13,7 @@ Method (uses LaMa, which we already have wired):
   4. write ONE combined relight map at the integration dims: black-α where the frame DARKENS the surface,
      warm-α where it LIFTS it (rim). Normal-composited, one layer does both -> <name>.integration.png
 
-Usage: python3 tools/integration-neutral.py <maskName>   [--strength=1.0] [--blur=0.6]
+Usage: python3 tools/integration-neutral.py <maskName>   [--strength=1.0] [--blur=0 (denoise, off by default)]
 """
 import sys, os, json, subprocess, glob
 from PIL import Image, ImageDraw, ImageFilter
@@ -26,7 +26,10 @@ os.makedirs(SCRATCH, exist_ok=True)
 name = sys.argv[1]
 opt = dict(a[2:].split('=') for a in sys.argv[2:] if a.startswith('--'))
 strength = float(opt.get('strength', 1.0))
-blur = float(opt.get('blur', 0.6))
+# blur=0 by default: the map is the literal light-transfer, which reconstructs the reference best. --blur=N
+# is an optional denoise for a NOISY LaMa baseline (smooths speckle in the darken/rim fields at a small
+# fidelity cost); the input's inpaint is clean enough not to need it.
+blur = float(opt.get('blur', 0))
 
 mask_path = glob.glob(os.path.join(ROOT, 'src/**', name + '.mask.json'), recursive=True)[0]
 mask = json.load(open(mask_path))

@@ -1046,3 +1046,8 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   warm·dh/α  (⇒ out = bg·(1−ds)(1−dh)+warm·dh). Reconstruction on the halo: mean|diff| 4.83→1.63, max
   42.9→6.8. Still ONE layer + ONE map; render now matches the reference (dark clean surround + subtle bottom
   rim) on both dashboard and gallery, zero console errors.
+- 2026-07-08 (pt.24): Follow-ups after the commit. (Q1 blur) Blur is only a denoise for a NOISY LaMa
+  baseline — the input's inpaint is clean, so blur=0 is now the default (reconstruction on the halo
+  0.96 vs 1.63 at blur=0.6, visually identical); --blur=N stays as an opt-in knob. (Q2 frame-in-map) The
+  panel integration map baked in the frame's own pixels (looked like a duplicate frame); cut-panel now
+  subtracts the frame footprint so the map is only the surface halo. Both committed.
