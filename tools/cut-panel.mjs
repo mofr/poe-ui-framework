@@ -76,6 +76,12 @@ async function writeLayer(alpha, box, dest) {
 
 async function writeIntegration(frameBox) {
   const integA = await alphaOf(all.filter(c => c.op === 'integration'), fade);
+  // Exclude the FRAME footprint → the integration is ONLY the surface halo (the ring around the frame),
+  // never the frame itself. The frame layer draws over its own area at runtime, so its pixels in this map
+  // were redundant and made the file read like a duplicate frame. The soft frame-fill edge keeps the halo
+  // strongest right at the frame and fading outward (a proper contact halo). Mirrors the neutral pipeline.
+  const frameFill = await alphaOf(all.filter(c => (c.op || 'keep') === 'keep'), 0, false);
+  if (frameFill) for (let i = 0; i < integA.length; i++) integA[i] = Math.round(integA[i] * (255 - frameFill[i]) / 255);
   const fe = { left: frameBox.left, top: frameBox.top, right: frameBox.left + frameBox.width - 1, bottom: frameBox.top + frameBox.height - 1 };
   const ie = edges(integA);
   const spill = Math.max(0, fe.left - ie.left, fe.top - ie.top, ie.right - fe.right, ie.bottom - fe.bottom);
