@@ -70,8 +70,9 @@
 /* integration shares the frame's slice/band, but SPILLS past the frame as decoration: its outset =
    overhang + --integration-spill (how far it was traced beyond the frame). Same slice/band + uniform extra
    outset keeps it locked to the frame; the frame's own geometry is untouched.
-   NORMAL composite (no blend mode): on the dark stone the panels sit on, this is indistinguishable from
-   multiply (measured), and it drops the last mix-blend-mode — matching PoeInput, robust under any nesting. */
+   NORMAL composite (no blend mode) — the map is a background-neutral RELIGHT (black shadow + warm rim),
+   like PoeInput's: it darkens/lifts whatever surface is behind it, no stone colour baked in. Regenerated
+   from each mask's traced op:"baseline" region (integration:"neutral"). No mix-blend-mode anywhere now. */
 .poe-panel__integration   { z-index: 3; border-image-source: var(--src-integration);
   border-image-outset: calc(var(--overhang) + var(--integration-spill, 0px)); }
 

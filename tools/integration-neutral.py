@@ -83,7 +83,7 @@ if base_contours or baseline_png:
     ol = lum(obs[:, :, :3]); amb = halo & (ol > np.percentile(ol[halo], 60))   # the UNSHADOWED stone
     for c in range(3):
         cln[:, :, c] *= obs[:, :, c][amb].mean() / max(cln[:, :, c][amb].mean(), 1e-3)
-    base_blur = opt.get('base-blur', '0')
+    base_blur = opt.get('base-blur', 'solid' if base_contours else '0')   # traced region → flat tone by default
     if base_blur == 'solid':                       # flat ambient tone (smoothest baseline)
         cln[:] = cln.reshape(-1, 3).mean(0)
     elif float(base_blur) > 0:

@@ -6,7 +6,7 @@
   },
   "image": "inspiration/reference-1680.png",
   "build": "panel",
-  "comment": "Combat Log panel (slim-dark-1): frame (keep−hole, button inpainted) + integration ring (outline−hole, outward fade).",
+  "comment": "Combat Log panel (slim-dark-1): frame (keep\u2212hole, button inpainted) + integration ring (outline\u2212hole, outward fade).",
   "contours": [
     {
       "points": [
@@ -777,5 +777,6 @@
       "round": 0
     }
   ],
-  "fade": 2
+  "fade": 2,
+  "integration": "neutral"
 }

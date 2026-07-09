@@ -1126,3 +1126,12 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   mechanism proven (cut → traced-bg baseline → factor → one normal-composited relight map). Open before
   going live: the 1px frame↔halo gap (bright-bg only, postponed) and wiring integration:"neutral" +
   --integration-blend into the slim-dark masks/build. Live components remain on the legacy stone map.
+- 2026-07-09 (pt.34): PROMOTED neutral integration to LIVE for the panels (user confirmed the dashboard —
+  "almost identical, much cleaner under the hood"). slim-dark-1/2/4/5: masks marked integration:"neutral";
+  their committed integration.png regenerated from the traced op:"baseline" reference region (baseline
+  contour ⇒ --base-blur defaults to solid), reproducing the approved PoC maps EXACTLY (diff 0.000).
+  slim-dark-3: integration is a MANUAL COPY of slim-dark-2 (its contact is too obstructed to extract; no
+  contour) — noted in its mask. Panels already composited normal (pt.28), so no CSS change beyond updating
+  the comment. Deleted the PoC scaffolding (PanelIntegrationNeutralPoC story + src/stories/neutral-poc/).
+  Whole integration system is now ONE background-neutral relight map + normal composite, input AND panels.
+  Still open: the 1px frame↔halo gap on bright backgrounds (postponed — the dashboard surfaces are dark).
