@@ -123,7 +123,7 @@ export const Dashboard = {
                   </div>
                 </div>
                 <div style={{ flex: 1 }}>
-                  <PoeTabBar selected="Code">
+                  <PoeTabBar defaultSelected="Code">
                     {nav.map(([label, icon]) => (
                       <PoeTab key={label} name={label} icon={icon}>{label}</PoeTab>
                     ))}

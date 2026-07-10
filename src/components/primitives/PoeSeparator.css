@@ -2,6 +2,6 @@
    horizontally uniform, so it stretches across the width. Native rule height ~7px. */
 .poe-separator {
   width: 100%;
-  height: 7px;
+  height: 6px;
   background: url('./PoeSeparator.rule-1.png') center / 100% 100% no-repeat;
 }

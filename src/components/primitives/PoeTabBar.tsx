@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import './PoeTabBar.css';
 
 // Tablist owning the shared baseline rail and the selection. It knows which tab is active (`selected`
@@ -17,20 +17,30 @@ export const usePoeTabBar = () => useContext(PoeTabBarContext);
 const SEP_VARIANTS = 2;
 
 export interface PoeTabBarProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSelect'> {
-  /** `name` of the active tab. */
+  /** `name` of the active tab (controlled — pair with `onSelect` to switch). */
   selected?: string;
-  /** Fires with the clicked tab's `name`. */
+  /** Initial active tab (uncontrolled — the bar then owns switching itself). */
+  defaultSelected?: string;
+  /** Fires with the clicked tab's `name` (both modes). */
   onSelect?: (name: string) => void;
   /** Horizontal space around tabs/separators, in px (default 0). */
   gap?: number;
 }
 
-export function PoeTabBar({ selected, onSelect, gap = 0, children, className = '', style, ...props }: PoeTabBarProps) {
+export function PoeTabBar({ selected, defaultSelected, onSelect, gap = 0, children, className = '', style, ...props }: PoeTabBarProps) {
+  // Controlled/uncontrolled à la <input>: an explicit `selected` wins; otherwise internal state
+  // seeded from `defaultSelected` makes clicking just work. `onSelect` fires either way.
+  const [internal, setInternal] = useState(defaultSelected);
+  const value = selected !== undefined ? selected : internal;
+  const handleSelect = (name: string) => {
+    if (selected === undefined) setInternal(name);
+    onSelect?.(name);
+  };
   // Divider sprites between adjacent tabs, injected by the bar (a bar concern, not a per-tab one).
   // Each separator cycles through the -1..N variants; add a sprite + CSS rule and bump SEP_VARIANTS.
   const items = React.Children.toArray(children);
   return (
-    <PoeTabBarContext.Provider value={{ selected, onSelect }}>
+    <PoeTabBarContext.Provider value={{ selected: value, onSelect: handleSelect }}>
       <div
         role="tablist"
         className={`poe-tab-bar ${className}`.trim()}

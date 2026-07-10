@@ -1,34 +1,88 @@
-/* PoeTab — nav / tab button. CSS-baseline gold plate; `is-selected` = magic-blue glow (the reference's
-   active tab). Lives in a PoeTabBar, which owns the shared baseline rail and the selection. */
+/* PoeTab — nav / tab button. A traced reference plate (PoeTab.normal-<n>.mask.json → …png, picked by
+   `data-frame`) rendered as a 1:1 9-slice frame layer over a measured flat near-black interior.
+   `is-selected` swaps in the traced blue plate (PoeTab.selected, label LaMa-inpainted out) over a
+   measured blue-glow interior gradient. Lives in a PoeTabBar, which owns the shared rail and the
+   selection. Rebuild: node tools/build-mask.mjs PoeTab.<variant>. */
 .poe-tab {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  height: 42px;
+  height: 42px;                 /* native raster height — vertical edges render 1:1, only width tiles */
   padding: 0 18px;
-  border: 1px solid var(--poe-border-dim);
-  border-radius: 5px;
-  background: linear-gradient(180deg, rgba(46, 37, 20, .55), rgba(12, 10, 8, .72));
-  color: #e2d3a6;
+  border: 0;
+  background: #120e07;          /* measured interior (reference ≈ flat warm near-black) */
+  color: #fffef8;               /* measured label: neutral near-white, not gold */
   font-family: var(--poe-font-title);
   font-size: 16px;
   letter-spacing: .015em;
   white-space: nowrap;
   cursor: pointer;
-  box-shadow: inset 0 1px 0 rgba(255, 235, 170, .07), inset 0 -3px 8px rgba(0, 0, 0, .4);
-  transition: color .12s, border-color .12s, box-shadow .12s, filter .12s;
+  /* dense dark halo seating the label into the plate — identical in every state (incl. selected) */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, .95), 0 0 4px rgba(0, 0, 0, .9), 0 0 10px rgba(0, 0, 0, .85);
+  transition: color .12s, box-shadow .12s, background-color .12s;
 }
-.poe-tab__icon { display: inline-flex; align-items: center; opacity: .68; color: var(--poe-gold-3); }
-.poe-tab:hover:not(:disabled) { color: #fff5df; border-color: var(--poe-border); filter: brightness(1.08); }
+/* FRAME (traced raster) — generous uniform 12px slice so the corner pins stay whole (the tight per-edge
+   bands are ≤10px; a tight bottom corner would clip its pin). The raster's hollow interior is transparent,
+   so the oversized border box paints nothing over the content. `repeat` keeps every tile pixel-for-pixel
+   and lets the top rail's mid-edge pins recur on wider tabs. */
+.poe-tab::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 12px solid transparent;
+  border-image: url('./PoeTab.normal-1.png') 12 / 12px repeat;
+  transition: filter .12s;
+}
+.poe-tab[data-frame='normal-2']::before { border-image-source: url('./PoeTab.normal-2.png'); }
+/* reference icons are silvery engravings, not gold */
+.poe-tab__icon { display: inline-flex; align-items: center; color: #d5d4d0; opacity: .85; }
+/* hover = the whole plate lifts: frame raster brightens (filter on the TEXT-FREE ::before only — a
+   filter on the button itself layer-promotes its label and flips text antialiasing page-wide),
+   interior lightens, label goes full white. */
+.poe-tab:hover:not(:disabled):not(.is-selected) { background: linear-gradient(180deg, #273702 2px, #301e014a 6px, #010a1a8e 33px); }
+.poe-tab:hover:not(:disabled):not(.is-selected)::before { filter: brightness(1.35); }
 .poe-tab:hover:not(:disabled) .poe-tab__icon { opacity: 1; }
 .poe-tab:active:not(:disabled) { transform: translateY(1px); }
 .poe-tab:focus-visible { outline: none; box-shadow: 0 0 0 2px rgba(0, 0, 0, .6), var(--poe-glow-gold); }
 .poe-tab:disabled { cursor: not-allowed; opacity: .45; filter: saturate(.6); }
+/* SELECTED — the traced blue plate (label, rail-star and centre jewel all inpainted out of the
+   raster; the jewel is re-rendered below as a parametric ::after so it stays centred at any width).
+   Interior gradient + label/icon colors measured off the reference "Code" tab. */
 .poe-tab.is-selected {
-  color: var(--poe-magic);
-  border-color: var(--poe-magic);
-  background: linear-gradient(180deg, rgba(30, 58, 120, .5), rgba(11, 23, 52, .72));
-  box-shadow: inset 0 0 12px rgba(75, 141, 255, .38), 0 0 0 1px rgba(75, 141, 255, .3);
+  color: #fbfbfb;
+  /* px stops (tab height is fixed 42px): measured ref rows 7/18/33/38 — dark mid, bright blue rim
+     right above the bottom band */
+  background: linear-gradient(180deg, #021337 7px, #011230 18px, #01164e 33px, #022972 38px);
 }
-.poe-tab.is-selected .poe-tab__icon { opacity: 1; color: var(--poe-magic); }
+/* the lit bottom rim spills onto whatever sits below the tab (ref: rail edge turns cool ~4px deep).
+   A real strip element strictly under the bottom edge — a box-shadow on the tab would wrap the glow
+   around the left/right borders too. */
+.poe-tab.is-selected > .poe-tab__glow {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  top: 100%;
+  height: 6px;
+  pointer-events: none;
+  /* top-anchored ellipse: fades downward AND toward the ends, so it reads as light, not a bar */
+  background: radial-gradient(100% 130% at 50% 0, rgba(70, 130, 220, .42), rgba(70, 130, 220, 0));
+}
+.poe-tab.is-selected::before { border-image: url('./PoeTab.selected.png') 12 / 12px repeat; }
+/* centre jewel — a glowing dot straddling the bottom border (ref: white core ~2px, blue ring, soft halo) */
+.poe-tab.is-selected::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  width: 6px;
+  height: 6px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, #fff 0 1.5px, #123f64 2.5px, #15408f 3.5px, rgba(6, 30, 80, 0) 4.5px);
+  box-shadow: 0 0 5px 1px rgba(80, 150, 255, .55);
+}
+.poe-tab.is-selected .poe-tab__icon { opacity: 1; color: #fcf7e4; }

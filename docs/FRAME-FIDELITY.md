@@ -1135,3 +1135,63 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   the comment. Deleted the PoC scaffolding (PanelIntegrationNeutralPoC story + src/stories/neutral-poc/).
   Whole integration system is now ONE background-neutral relight map + normal composite, input AND panels.
   Still open: the 1px frame↔halo gap on bright backgrounds (postponed — the dashboard surfaces are dark).
+- 2026-07-10: PoeTab NORMAL raster ingested (user traced the reference "Wiki" tab). Mask renamed
+  `tab-normal` → `PoeTab.normal` (filename + internal name, per the component.variant convention);
+  build:"mask" cut → colocated `PoeTab.normal.png` (108×42, hollow interior). PoeTab.css: the
+  CSS-baseline gold plate replaced by the traced frame as a `::before` border-image at strict 1:1 —
+  UNIFORM 12px slice, not the tight per-edge bands (7/9/4/7): the 4px bottom corner would clip its
+  gold pin, and the raster's transparent interior makes the oversized corner boxes free. `repeat`
+  keeps tiles pixel-for-pixel and recurs the top rail's mid-edge pins on wider tabs. Interior =
+  measured flat `#120e07` (ref (16–18,12–14,6–8)); label/icon gold → measured neutral near-white
+  (#e7e6e2) / silver, matching the reference engraved-nav look. Verified numerically on the dashboard:
+  rendered frame vs raster mean |diff| 0.0 on all four corners + both vertical edges (true 1:1);
+  glyph-free interior samples exactly (18,14,7). Still CSS stand-ins awaiting a trace: the SELECTED
+  (magic-blue) tab state, hover treatment. AWAITING user fidelity review.
+- 2026-07-10 (pt.2): Tab frame VARIANTS wired (user traced a second plate — the reference "Projects"
+  tab). `PoeTab.normal` split into `PoeTab.normal-1` (the original Wiki trace) + `PoeTab.normal-2`
+  (125×42, bands L8/R10/T7/B4); old un-numbered mask+png deleted. PoeTab grows a `frame` prop
+  (`TabFrame = 'normal-1' | 'normal-2'`, default normal-1) → `data-frame` → per-variant
+  `border-image-source`; same shared 12px slice + flat `#120e07` interior (variant-2's measured tone
+  is identical within 2/255). Storybook: frame select control + a normal-1·normal-2 gallery row.
+  Verified: both variants render 0.0 mean |diff| vs their raster on all corners/edges. Mask editor
+  gained right-drag whole-contour move + shift axis-lock (both drag modes), verified headlessly.
+- 2026-07-10 (pt.3): Tab polish (user). (1) VARIETY: unset `frame` now derives a stable pick from the
+  tab's `name` (tiny hash → normal-1/normal-2), so bars get noise-level plate variety with zero config;
+  an explicit `frame` pins it. Dashboard nav mixes 4/4. (2) HOVER BUG: hovering a tab shifted text
+  antialiasing elsewhere on the page — the `filter: brightness()` hover promoted the button to its own
+  compositing layer. Replaced with an interior lighten (#120e07 → #1e180e) + label brighten; measured
+  page diff on hover: 0 px changed outside the tab. Hover no longer restyles a selected tab. (3) Tab
+  typography stays on the shared `--poe-font-title` token (family is a global asset; size/spacing/color
+  are already colocated in PoeTab.css).
+- 2026-07-10 (pt.4): SELECTED tab ingested + hover restored + uncontrolled bar. (1) `PoeTab.selected`
+  (user-traced reference "Code" tab): first mask through the FULL inpaint→cut path for a component —
+  LaMa removes the baked label, the cut keeps the gold star ornament poking 1px above the rail (extra
+  keep contour). CSS: `is-selected` swaps the ::before to the blue plate — LEFT slice 40px pins the
+  star in the top-left corner box (uniform 12 elsewhere), inset -1px top for the overhang; interior =
+  px-stop gradient measured off the ref (rows 7/18/33/38, bright blue rim above the bottom band;
+  rendered within ≤4/255 of every stop); label #fbfbfb + blue text-glow, icon #fcf7e4. Frame diff vs
+  raster 0.0 on all corners/edges incl. the 40px star corner. (2) HOVER brightness effect restored
+  hack-free and STRONGER: filter:brightness(1.35) on the TEXT-FREE ::before only (the pt.3 artifact
+  was the label being inside the filtered layer), + interior/label lift; measured 0 px change outside
+  the hovered tab. (3) PoeTabBar now controlled OR uncontrolled à la <input>: new `defaultSelected`
+  (internal state, bar owns switching), `selected`+`onSelect` still the controlled path; dashboard +
+  gallery use defaultSelected, click-switch verified headlessly. tsc clean.
+- 2026-07-10 (pt.5): Selected-tab detailing (user directives + user mask edits). (1) TEXT SHADOW: one
+  dense dark 3-layer halo on the base tab, identical in every state — selected no longer swaps it (blue
+  text-glow removed). (2) User re-opted the mask: the rail star + centre jewel are now op:'inpaint'
+  (removed from the plate — the star is rail decor, and a baked jewel can't stay centred across widths);
+  raster back to 116×42, uniform 12px slice, no top overhang. TOOLING FIX uncovered doing this:
+  inpaint-mask.mjs blur-dilation (threshold(1) → real reach ≈3× grow) was bleeding LaMa onto kept art —
+  the first build's star was a lucky LaMa reinvention. Now the kept art (keep − hole) is subtracted
+  from the LaMa mask (explicitly-drawn inpaint regions still win); band above the label stays original.
+  (3) JEWEL re-rendered parametrically: `.is-selected::after` 9px radial dot (white core, blue ring,
+  soft halo) straddling the bottom border at 50% — verified centred (±2px sampling) on the dashboard.
+  (4) BOTTOM SPILL: measured ref shows the rail under the selected tab turns cool ~4px deep; added
+  `box-shadow: 0 3px 8px -1px rgba(70,130,220,.55)` — below-tab sampling now cool-blue vs warm-gold
+  under normal tabs. Frame renders 0.0 diff vs raster on all corners. AWAITING user eyeball.
+- 2026-07-10 (pt.6): Spill + shadow fixes (user). The bottom spill's box-shadow wrapped the tab's
+  left/right borders — replaced with a real `.poe-tab__glow` strip element strictly below the bottom
+  edge; a straight gradient read as a hard bar, so it's a top-anchored ellipse (fades down + toward the
+  ends). Sides measured clean (warm rail, no blue). Alpha .42 is the intensity knob (still slightly
+  hotter than ref's very subtle spill). Text-shadow doubled: 0 2px 4px / 0 0 4px / 0 0 10px. User
+  hand-tuned the jewel (6px, bottom -3px, #123f64 ring) — preserved.

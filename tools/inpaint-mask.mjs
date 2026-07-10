@@ -27,7 +27,21 @@ const grow = Number(opt.grow ?? 4);
 const d = buildPathD(inpaint, W, H);
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><path d="${d}" fill="#fff"/></svg>`;
 let m = sharp(Buffer.from(svg)).flatten({ background: '#000' }).greyscale().toColourspace('b-w');
-if (grow > 0) m = m.blur(grow).threshold(1);    // dilate the white region by ~grow px
+if (grow > 0) m = m.blur(grow).threshold(1);    // dilate the white region by ~grow px (blur tail: real reach ≈ 3× grow)
+// PROTECT the mask's kept art (keep − hole): the dilation must never bleed LaMa onto pixels the cut
+// will keep (e.g. an ornament right above an inpainted label). An inpaint region still wins where it
+// is EXPLICITLY drawn over kept art — that's the point of drawing it there.
+const keeps = (mask.contours || []).filter(c => (c.op || 'keep') === 'keep');
+if (keeps.length) {
+  const dHole = buildPathD((mask.contours || []).filter(c => c.op === 'hole'), W, H);
+  const psvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">`
+    + `<path d="${buildPathD(keeps, W, H)}" fill="#fff"/>`
+    + (dHole ? `<path d="${dHole}" fill="#000"/>` : '')
+    + `<path d="${d}" fill="#000"/></svg>`;
+  const notProtected = await sharp(Buffer.from(psvg)).flatten({ background: '#000' }).greyscale().toColourspace('b-w')
+    .negate().png().toBuffer();
+  m = sharp(await m.png().toBuffer()).boolean(notProtected, 'and');
+}
 const maskPath = resolve(ROOT, `assets-staging/sources/${name}-inpaint-mask.png`);
 await m.png().toFile(maskPath);
 

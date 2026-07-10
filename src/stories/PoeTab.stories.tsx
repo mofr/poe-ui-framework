@@ -8,6 +8,7 @@ export default {
   component: PoeTab,
   argTypes: {
     disabled: { control: 'boolean' },
+    frame: { control: 'select', options: ['normal-1', 'normal-2'] },
   },
   args: { name: 'code', children: 'Code' },
   render: (args: React.ComponentProps<typeof PoeTab>) => (
@@ -29,7 +30,6 @@ const items: [string, string, React.ReactNode][] = [
 
 export const Gallery = {
   render: () => {
-    const [active, setActive] = React.useState('code');
     return (
       <Stack gap={20}>
         <div>
@@ -43,8 +43,17 @@ export const Gallery = {
           </PoeTabBar>
         </div>
         <div>
-          <Caption>PoeTabBar — click to select; shared baseline rail</Caption>
-          <PoeTabBar selected={active} onSelect={setActive}>
+          <Caption>frames — normal-1 · normal-2</Caption>
+          <PoeTabBar selected="none">
+            <Row>
+              <PoeTab name="f1" icon={<BookOpen size={16} />} frame="normal-1">Wiki</PoeTab>
+              <PoeTab name="f2" icon={<BookOpen size={16} />} frame="normal-2">Projects</PoeTab>
+            </Row>
+          </PoeTabBar>
+        </div>
+        <div>
+          <Caption>PoeTabBar — click to select (uncontrolled); shared baseline rail</Caption>
+          <PoeTabBar defaultSelected="code">
             {items.map(([name, label, icon]) => (
               <PoeTab key={name} name={name} icon={icon}>{label}</PoeTab>
             ))}

@@ -74,7 +74,7 @@
 </head>
 <body>
 <div id="bar">
-  <span id="help">click=add point (nearest edge) · drag=move · <kbd>del</kbd>=remove · set a contour to <b>hole</b> to cut an opening · <kbd>h</kbd> hide overlay · wheel zoom · space-drag pan · <kbd>ctrl+z</kbd> undo</span>
+  <span id="help">click=add point (nearest edge) · drag=move · right-drag=move whole contour · <kbd>shift</kbd>=lock axis · <kbd>del</kbd>=remove · set a contour to <b>hole</b> to cut an opening · <kbd>h</kbd> hide overlay · wheel zoom · space-drag pan · <kbd>ctrl+z</kbd> undo</span>
   <div class="right"><button id="fit">fit <kbd>f</kbd></button><button id="actual" title="100% — 1 image px = 1 screen px (1)">100%</button></div>
 </div>
 <div id="status">no image</div>
@@ -129,7 +129,7 @@ let view = { zoom: 1, panX: 0, panY: 0 };
 const blank = () => ({ points: [], name: '', op: 'keep', note: '', round: 0 });
 let contours = [blank()];          // point: {x,y} normalised
 let active = 0, sel = null;        // sel = {ci,pi}
-let drag = null, dragMoved = false;
+let drag = null, dragAll = null, dragMoved = false;   // dragAll = right-drag, moves the whole contour
 let panning = false, panStart = null, space = false;
 let history = [];
 
@@ -260,21 +260,42 @@ function hit(sx, sy) {
 cv.addEventListener('mousedown', e => {
   const sx = e.offsetX, sy = e.offsetY;
   if (space || e.button === 1) { panning = true; panStart = { x: sx, y: sy, ...view }; return; }
+  if (e.button === 2) {                    // right-drag = move the whole contour (the one under the cursor, else the active one)
+    const h = hit(sx, sy);
+    if (h) { active = h.ci; sel = null; renderList(); }
+    const c = contours[active];
+    if (!c || c.hidden || !c.points.length) return;
+    dragAll = { sx, sy, orig: c.points.map(p => ({ x: p.x, y: p.y })) }; dragMoved = false;
+    draw();
+    return;
+  }
   const h = hit(sx, sy);
-  if (h) { sel = h; active = h.ci; drag = h; dragMoved = false; }
-  else { pushHistory(); const im = toImg(sx, sy); const pi = addPoint(im.x, im.y); sel = { ci: active, pi }; drag = { ci: active, pi }; dragMoved = true; }
+  if (h) { const p = contours[h.ci].points[h.pi]; sel = h; active = h.ci; drag = { ...h, sx, sy, ox: p.x, oy: p.y }; dragMoved = false; }
+  else { pushHistory(); const im = toImg(sx, sy); const pi = addPoint(im.x, im.y); sel = { ci: active, pi }; drag = { ci: active, pi, sx, sy, ox: im.x / imgW, oy: im.y / imgH }; dragMoved = true; }
   renderList(); draw();
 });
 cv.addEventListener('mousemove', e => {
   const sx = e.offsetX, sy = e.offsetY;
   if (panning) { view.panX = panStart.panX + (sx - panStart.x); view.panY = panStart.panY + (sy - panStart.y); draw(); return; }
+  // shift = axis lock: zero the smaller component of the TOTAL delta since drag start, so the
+  // movement is a straight horizontal/vertical line (and releasing shift mid-drag snaps back to free)
+  const axis = (dx, dy) => e.shiftKey ? (Math.abs(dx) >= Math.abs(dy) ? [dx, 0] : [0, dy]) : [dx, dy];
+  if (dragAll) {
+    if (!dragMoved) { pushHistory(); dragMoved = true; }   // snapshot once, at first move
+    const [dx, dy] = axis(sx - dragAll.sx, sy - dragAll.sy);
+    contours[active].points.forEach((p, i) => { p.x = dragAll.orig[i].x + dx / view.zoom / imgW; p.y = dragAll.orig[i].y + dy / view.zoom / imgH; });
+    draw();
+    return;
+  }
   if (!drag) return;
   if (!dragMoved) { pushHistory(); dragMoved = true; }     // snapshot once, at first move
-  const im = toImg(sx, sy), p = contours[drag.ci].points[drag.pi];
-  p.x = im.x / imgW; p.y = im.y / imgH;
+  const [dx, dy] = axis(sx - drag.sx, sy - drag.sy);
+  const p = contours[drag.ci].points[drag.pi];
+  p.x = drag.ox + dx / view.zoom / imgW;
+  p.y = drag.oy + dy / view.zoom / imgH;
   draw();
 });
-window.addEventListener('mouseup', () => { drag = null; panning = false; });
+window.addEventListener('mouseup', () => { drag = null; dragAll = null; panning = false; });
 cv.addEventListener('contextmenu', e => e.preventDefault());
 cv.addEventListener('wheel', e => {
   e.preventDefault();
