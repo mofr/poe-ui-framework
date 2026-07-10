@@ -10,13 +10,15 @@
   border-image: url('./PoeSegmentBar.progress-bar.png') 8 / 8px repeat;
 }
 .poe-segment-track {
-  height: 20px;
+  height: 23px;
   overflow: hidden;
 }
 .poe-segment-fill {
   height: 100%;
-  background-size: 24px 100%;
-  background-repeat: round;
+  /* segment raster drawn at its native 28×23 so segments stay 1:1 (no round-rescale distortion);
+     `space` keeps whole segments and distributes the leftover as even gaps rather than clipping */
+  background-size: 28px 23px;
+  background-repeat: space;
 }
 .poe-segment-bar[data-variant='blue'] .poe-segment-fill  { background-image: url('./PoeSegmentBar.progress-bar.segment-1.png'); }
 .poe-segment-bar[data-variant='green'] .poe-segment-fill { background-image: url('./PoeSegmentBar.fill-green.png'); }

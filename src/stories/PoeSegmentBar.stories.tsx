@@ -24,7 +24,7 @@ export const Gallery = {
       <div><Caption>green — baked recolour (own asset)</Caption><PoeSegmentBar variant="green" /></div>
       <div><Caption>value=0.6875 + label — XP / progress variation</Caption><PoeSegmentBar variant="blue" value={0.6875} label="68,750 / 100,000 XP" /></div>
       <div><Caption>value=0.35 (green)</Caption><PoeSegmentBar variant="green" value={0.35} label="35%" /></div>
-      <div style={{ width: 240 }}><Caption>narrow — whole segments (background-repeat: round)</Caption><PoeSegmentBar variant="blue" /></div>
+      <div style={{ width: 240 }}><Caption>narrow — segments stay 1:1 (native 28×23, even gaps)</Caption><PoeSegmentBar variant="blue" /></div>
     </Stack>
   ),
 };
