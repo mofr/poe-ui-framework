@@ -1195,3 +1195,50 @@ the user wants the frame isolated + insetting as a separate restylable layer.)
   ends). Sides measured clean (warm rail, no blue). Alpha .42 is the intensity knob (still slightly
   hotter than ref's very subtle spill). Text-shadow doubled: 0 2px 4px / 0 0 4px / 0 0 10px. User
   hand-tuned the jewel (6px, bottom -3px, #123f64 ring) — preserved.
+- 2026-07-10 (pt.7): PoeCircleFrame.small-ornate-1 wired (user traced the level-orb ring, 43×47, 8
+  studs). Same recipe as big-ornate-1: colocated variant CSS (`[data-raster='small-ornate-1']`) with
+  aspect + content-box derived from the mask (hole ÷ keep bbox: 15.2/13.7/76.2/69.1%), shallower
+  inner recess + lighter outer cast than the medallion. @imported in PoeCircleFrame.css; story gets a
+  small-ornate-1 row + control option. Dashboard level orb switched from the CSS-baseline ring to the
+  raster at native size 43 — renders ~1:1 (mean diff 1.27/255, caster-shadow residue under AA edge px).
+  AWAITING user eyeball (esp. the "60" typography inside the 32px hole).
+- 2026-07-10 (pt.8): (a) small-ornate-1 mask update (user) → derived CSS refreshed: trim now 44×47,
+  content-box 15.0/13.7/75.2/69.1%; story/dashboard native sizes bumped 43→44. Reminder: whenever a
+  circle-frame mask's outline/hole moves, --poe-cf-aspect + content-box % + native `size` usages must
+  be re-derived (they're baked numbers, not live). (b) Slim XP bar wired: user traced the header bar's
+  fill slice (`progress-bar-filler` → renamed PoeSegmentBar.fill-blue-slim, 23×16). The reference bar
+  is CONTINUOUS, not segmented — new `blue-slim` variant STRETCHES the slice across the fill
+  (repeat-x showed 23px seams), native 16px tall, in a measured CSS trough (bronze #42300f bezel,
+  near-black pit, fill seated 3px/1px) until a slim rail is traced. Dashboard XP bar switched to it.
+- 2026-07-10 (pt.9): Header row alignment (user: "bar left, labels right"). Measured vs
+  ref-header-elements mask (dom-boxes): orb was +34px, bar +29px, title/subtitle −7px. Structural
+  cause: both header rows shared one 172px gutter, but the reference rows have DIFFERENT left edges —
+  the orb row hugs the medallion (orb x≈154), the identity text is indented further (title x≈195).
+  Fix = per-row padding constants (orbRowGutter 138 / identityGutter 179, documented as mask-derived),
+  orb/bar overlap −12→−6 (ref: bar x≈192 under the orb's right edge); bar wrapper stays 178 (bezels
+  bring the outer width to the mask's 187). After: title Δx +0.2, subtitle +0.4, orb −1.9, bar −0.2.
+  Known/untouched: title box Δy −19 (glyph-box vs traced-box, typography pass), bar y0 +6 (bar is
+  centred on the orb exactly as in the ref; ref bar box is 1px taller).
+- 2026-07-10 (pt.10): (1) Medallion shadow Z (user: it darkened the level orb). PoePanel isolates, so
+  the caster (outer panel's last child) inevitably painted over ALL header content. Moved the
+  shadowOnly caster INSIDE the header panel at z -1 — above the header stone, below its content;
+  re-anchored to medallionPos via the header content-box origin (~(8,7) in dashboard coords, measured;
+  first guess of 16px was wrong). Orb/bar/text now clean, contact shadow intact, gold frame untouched.
+  (2) RENAMED PoeSegmentBar → PoeProgressBar (user: it isn't always segmented; the name predates the
+  continuous fill). Full sync per the naming rule: component/CSS/story files, classes
+  (.poe-progress-bar, __track/__fill/__label), assets (progress-bar.png→big-frame.png,
+  progress-bar.segment-1.png→fill-blue-segment.png, fill-*→same), mask internal names + big mask's
+  out map. Old ledger entries keep the historical name. (3) SLIM FRAME ingested
+  (PoeProgressBar.slim-frame, 185×32): left side OPEN (hidden under the orb in the ref — top/bottom
+  rails run to the edge), per-edge slice 8/11/6/0 at 1:1, fill seated 1px in the 18px hole; replaces
+  the pt.8 CSS trough. Bar lands Δx −0.2 / Δy +1.9 vs the header mask (was +6.1 vertical with the
+  CSS trough). AWAITING user eyeball.
+- 2026-07-10 (pt.11): Slim-bar polish (user). (1) BLACK SPILL: the slim variant set the `background`
+  SHORTHAND, which silently reset the base rule's `background-clip: padding-box` to border-box —
+  black painted across the whole border box, poking out wherever the frame raster is transparent.
+  Fixed with `background-color` (keeps the clip). Verified: brightness above/around the frame is
+  ambient stone; the dark band below it is the raster's own baked contact shadow. (2) Orb air:
+  orbRowGutter 138→141 (orb Δx +1.2 vs mask, a touch of breathing room off the medallion; bar rides
+  along to Δx +2.9). (3) SCALE 1:1 verified by template-match: the frame's right end-cap found in the
+  dashboard screenshot at mean |diff| 0.00 — exact raster pixels; the whole-frame mean 4.47 is only
+  the label's text-shadow brushing the bands.

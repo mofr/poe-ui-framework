@@ -1,0 +1,37 @@
+/* PoeProgressBar — structural core: a 9-slice raster frame around a clipping __track whose __fill
+   width is driven by `value`, plus an optional centred __label. Frame + fill art and their geometry
+   live in the colocated per-frame files (PoePanel-style):
+     big-frame  → `blue` / `green` segmented bars
+     slim-frame → `blue-slim` continuous header-XP bar */
+@import './PoeProgressBar.big-frame.css';
+@import './PoeProgressBar.slim-frame.css';
+
+.poe-progress-bar {
+  position: relative;
+  padding: var(--segment-pad, 1px);
+}
+.poe-progress-bar__track {
+  overflow: hidden;
+}
+.poe-progress-bar__fill {
+  height: 100%;
+}
+/* centred overlay (XP count / percent) — kept legible over the bright fill */
+.poe-progress-bar__label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-family: var(--poe-font-smallcaps);
+  font-weight: 400;
+  font-size: 12px;
+  letter-spacing: .02em;
+  color: #eef3f7;
+  /* full 8-direction 1px outline + soft drop */
+  text-shadow:
+    1px 0 0 #050303, -1px 0 0 #050303, 0 1px 0 #050303, 0 -1px 0 #050303,
+    1px 1px 0 #050303, -1px 1px 0 #050303, 1px -1px 0 #050303, -1px -1px 0 #050303,
+    0 2px 4px rgba(0, 0, 0, .8);
+}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { PoePanel, PoePanelHeader, PoePanelBody } from '../components/primitives/PoePanel.tsx';
 import { PoeText } from '../components/primitives/PoeText.tsx';
-import { PoeSegmentBar } from '../components/primitives/PoeSegmentBar.tsx';
+import { PoeProgressBar } from '../components/primitives/PoeProgressBar.tsx';
 import { PoeButton } from '../components/primitives/PoeButton.tsx';
 import { PoeBadge } from '../components/primitives/PoeBadge.tsx';
 import { PoeInput } from '../components/primitives/PoeInput.tsx';
@@ -68,6 +68,16 @@ const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap
 // size, larger just upscales the PNG.
 const medallion = { raster: 'big-ornate-1', size: 128 } as const;
 const medallionPos: React.CSSProperties = { position: 'absolute', top: 13, left: 24 };
+// The medallion's contact shadow lives INSIDE the header panel at z -1: above the header's stone
+// surface but below its content (level orb, XP bar) — a caster outside the header would paint over
+// them (PoePanel isolates). Its containing block is the header's content box, whose origin sits at
+// ~(8, 7) in dashboard coords (measured via dom-boxes) — these offsets re-anchor it to medallionPos.
+const medallionShadowPos: React.CSSProperties = { position: 'absolute', top: 13 - 7, left: 24 - 8, zIndex: -1 };
+// Header gutters — the two header rows do NOT share a left edge in the reference (measured against
+// inspiration/ref-header-elements.mask.json via dom-boxes): the level-orb row hugs the medallion's
+// right edge (orb x≈154), while the identity text is indented further (title x≈195).
+const orbRowGutter = 146;      // renders the orb at mask x ~155 (a touch of air off the medallion)
+const identityGutter = 179;    // renders the title at mask x 195.1
 
 export const Dashboard = {
   render: () => (
@@ -83,12 +93,14 @@ export const Dashboard = {
         {/* fade overlay: the matte-stone tile reads flat vs the reference's graded stone, which is lit
             toward the identity/medallion (left) and darkens to the right. Fade left→right (paints over
             the surface, under this row's content). */}
-        <div style={{ display: 'flex', alignItems: 'stretch', padding: '0 0 0 172px',
+        {/* medallion contact shadow — see medallionShadowPos */}
+        <PoeCircleFrame {...medallion} shadowOnly style={medallionShadowPos} />
+        <div style={{ display: 'flex', alignItems: 'stretch',
           background: 'linear-gradient(to right, rgba(0,0,0,0) 35%, rgba(0,0,0,.38) 70%)' }}>
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
 
               {/* top row — name/subtitle · search · notifications */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, paddingLeft: identityGutter }}>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <PoeText variant="display" as="span">gaearon</PoeText>
                   <PoeText variant="subtitle" style={{ color: '#3fa2ed' }}>The Interface Mage</PoeText>
@@ -114,12 +126,13 @@ export const Dashboard = {
 
               {/* bottom row — level + XP share the line with the nav rail. Nav buttons are placeholder
                   tabs (PoeButton is the wrong shape); they dock at the header's bottom edge. */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 64 }}>
-                {/* level orb overlaps the left end of the xp bar (orb on top) */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 64, paddingLeft: orbRowGutter }}>
+                {/* level orb overlaps the left end of the xp bar (orb on top; ref bar x≈192 under orb right edge) */}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <PoeCircleFrame size={40} style={{ position: 'relative', zIndex: 1, marginRight: -12, fontSize: 18, color: '#e9e3bc' }}>60</PoeCircleFrame>
-                  <div style={{ width: 178 }}>
-                    <PoeSegmentBar variant="blue" value={0.6875} label="68,750 / 100,000 XP" />
+                  <PoeCircleFrame raster="small-ornate-1" size={44} style={{ position: 'relative', zIndex: 1, marginRight: -6, fontSize: 18, color: '#e9e3bc' }}>60</PoeCircleFrame>
+                  {/* 185 = the reference bar's traced width (slim-frame mask x 200.1..385.6) */}
+                  <div style={{ width: 195 }}>
+                    <PoeProgressBar variant="blue-slim" value={0.6875} label="68,750 / 100,000 XP" />
                   </div>
                 </div>
                 <div style={{ flex: 1 }}>
@@ -165,11 +178,11 @@ export const Dashboard = {
               </PoePanel>
               <PoePanel frame="slim-dark-3" surface="solid-black-1" integration="raster" style={{ width: '100%' }}>
                 <PoePanelHeader><><PoeText variant="heading">Contribution Health</PoeText><PoeText variant="meta">100% Vitality</PoeText></></PoePanelHeader>
-                <PoePanelBody><PoeSegmentBar variant="green" /></PoePanelBody>
+                <PoePanelBody><PoeProgressBar variant="green" /></PoePanelBody>
               </PoePanel>
               <PoePanel frame="slim-dark-3" surface="solid-black-1" integration="raster" style={{ width: '100%' }}>
                 <PoePanelHeader><><PoeText variant="heading">Coding Energy (Streak)</PoeText><PoeText variant="meta">18 Day Streak</PoeText></></PoePanelHeader>
-                <PoePanelBody><PoeSegmentBar variant="blue" /></PoePanelBody>
+                <PoePanelBody><PoeProgressBar variant="blue" /></PoePanelBody>
               </PoePanel>
               <div style={{ display: 'flex', gap: 10 }}>
                 <PoePanel frame="slim-dark-1" surface="solid-black-1" integration="raster" style={{ width: '100%' }}>
@@ -241,10 +254,6 @@ export const Dashboard = {
         </div>
       </PoePanel>
 
-      {/* medallion's contact shadow — rendered as the outer panel's LAST child so it sits below the
-          ruled-gold-1 frame layer: the gold border-image occludes the shadow (frame stays clean) while
-          the interior surface shows it. Shares medallion geometry with the ring below. */}
-      <PoeCircleFrame {...medallion} shadowOnly style={medallionPos} />
     </PoePanel>
 
       {/* corner medallion — NOT a header child: absolutely positioned over the dashboard's top-left, so

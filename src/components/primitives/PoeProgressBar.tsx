@@ -1,12 +1,13 @@
 import React from 'react';
-import './PoeSegmentBar.css';
+import './PoeProgressBar.css';
 
 // Segmented progress bar: a 9-slice raster rail (shared) + the per-variant fill repeated with
 // `background-repeat: round`. `variant` picks the fill raster (`blue` extracted, `green` a baked
-// recolour). With `value` omitted the fill spans the whole rail (decorative). Pass `value` (0..1) to
-// drive real progress — e.g. an XP bar — and `label` for a centred overlay (XP count, percent…).
-export interface PoeSegmentBarProps {
-  variant?: 'blue' | 'green';
+// recolour, `blue-slim` the slim CONTINUOUS header-XP fill in a measured CSS trough). With `value`
+// omitted the fill spans the whole rail (decorative). Pass `value` (0..1) to drive real progress —
+// e.g. an XP bar — and `label` for a centred overlay (XP count, percent…).
+export interface PoeProgressBarProps {
+  variant?: 'blue' | 'green' | 'blue-slim';
   /** Fill fraction 0..1. Omit for a full decorative bar. */
   value?: number;
   /** Centred overlay text (e.g. "68,750 / 100,000 XP"). */
@@ -18,13 +19,13 @@ export interface PoeSegmentBarProps {
 
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 
-export function PoeSegmentBar({ variant = 'blue', value, label, pad, className = '' }: PoeSegmentBarProps) {
+export function PoeProgressBar({ variant = 'blue', value, label, pad, className = '' }: PoeProgressBarProps) {
   const style = pad != null ? ({ '--segment-pad': `${pad}px` } as React.CSSProperties) : undefined;
   const measured = value != null;
   const pct = measured ? clamp01(value) * 100 : 100;
   return (
     <div
-      className={`poe-segment-bar ${className}`.trim()}
+      className={`poe-progress-bar ${className}`.trim()}
       data-variant={variant}
       style={style}
       role={measured ? 'progressbar' : undefined}
@@ -32,10 +33,10 @@ export function PoeSegmentBar({ variant = 'blue', value, label, pad, className =
       aria-valuemin={measured ? 0 : undefined}
       aria-valuemax={measured ? 100 : undefined}
     >
-      <div className="poe-segment-track">
-        <div className="poe-segment-fill" style={measured ? { width: `${pct}%` } : undefined} />
+      <div className="poe-progress-bar__track">
+        <div className="poe-progress-bar__fill" style={measured ? { width: `${pct}%` } : undefined} />
       </div>
-      {label != null && <div className="poe-segment-label">{label}</div>}
+      {label != null && <div className="poe-progress-bar__label">{label}</div>}
     </div>
   );
 }

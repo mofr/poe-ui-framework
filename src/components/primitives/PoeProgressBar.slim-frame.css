@@ -1,0 +1,25 @@
+/* PoeProgressBar frame: slim-frame — the header XP bar (`blue-slim`): CONTINUOUS glossy fill
+   (not segmented), native 16px tall, in the traced slim frame (PoeProgressBar.slim-frame.mask.json).
+   The frame's LEFT side is open — that end hides under the level orb in the reference, so only the
+   top/bottom rails run to the edge. Fill sits 1px inside the 18px hole. Colocated with mask + raster. */
+.poe-progress-bar[data-variant='blue-slim'] {
+  border-style: solid;
+  border-width: 8px 11px 6px 0;
+  border-image: url('./PoeProgressBar.slim-frame.png') 22 16 6 0 / 22px 16px 6px 0 repeat;
+  /* border-image `repeat` centres the middle tile, so odd middle widths land on a half-pixel
+     phase and bilinear-blur the whole rail; nearest-neighbour keeps the crisp bevel at any width */
+  image-rendering: pixelated;
+  background-color: #050303;
+  background-clip: padding-box;   /* keep the trough colour out of the cap art's transparent notches */
+  padding: 1px 0;
+  /* outer shadow — drop-shadow (not box-shadow) so it follows the frame art's alpha, like PoeCircleFrame */
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, .85)) drop-shadow(0 1px 3px rgba(0, 0, 0, .7));
+}
+.poe-progress-bar[data-variant='blue-slim'] .poe-progress-bar__track { height: 16px; }
+.poe-progress-bar[data-variant='blue-slim'] .poe-progress-bar__fill {
+  background-image: url('./PoeProgressBar.fill-blue-slim.png');
+  /* the art is continuous (all detail is the vertical gloss) — STRETCH one slice across the fill;
+     tiling it repeat-x showed a seam every 23px where the slice's ends don't match */
+  background-size: 100% 16px;
+  background-repeat: no-repeat;
+}

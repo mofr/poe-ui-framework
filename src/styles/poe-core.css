@@ -51,5 +51,5 @@ body {
 .poe-text-danger               { color: #ff9a8f; text-shadow: 0 0 10px rgba(207, 49, 45, .2); }
 
 /* Component-owned styles live next to their .tsx (PoeButton.css, PoeInput.css, PoeBadge.css,
-   PoeSegmentBar.css, PoeList.css, PoePanel.css). This file keeps only the cross-cutting layer:
+   PoeProgressBar.css, PoeList.css, PoePanel.css). This file keeps only the cross-cutting layer:
    reset + page backdrop + typography roles (the .poe-text-* / .poe-title aliases used as utilities). */

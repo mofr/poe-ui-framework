@@ -10,7 +10,7 @@ export default {
     size: { control: { type: 'range', min: 32, max: 160, step: 4 } },
     status: { control: 'inline-radio', options: [undefined, 'online', 'away', 'busy', 'offline'] },
     glow: { control: 'boolean' },
-    raster: { control: 'inline-radio', options: [undefined, 'big-ornate-1'] },
+    raster: { control: 'inline-radio', options: [undefined, 'big-ornate-1', 'small-ornate-1'] },
   },
   args: { src: portrait, size: 96 },
 };
@@ -52,6 +52,14 @@ export const Gallery = {
           <PoeCircleFrame raster="big-ornate-1" src={portrait} size={128} />
           <PoeCircleFrame raster="big-ornate-1" src={portrait} size={64} status="online" />
           <PoeCircleFrame raster="big-ornate-1" size={128} glow style={{ fontSize: 34, color: '#e9e3bc' }}>60</PoeCircleFrame>
+        </Row>
+      </div>
+      <div>
+        <Caption>raster — small-ornate-1 (level-orb ring, native 44px)</Caption>
+        <Row>
+          <PoeCircleFrame raster="small-ornate-1" size={44} style={{ fontSize: 18, color: '#eef0ea' }}>60</PoeCircleFrame>
+          <PoeCircleFrame raster="small-ornate-1" src={portrait} size={44} />
+          <PoeCircleFrame raster="small-ornate-1" size={88} style={{ fontSize: 36, color: '#eef0ea' }}>60</PoeCircleFrame>
         </Row>
       </div>
       <div>

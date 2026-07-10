@@ -1,0 +1,23 @@
+/* PoeProgressBar frame: big-frame — the segmented rail (`blue` / `green` fills). Uniform 8px
+   bands; fills tile at native 28×23. Colocated with its mask + raster. `blue` is extracted;
+   `green` is a baked recolour shipped as its own asset. */
+.poe-progress-bar[data-variant='blue'],
+.poe-progress-bar[data-variant='green'] {
+  border: 8px solid transparent;
+  background: #090807;
+  background-clip: padding-box;
+  border-image: url('./PoeProgressBar.big-frame.png') 8 / 8px repeat;
+}
+.poe-progress-bar[data-variant='blue'] .poe-progress-bar__track,
+.poe-progress-bar[data-variant='green'] .poe-progress-bar__track {
+  height: 23px;
+}
+.poe-progress-bar[data-variant='blue'] .poe-progress-bar__fill,
+.poe-progress-bar[data-variant='green'] .poe-progress-bar__fill {
+  /* segment raster drawn at its native 28×23 so segments stay 1:1 (no round-rescale distortion);
+     `space` keeps whole segments and distributes the leftover as even gaps rather than clipping */
+  background-size: 28px 23px;
+  background-repeat: space;
+}
+.poe-progress-bar[data-variant='blue'] .poe-progress-bar__fill  { background-image: url('./PoeProgressBar.fill-blue-segment.png'); }
+.poe-progress-bar[data-variant='green'] .poe-progress-bar__fill { background-image: url('./PoeProgressBar.fill-green.png'); }

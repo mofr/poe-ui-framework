@@ -5,6 +5,7 @@
    Two looks share this base: the CSS metallic ring (default) and the raster ring (`--raster`). Each
    raster ring is a variant file colocated with its PNG/mask, imported here — like PoePanel.<frame>.css. */
 @import './PoeCircleFrame.big-ornate-1.css';
+@import './PoeCircleFrame.small-ornate-1.css';
 
 .poe-circle-frame {
   --poe-circle-frame-size: 96px;
@@ -44,10 +45,13 @@
   background: radial-gradient(circle at 50% 42%, #17140e, #05070d 82%);
   box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .6), inset 0 2px 6px rgba(0, 0, 0, .55);
   color: var(--poe-gold-4);
-  font-family: var(--poe-font-number);
-  font-variant-numeric: tabular-nums;
+  font-family: var(--poe-font-smallcaps);
   line-height: 1;
 }
+/* Fontin SmallCaps digit ink rides ~1px above the em centre (measured at 18px) — nudge text
+   content down for optical centring. Flex centring absorbs half the padding, hence 2×. The :has
+   guard keeps image content (avatars) untouched. Scales with the label's font-size. */
+.poe-circle-frame__inner:not(:has(.poe-circle-frame__img)) { padding-top: .12em; }
 .poe-circle-frame.is-glowing .poe-circle-frame__inner {
   background: radial-gradient(circle at 50% 45%, var(--poe-circle-frame-accent), #060912 78%);
   box-shadow:

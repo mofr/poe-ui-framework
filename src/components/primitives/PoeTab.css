@@ -82,7 +82,7 @@
   transform: translateX(-50%);
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle, #fff 0 1.5px, #123f64 2.5px, #15408f 3.5px, rgba(6, 30, 80, 0) 4.5px);
+  background: radial-gradient(circle, #fff 0 1.0px, #123f64 2.0px, #15408f 3.5px, rgba(6, 30, 80, 0) 4.5px);
   box-shadow: 0 0 5px 1px rgba(80, 150, 255, .55);
 }
 .poe-tab.is-selected .poe-tab__icon { opacity: 1; color: #fcf7e4; }
