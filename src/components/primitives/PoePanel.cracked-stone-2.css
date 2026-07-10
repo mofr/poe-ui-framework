@@ -10,6 +10,7 @@
   --overhang: 0px;
   --content-pad: 14px;
   --content-pad-top: 4px;   /* top border is flat (framegen --border-top 0), so no top clearance */
+  --inner-shadow-skip-top: calc(var(--inner-shadow-size) * 2);  /* flat top — no bevel to seat into */
   --src-frame: url('./PoePanel.cracked-stone-2.png');
   --src-integration: none;
 }

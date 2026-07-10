@@ -44,6 +44,9 @@
   --accent-scale: 1;                    /* per-accent (set inline per medallion; 1 = native px) */
   --inner-shadow-size: 16px;                /* inner-shadow blur radius */
   --inner-shadow-color: rgba(0, 0, 0, .55); /* inner-shadow colour incl. opacity (= intensity) */
+  --inner-shadow-skip-top: 0px;             /* >0 kills the shadow on a flat-cut top edge (re-declared
+                                               here, like --content-pad-top, so it can't inherit into
+                                               nested panels) */
   --css-shadow: 0 2px 6px rgba(0, 0, 0, .55); /* integration='css' drop-shadow (x y blur colour) */
   --overhang: calc(var(--band) * var(--frame-scale) / 2);    /* frame spill past the box edge — tracks scale */
   --content-pad: calc(var(--band) * var(--frame-scale));     /* per-frame clearance consumed by
@@ -108,9 +111,14 @@
 .poe-panel__body { padding: var(--body-pad, 8px); }
 .poe-panel__header + .poe-panel__body { padding-top: 0; }
 
-/* inner shadow — symmetric single colour, on the box edge; seats the surface into the frame. */
+/* inner shadow — symmetric single colour, on the box edge; seats the surface into the frame.
+   A flat-cut edge (framegen --border-top 0) has no bevel to seat into, so a frame can suppress that
+   edge's shadow via --inner-shadow-skip-top: the layer extends past the edge and the extension is
+   clipped away — the top band falls in the clipped zone while the side shadows still run edge-to-edge. */
 .poe-panel__inner-shadow {
   position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  top: calc(-1 * var(--inner-shadow-skip-top));
+  clip-path: inset(var(--inner-shadow-skip-top) 0 0 0);
   border-radius: var(--surface-radius);
   box-shadow: inset 0 0 var(--inner-shadow-size) 3px var(--inner-shadow-color);
 }

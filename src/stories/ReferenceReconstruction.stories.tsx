@@ -13,6 +13,7 @@ import { PoeSeparator } from '../components/primitives/PoeSeparator.tsx';
 import { GitCommitVertical, Search, Bell, Mail, Code, CircleAlert, GitPullRequest, Play, FolderGit2, BookOpen, Shield, Settings } from 'lucide-react';
 import castleNight from '../assets/backgrounds/castle-night-2.jpg';
 import portrait from '../assets/backgrounds/elder-shaper.jpg';
+import reference1680 from '../../inspiration/reference-1680.png';
 // Reference reconstruction — rebuild the @d4m1n.max "Interface Mage" dashboard from OUR framework.
 // Semantic text only (PoeText → role tokens, no inline sizes); PoePanel is auto-height (inner panels AND
 // the outer ruled-gold-1 container). The page stone is the OUTER PANEL'S SURFACE (matte-stone-1), not an
@@ -252,6 +253,17 @@ export const Dashboard = {
           own z-indexes behind `isolation: isolate`, so no explicit z-index is needed here.
           Its own outer shadow is off; the shadow is cast by the shadowOnly layer behind the frame (above). */}
       <PoeCircleFrame {...medallion} src={portrait} alt="gaearon" style={{ ...medallionPos, '--poe-cf-outer-shadow': 'none' } as React.CSSProperties} />
+    </div>
+  ),
+};
+
+// The traced source screenshot, centred exactly like Dashboard (same 1680px column) — flip between the
+// two stories in the sidebar for a quick A/B.
+export const Reference1680 = {
+  name: 'Reference 1680',
+  render: () => (
+    <div style={{ maxWidth: 1680, margin: '0 auto' }}>
+      <img src={reference1680} alt="reference screenshot" style={{ display: 'block', width: '100%' }} />
     </div>
   ),
 };
