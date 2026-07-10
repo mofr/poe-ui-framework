@@ -124,11 +124,12 @@ export const Dashboard = {
                 </div>
               </div>
 
-              {/* bottom row — level + XP share the line with the nav rail. Nav buttons are placeholder
-                  tabs (PoeButton is the wrong shape); they dock at the header's bottom edge. */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 64, paddingLeft: orbRowGutter }}>
+              {/* bottom row — level + XP share the line with the nav rail. Everything anchors to the
+                  header's bottom edge (flex-end) so the tabs meet the separator; the level bar states
+                  its lift above that edge as marginBottom (ref: bar centre ≈30px above the boundary). */}
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: 64, paddingLeft: orbRowGutter }}>
                 {/* level orb overlaps the left end of the xp bar (orb on top; ref bar x≈192 under orb right edge) */}
-                <div style={{ display: 'flex', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 6 }}>
                   <PoeCircleFrame raster="small-ornate-1" size={44} style={{ position: 'relative', zIndex: 1, marginRight: -6, fontSize: 18, color: '#e9e3bc' }}>60</PoeCircleFrame>
                   {/* 185 = the reference bar's traced width (slim-frame mask x 200.1..385.6) */}
                   <div style={{ width: 195 }}>
