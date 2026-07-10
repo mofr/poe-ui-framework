@@ -8,7 +8,8 @@
   --surface-radius: 0px;
   --edge-repeat: repeat;
   --overhang: 0px;
-  --content-pad: 8px;
+  --content-pad: 14px;
+  --content-pad-top: 4px;   /* top border is flat (framegen --border-top 0), so no top clearance */
   --src-frame: url('./PoePanel.cracked-stone-2.png');
   --src-integration: none;
 }

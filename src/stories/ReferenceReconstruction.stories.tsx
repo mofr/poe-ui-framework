@@ -7,7 +7,9 @@ import { PoeBadge } from '../components/primitives/PoeBadge.tsx';
 import { PoeInput } from '../components/primitives/PoeInput.tsx';
 import { PoeList, PoeListRow } from '../components/primitives/PoeList.tsx';
 import { PoeCircleFrame } from '../components/primitives/PoeCircleFrame.tsx';
-import { PoeTab, PoeTabBar } from '../components/primitives/PoeTab.tsx';
+import { PoeTab } from '../components/primitives/PoeTab.tsx';
+import { PoeTabBar } from '../components/primitives/PoeTabBar.tsx';
+import { PoeSeparator } from '../components/primitives/PoeSeparator.tsx';
 import { GitCommitVertical, Search, Bell, Mail, Code, CircleAlert, GitPullRequest, Play, FolderGit2, BookOpen, Shield, Settings } from 'lucide-react';
 import castleNight from '../assets/backgrounds/castle-night-2.jpg';
 import portrait from '../assets/backgrounds/elder-shaper.jpg';
@@ -58,7 +60,7 @@ const activity = [
 const pinned = [['next.js', 'The React Framework for Production', '128k'], ['tailwindcss', 'A utility-first CSS framework', '82.7k'], ['typescript', 'JavaScript with syntax for types', '100k']];
 const stats = [['Stars', '226k'], ['Forks', '45.6k'], ['Watchers', '6.2k'], ['Issues', '1.2k'], ['Pull Requests', '672']];
 const actions = ['Repos', 'Issues', 'PRs', 'Actions', 'Review', 'Merge', 'Fork', 'Star', 'Settings', 'Create'];
-const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 12 };
+const col: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 8 };
 
 // Corner medallion geometry — shared by the on-top ring and its behind-the-frame shadow layer so the two
 // stay aligned (single source of truth). size=128 is big-ornate-1's native raster width: crisp at that
@@ -80,7 +82,7 @@ export const Dashboard = {
         {/* fade overlay: the matte-stone tile reads flat vs the reference's graded stone, which is lit
             toward the identity/medallion (left) and darkens to the right. Fade left→right (paints over
             the surface, under this row's content). */}
-        <div style={{ display: 'flex', alignItems: 'stretch', padding: '0 0 2px 172px',
+        <div style={{ display: 'flex', alignItems: 'stretch', padding: '0 0 0 172px',
           background: 'linear-gradient(to right, rgba(0,0,0,0) 35%, rgba(0,0,0,.38) 70%)' }}>
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}>
 
@@ -111,7 +113,7 @@ export const Dashboard = {
 
               {/* bottom row — level + XP share the line with the nav rail. Nav buttons are placeholder
                   tabs (PoeButton is the wrong shape); they dock at the header's bottom edge. */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 64 }}>
                 {/* level orb overlaps the left end of the xp bar (orb on top) */}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <PoeCircleFrame size={40} style={{ position: 'relative', zIndex: 1, marginRight: -12, fontSize: 18, color: '#e9e3bc' }}>60</PoeCircleFrame>
@@ -120,9 +122,9 @@ export const Dashboard = {
                   </div>
                 </div>
                 <div style={{ flex: 1 }}>
-                  <PoeTabBar>
-                    {nav.map(([label, icon], i) => (
-                      <PoeTab key={label} icon={icon} selected={i === 0}>{label}</PoeTab>
+                  <PoeTabBar selected="Code">
+                    {nav.map(([label, icon]) => (
+                      <PoeTab key={label} name={label} icon={icon}>{label}</PoeTab>
                     ))}
                   </PoeTabBar>
                 </div>
@@ -131,12 +133,14 @@ export const Dashboard = {
           </div>
       </PoePanel>
 
+      {/* header ↔ body seam: the full-width gold rule (owned by neither panel) */}
+      <PoeSeparator />
+
       {/* main content — with stone background */}
       <PoePanel frame="cracked-stone-2" surface="cracked-stone-2" style={{ width: '100%', height: '100%' }}>
-      <PoePanelBody>
         <div style={col}>
 
-          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
             {/* left */}
             <div style={{ flex: '0 0 340px', ...col }}>
               <PoePanel frame="slim-dark-1" surface="solid-black-1" integration="raster" style={{ width: '100%' }}>
@@ -166,7 +170,7 @@ export const Dashboard = {
                 <PoePanelHeader><><PoeText variant="heading">Coding Energy (Streak)</PoeText><PoeText variant="meta">18 Day Streak</PoeText></></PoePanelHeader>
                 <PoePanelBody><PoeSegmentBar variant="blue" /></PoePanelBody>
               </PoePanel>
-              <div style={{ display: 'flex', gap: 14 }}>
+              <div style={{ display: 'flex', gap: 10 }}>
                 <PoePanel frame="slim-dark-1" surface="solid-black-1" integration="raster" style={{ width: '100%' }}>
                   <PoePanelHeader><PoeText variant="heading">Combat Log (Recent Commits)</PoeText></PoePanelHeader>
                   <PoePanel frame="thin-ornament-1">
@@ -234,7 +238,6 @@ export const Dashboard = {
           {/* action bar */}
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>{actions.map((a, i) => <PoeButton key={a} selected={i === 0}>{a}</PoeButton>)}</div>
         </div>
-      </PoePanelBody>
       </PoePanel>
 
       {/* medallion's contact shadow — rendered as the outer panel's LAST child so it sits below the

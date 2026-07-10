@@ -62,6 +62,6 @@ if ('each' in opt) {                       // one trimmed PNG per keep contour (
 } else {
   const out = resolve(ROOT, opt.out || (typeof mask.out === 'string' ? mask.out : '') || `${name}.png`);
   await mkdir(dirname(out), { recursive: true });
-  await cut(all.filter(c => (c.op || 'keep') === 'keep'), out, false);
+  await cut(all.filter(c => (c.op || 'keep') === 'keep'), out, true);  // trim → tight sprite, stretchable via background-size
   console.log(`cut ${name}: ${W}x${H} from ${opt.src || mask.image}${feather ? ` feather ${feather}` : ''} -> ${out.replace(ROOT + '/', '')}`);
 }

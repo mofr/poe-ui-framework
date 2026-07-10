@@ -1,0 +1,20 @@
+/* PoeTabBar — tablist owning the shared baseline rail. Tabs flow as a flex row on top of it. */
+.poe-tab-bar {
+  display: flex;
+  align-items: stretch;
+  gap: var(--poe-tab-gap, 0px);   /* configurable via PoeTabBar `gap` prop; default 0 */
+  padding-bottom: 0;
+  /* Temporary rail cut from PoeTabBar.rail.mask.json — stretched to the bar so re-cuts drop in with
+     no magic offsets. Rebuild via the mask editor's Build (node tools/build-mask.mjs PoeTabBar.rail). */
+  background: url('./PoeTabBar.rail.png') center / 100% 100% no-repeat;
+}
+
+/* Divider between adjacent tabs (injected by PoeTabBar). Native ~6×41; height stretches to the row,
+   width stays native so it doesn't smear. For variants: add .poe-tab-bar__sep[data-sep="2"] { … }. */
+.poe-tab-bar__sep {
+  flex: 0 0 auto;
+  align-self: stretch;
+  width: 6px;
+  background: url('./PoeTabBar.separator-1.png') center / auto 100% no-repeat;
+}
+.poe-tab-bar__sep[data-sep="2"] { background-image: url('./PoeTabBar.separator-2.png'); }

@@ -7,43 +7,46 @@ export default {
   title: 'Primitives/PoeTab',
   component: PoeTab,
   argTypes: {
-    selected: { control: 'boolean' },
     disabled: { control: 'boolean' },
   },
-  args: { children: 'Code', selected: false },
-  render: (args: React.ComponentProps<typeof PoeTab>) => <PoeTab icon={<Code size={16} />} {...args} />,
+  args: { name: 'code', children: 'Code' },
+  render: (args: React.ComponentProps<typeof PoeTab>) => (
+    <PoeTabBar selected="code"><PoeTab icon={<Code size={16} />} {...args} /></PoeTabBar>
+  ),
 };
 
 export const Playground = {};
 
-const items: [string, React.ReactNode][] = [
-  ['Code', <Code size={16} />],
-  ['Issues', <CircleAlert size={16} />],
-  ['Pull Requests', <GitPullRequest size={16} />],
-  ['Actions', <Play size={16} />],
-  ['Wiki', <BookOpen size={16} />],
-  ['Security', <Shield size={16} />],
-  ['Settings', <Settings size={16} />],
+const items: [string, string, React.ReactNode][] = [
+  ['code', 'Code', <Code size={16} />],
+  ['issues', 'Issues', <CircleAlert size={16} />],
+  ['prs', 'Pull Requests', <GitPullRequest size={16} />],
+  ['actions', 'Actions', <Play size={16} />],
+  ['wiki', 'Wiki', <BookOpen size={16} />],
+  ['security', 'Security', <Shield size={16} />],
+  ['settings', 'Settings', <Settings size={16} />],
 ];
 
 export const Gallery = {
   render: () => {
-    const [active, setActive] = React.useState(0);
+    const [active, setActive] = React.useState('code');
     return (
       <Stack gap={20}>
         <div>
           <Caption>states — default · selected · disabled</Caption>
-          <Row>
-            <PoeTab icon={<Code size={16} />}>Code</PoeTab>
-            <PoeTab icon={<Code size={16} />} selected>Code</PoeTab>
-            <PoeTab icon={<Code size={16} />} disabled>Code</PoeTab>
-          </Row>
+          <PoeTabBar selected="code">
+            <Row>
+              <PoeTab name="a" icon={<Code size={16} />}>Code</PoeTab>
+              <PoeTab name="code" icon={<Code size={16} />}>Code</PoeTab>
+              <PoeTab name="b" icon={<Code size={16} />} disabled>Code</PoeTab>
+            </Row>
+          </PoeTabBar>
         </div>
         <div>
           <Caption>PoeTabBar — click to select; shared baseline rail</Caption>
-          <PoeTabBar>
-            {items.map(([label, icon], i) => (
-              <PoeTab key={label} icon={icon} selected={i === active} onClick={() => setActive(i)}>{label}</PoeTab>
+          <PoeTabBar selected={active} onSelect={setActive}>
+            {items.map(([name, label, icon]) => (
+              <PoeTab key={name} name={name} icon={icon}>{label}</PoeTab>
             ))}
           </PoeTabBar>
         </div>

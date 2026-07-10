@@ -1,0 +1,21 @@
+{
+  "name": "PoeTabBar.separator-1",
+  "image": "inspiration/reference-1680.png",
+  "build": "mask",
+  "comment": "Vertical divider between tabs. Extracted from the rail mask (tab-separator-1). Numbered so slightly-different siblings (separator-2, …) can be added and round-robined by PoeTabBar.",
+  "contours": [
+    {
+      "points": [
+        { "x": 0.3285264062653512, "y": 0.08682228582804419 },
+        { "x": 0.3315020434554945, "y": 0.0869090074947879 },
+        { "x": 0.331423710542993, "y": 0.12989659370098017 },
+        { "x": 0.32861867823045166, "y": 0.12991856164860655 }
+      ],
+      "name": "separator",
+      "op": "keep",
+      "note": "",
+      "round": 0
+    }
+  ],
+  "fade": 2
+}

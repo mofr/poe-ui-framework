@@ -49,6 +49,10 @@
   --content-pad: calc(var(--band) * var(--frame-scale));     /* per-frame clearance consumed by
                                            PoePanelHeader/Body so their content clears the (scaled) frame;
                                            per-frame/instance overridable (contentPad prop) */
+  /* Per-edge pad RE-DECLARED on every panel (like --src-surface) so a frame's asymmetric edge (e.g.
+     cracked-stone-2's --content-pad-top) can't inherit into nested panels; each defaults to --content-pad. */
+  --content-pad-top: var(--content-pad); --content-pad-right: var(--content-pad);
+  --content-pad-bottom: var(--content-pad); --content-pad-left: var(--content-pad);
   --src-frame:    url('./PoePanel.debug-r8.png');
   --src-integration:   url('./PoePanel.debug-r8.integration.png');
   /* default SURFACE = none. Set on the root (not just the layer) so a nested panel can't inherit a
@@ -81,7 +85,12 @@
    the art's inner edge (near edge-to-edge). */
 .poe-panel__content {
   position: relative; z-index: 5;
-  padding: var(--content-pad);
+  /* Per-edge, each falling back to the uniform --content-pad. An asymmetric frame (e.g. a flat top from
+     framegen --border-top 0) declares just the edge it differs on, so padding tracks the visible art. */
+  padding: var(--content-pad-top, var(--content-pad))
+           var(--content-pad-right, var(--content-pad))
+           var(--content-pad-bottom, var(--content-pad))
+           var(--content-pad-left, var(--content-pad));
   color: #e8e0cf; font: 12px/1.4 system-ui, sans-serif;
 }
 /* PoePanelHeader — title bar. As a child of the (art-padded) content its background already spans the

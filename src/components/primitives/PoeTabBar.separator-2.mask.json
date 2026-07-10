@@ -1,0 +1,21 @@
+{
+  "name": "PoeTabBar.separator-2",
+  "image": "inspiration/reference-1680.png",
+  "build": "mask",
+  "comment": "Second, slightly-different tab divider. Extracted from the rail mask (tab-separator-2). PoeTabBar round-robins separator-1..N between tabs.",
+  "contours": [
+    {
+      "points": [
+        { "x": 0.4019073636790439, "y": 0.08885162913505575 },
+        { "x": 0.4046574340407014, "y": 0.08881777829243521 },
+        { "x": 0.40471330178277154, "y": 0.12937334839866965 },
+        { "x": 0.40184879388818556, "y": 0.12934248501394685 }
+      ],
+      "name": "separator",
+      "op": "keep",
+      "note": "",
+      "round": 0
+    }
+  ],
+  "fade": 2
+}

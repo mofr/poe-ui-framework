@@ -1,0 +1,21 @@
+{
+  "name": "PoeSeparator.rule-1",
+  "image": "inspiration/reference-1680.png",
+  "build": "mask",
+  "comment": "Horizontal gold rule for the header/body seam. Cut from the CLEAN long segment of the reference's top-of-body rule (right of the active-tab obstruction) — the rule is horizontally uniform, so PoeSeparator stretches this full width. No mid gap (the reference gap was only the active tab covering the rule).",
+  "contours": [
+    {
+      "points": [
+        { "x": 0.32994766332195213, "y": 0.1311435151251672 },
+        { "x": 0.3299542771643087, "y": 0.13747781278619547 },
+        { "x": 0.994011649735061, "y": 0.13731107937585174 },
+        { "x": 0.9940113852426281, "y": 0.13042968873223865 }
+      ],
+      "name": "rule",
+      "op": "keep",
+      "note": "",
+      "round": 0
+    }
+  ],
+  "fade": 2
+}

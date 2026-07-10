@@ -7,9 +7,14 @@ Texture continues outward from the centre, wrapping at the tile boundary.
 The arc length along the ellipse drives the UV compression; the optional
 curve exponent remaps the darkening-falloff profile independently.
 
+border / depth / curve are per-edge: pass a global (--border 64) and/or
+override a single side (--border-top 96). The three shape knobs can differ
+per edge; the noise knobs (jitter/wave/roughness/seed) stay global.
+
 Usage:
   python framegen.py texture.png --output frame.png --border 64 --depth 1.5
   python framegen.py texture.png --border 48 --depth 2.0      --seed 42
+  python framegen.py texture.png --border 64 --border-top 96 --curve-top 3.0
 """
 
 import numpy as np
@@ -57,10 +62,19 @@ def ellipse_arc_length(t_vals, B, depth, num_samples=2048):
 
 def ellipse_mask(t, depth):
     """mask = 1 − cos(θ) where θ is the surface angle of an ellipse
-    with given depth ratio at planar position t."""
+    with given depth ratio at planar position t. `depth` may be a scalar
+    or a per-pixel array."""
     d2 = depth * depth
     return 1.0 - np.sqrt(np.clip(1.0 - t * t, 0.0, 1.0)) \
                 / np.sqrt(np.clip(1.0 + (d2 - 1.0) * t * t, 1e-15, None))
+
+
+def _edges4(val):
+    """Expand a scalar to (top, right, bottom, left); pass a 4-seq through
+    unchanged. None stays None (→ auto for border)."""
+    if isinstance(val, (list, tuple)):
+        return tuple(val)
+    return (val, val, val, val)
 
 
 def make_frame(input_path, output_path, border_width=None,
@@ -79,51 +93,59 @@ def make_frame(input_path, output_path, border_width=None,
     original = tex.copy()
     N = tex.shape[0]
 
-    if border_width is None:
-        border_width = max(48, min(128, int(N * 0.1)))
-    B = border_width
-    out_size = N + 2 * B
+    # ── Per-edge params (top, right, bottom, left) ───────────────────────
+    # Each of border/depth/curve is a scalar (all four equal — back-compat)
+    # or a 4-tuple. A border edge of None → auto ~10% of input. Equal values
+    # on all four edges reproduce the original symmetric frame exactly.
+    auto_b = max(48, min(128, int(N * 0.1)))
+    bt, br, bb, bl = (auto_b if v is None else int(v) for v in _edges4(border_width))
+    dt, dr, db, dl = (float(v) for v in _edges4(depth))
+    ct, cr, cb, cl = (float(v) for v in _edges4(curve))
 
-    # ── Build result canvas ──────────────────────────────────────────────
-    result = np.zeros((out_size, out_size, 4), dtype=np.float32)
+    out_h = N + bt + bb
+    out_w = N + bl + br
+
+    # ── Build result canvas (centre = original texture) ──────────────────
+    result = np.zeros((out_h, out_w, 4), dtype=np.float32)
     result[..., 3] = 255
-    result[B:B+N, B:B+N] = original
+    result[bt:bt+N, bl:bl+N] = original
 
-    # ── Wavy boundaries (clamped ≤0 so they never extend into centre) ────
+    # ── Wavy boundaries (clamped ≤0 so they never extend into centre). ───
+    # Top/bottom run along width (len out_w); left/right along height (out_h).
     waves = {
-        'top':    np.minimum(wavy_displacement(out_size, boundary_jitter, wave_freq, seed + 1, octaves), 0),
-        'bottom': np.minimum(wavy_displacement(out_size, boundary_jitter, wave_freq, seed + 2, octaves), 0),
-        'left':   np.minimum(wavy_displacement(out_size, boundary_jitter, wave_freq, seed + 3, octaves), 0),
-        'right':  np.minimum(wavy_displacement(out_size, boundary_jitter, wave_freq, seed + 4, octaves), 0),
+        'top':    np.minimum(wavy_displacement(out_w, boundary_jitter, wave_freq, seed + 1, octaves), 0),
+        'bottom': np.minimum(wavy_displacement(out_w, boundary_jitter, wave_freq, seed + 2, octaves), 0),
+        'left':   np.minimum(wavy_displacement(out_h, boundary_jitter, wave_freq, seed + 3, octaves), 0),
+        'right':  np.minimum(wavy_displacement(out_h, boundary_jitter, wave_freq, seed + 4, octaves), 0),
     }
 
     # ── Coordinate arrays ────────────────────────────────────────────────
-    x_arr = np.tile(np.arange(out_size), (out_size, 1))
-    y_arr = np.tile(np.arange(out_size).reshape(-1, 1), (1, out_size))
+    x_arr = np.tile(np.arange(out_w), (out_h, 1))
+    y_arr = np.tile(np.arange(out_h).reshape(-1, 1), (1, out_w))
 
     d_top    = y_arr
-    d_bottom = (out_size - 1) - y_arr
+    d_bottom = (out_h - 1) - y_arr
     d_left   = x_arr
-    d_right  = (out_size - 1) - x_arr
+    d_right  = (out_w - 1) - x_arr
 
-    # Always use the full border width B. The wavy boundary is folded into
-    # the t-value to shift the effective inner edge position (waves ≤ 0).
-    def t_from_dist(dist):
-        inside = dist < B
-        return np.where(inside, 1.0 - dist / B, 0.0)
+    # Each edge uses its OWN border width. A width of 0 means NO border on that
+    # edge — a clean sharp cut at the texture edge, no bevel/attenuation (t≡0).
+    def t_from_dist(dist, B):
+        if B <= 0:
+            return np.zeros_like(dist, dtype=np.float64)
+        return np.where(dist < B, 1.0 - dist / B, 0.0)
 
-    t_top    = t_from_dist(d_top)
-    t_bottom = t_from_dist(d_bottom)
-    t_left   = t_from_dist(d_left)
-    t_right  = t_from_dist(d_right)
+    t_top    = t_from_dist(d_top,    bt)
+    t_bottom = t_from_dist(d_bottom, bb)
+    t_left   = t_from_dist(d_left,   bl)
+    t_right  = t_from_dist(d_right,  br)
 
-    # Wavy-boundary displacement: wave ≤ 0 pushes the inner edge outward,
-    # so the effective t is shifted: t_eff = t + wave/B  (≤0 → smaller t,
-    # clamped to 0 for pixels that fall outside the wavy border).
-    t_top    = np.clip(t_top    + waves['top'][np.newaxis, :] / B,     0.0, 1.0)
-    t_bottom = np.clip(t_bottom + waves['bottom'][np.newaxis, :] / B,  0.0, 1.0)
-    t_left   = np.clip(t_left   + np.array(waves['left'])[:, np.newaxis] / B,   0.0, 1.0)
-    t_right  = np.clip(t_right  + np.array(waves['right'])[:, np.newaxis] / B,  0.0, 1.0)
+    # Wavy-boundary displacement (wave ≤ 0 pushes the inner edge outward).
+    # Skip zero-width edges — they have no border to displace.
+    if bt > 0: t_top    = np.clip(t_top    + waves['top'][np.newaxis, :] / bt,    0.0, 1.0)
+    if bb > 0: t_bottom = np.clip(t_bottom + waves['bottom'][np.newaxis, :] / bb, 0.0, 1.0)
+    if bl > 0: t_left   = np.clip(t_left   + waves['left'][:, np.newaxis] / bl,   0.0, 1.0)
+    if br > 0: t_right  = np.clip(t_right  + waves['right'][:, np.newaxis] / br,  0.0, 1.0)
 
     t_vert  = np.maximum(t_top, t_bottom)
     t_horiz = np.maximum(t_left, t_right)
@@ -131,83 +153,84 @@ def make_frame(input_path, output_path, border_width=None,
     # Euclidean norm for circular corner contours (darkening only)
     t_comb = np.clip(np.sqrt(t_vert ** 2 + t_horiz ** 2), 0.0, 1.0)
 
-    # ── Curve remap (power-law profile shape) ────────────────────────────
-    # t_eff = t^(2/curve).  curve=2 → identity (pure ellipse).
-    # Higher curve → larger t_eff → longer arc → more compression.
-    def curve_remap(tv):
-        return np.where(tv > 1e-8, tv ** (2.0 / curve), 0.0)
+    # ── Per-pixel depth/curve fields ─────────────────────────────────────
+    # In an edge band the pixel takes that edge's depth/curve; in a corner
+    # the two adjacent edges blend, weighted by how deep the pixel sits in
+    # each (t_vert / t_horiz). Equal edges → constant field (= scalar case).
+    depth_v = np.where(t_top > 0, dt, np.where(t_bottom > 0, db, dt))
+    depth_h = np.where(t_left > 0, dl, np.where(t_right > 0, dr, dl))
+    curve_v = np.where(t_top > 0, ct, np.where(t_bottom > 0, cb, ct))
+    curve_h = np.where(t_left > 0, cl, np.where(t_right > 0, cr, cl))
+    denom = t_vert + t_horiz
+    safe = denom > 1e-8
+    depth_eff = np.where(safe, (t_vert * depth_v + t_horiz * depth_h) / np.where(safe, denom, 1.0), dt)
+    curve_base = np.where(safe, (t_vert * curve_v + t_horiz * curve_h) / np.where(safe, denom, 1.0), ct)
 
-    # ── Curve jitter: per-pixel curve exponent ──────────────────────────
+    # ── Curve jitter: per-pixel curve wobble along each edge (0 if unused) ─
+    # Folded onto the per-edge base curve so jitter and per-edge params compose.
+    j_top = j_bottom = j_left = j_right = None
     if curve_jitter > 0:
-        c_top    = wavy_displacement(out_size, curve_jitter, wave_freq, seed + 21, octaves)
-        c_bottom = wavy_displacement(out_size, curve_jitter, wave_freq, seed + 22, octaves)
-        c_left   = wavy_displacement(out_size, curve_jitter, wave_freq, seed + 23, octaves)
-        c_right  = wavy_displacement(out_size, curve_jitter, wave_freq, seed + 24, octaves)
-
-    if curve_jitter > 0:
-        has_h = (t_top > 0) | (t_bottom > 0)
-        has_v = (t_left > 0) | (t_right > 0)
-        c_h_field = np.where(t_top > 0,    c_top[np.newaxis, :],
-                    np.where(t_bottom > 0, c_bottom[np.newaxis, :], 0.0))
-        c_v_field = np.where(t_left > 0,   c_left[:, np.newaxis],
-                    np.where(t_right > 0,  c_right[:, np.newaxis], 0.0))
-        count = has_h.astype(float) + has_v.astype(float)
-        curve_eff = np.full_like(t_comb, curve, dtype=np.float32)
-        valid = count > 0
-        curve_eff[valid] = curve + (c_h_field[valid] + c_v_field[valid]) / count[valid]
-        curve_eff = np.maximum(curve_eff, 0.01)
-        t_comb_r = np.where(t_comb > 1e-8, t_comb ** (2.0 / curve_eff), 0.0)
+        j_top    = wavy_displacement(out_w, curve_jitter, wave_freq, seed + 21, octaves)[np.newaxis, :]
+        j_bottom = wavy_displacement(out_w, curve_jitter, wave_freq, seed + 22, octaves)[np.newaxis, :]
+        j_left   = wavy_displacement(out_h, curve_jitter, wave_freq, seed + 23, octaves)[:, np.newaxis]
+        j_right  = wavy_displacement(out_h, curve_jitter, wave_freq, seed + 24, octaves)[:, np.newaxis]
+        # Corner-average the two edge families, matching the original blend.
+        c_h_field = np.where(t_top > 0, j_top, np.where(t_bottom > 0, j_bottom, 0.0))
+        c_v_field = np.where(t_left > 0, j_left, np.where(t_right > 0, j_right, 0.0))
+        count = ((t_top > 0) | (t_bottom > 0)).astype(float) + ((t_left > 0) | (t_right > 0)).astype(float)
+        jitter_blend = np.where(count > 0, (c_h_field + c_v_field) / np.where(count > 0, count, 1.0), 0.0)
+        curve_dark = np.maximum(curve_base + jitter_blend, 0.01)
     else:
-        t_comb_r = curve_remap(t_comb)
+        curve_dark = curve_base
 
     # ── Darkening mask ────────────────────────────────────────────────────
-    mask = ellipse_mask(t_comb_r, depth)
+    t_comb_r = np.where(t_comb > 1e-8, t_comb ** (2.0 / curve_dark), 0.0)
+    mask = ellipse_mask(t_comb_r, depth_eff)
 
     # ── Curve roughness: modulate mask along each edge ───────────────────
     if curve_roughness > 0:
-        r_top    = wavy_displacement(out_size, curve_roughness, wave_freq, seed + 11, octaves)
-        r_bottom = wavy_displacement(out_size, curve_roughness, wave_freq, seed + 12, octaves)
-        r_left   = wavy_displacement(out_size, curve_roughness, wave_freq, seed + 13, octaves)
-        r_right  = wavy_displacement(out_size, curve_roughness, wave_freq, seed + 14, octaves)
-        r_mod = np.where(t_top > 0,    r_top[np.newaxis, :],
-                np.where(t_bottom > 0, r_bottom[np.newaxis, :],
-                np.where(t_left > 0,   r_left[:, np.newaxis],
-                np.where(t_right > 0,  r_right[:, np.newaxis], 0.0))))
+        r_top    = wavy_displacement(out_w, curve_roughness, wave_freq, seed + 11, octaves)[np.newaxis, :]
+        r_bottom = wavy_displacement(out_w, curve_roughness, wave_freq, seed + 12, octaves)[np.newaxis, :]
+        r_left   = wavy_displacement(out_h, curve_roughness, wave_freq, seed + 13, octaves)[:, np.newaxis]
+        r_right  = wavy_displacement(out_h, curve_roughness, wave_freq, seed + 14, octaves)[:, np.newaxis]
+        r_mod = np.where(t_top > 0,    r_top,
+                np.where(t_bottom > 0, r_bottom,
+                np.where(t_left > 0,   r_left,
+                np.where(t_right > 0,  r_right, 0.0))))
         mask = np.clip(mask + r_mod, 0.0, 1.0)
 
     # ── Arc-length source coordinates ─────────────────────────────────────
-    # Process all non-centre pixels (including those beyond the wavy edge)
-    border_region = (y_arr < B) | (y_arr >= B + N) | (x_arr < B) | (x_arr >= B + N)
+    # Process all non-centre pixels (including those beyond the wavy edge).
+    border_region = (y_arr < bt) | (y_arr >= bt + N) | (x_arr < bl) | (x_arr >= bl + N)
     if np.any(border_region):
-        t_vert_mag  = np.maximum(t_top, t_bottom)
-        t_horiz_mag = np.maximum(t_left, t_right)
-
-        # LUT: arc length at 1000 sample t values (curve affects UV too)
+        # One arc-length LUT per edge (arc length depends on that edge's B/depth).
         t_lut = np.linspace(0, 1, 1000)
-        L_lut = ellipse_arc_length(t_lut, B, depth)
+        L_top    = ellipse_arc_length(t_lut, bt, dt)
+        L_bottom = ellipse_arc_length(t_lut, bb, db)
+        L_left   = ellipse_arc_length(t_lut, bl, dl)
+        L_right  = ellipse_arc_length(t_lut, br, dr)
 
-        if curve_jitter > 0:
-            c_uv_v = curve + np.where(t_top > 0, c_top[np.newaxis, :],
-                              np.where(t_bottom > 0, c_bottom[np.newaxis, :], 0.0))
-            c_uv_h = curve + np.where(t_left > 0, c_left[:, np.newaxis],
-                              np.where(t_right > 0, c_right[:, np.newaxis], 0.0))
-            c_uv_v = np.maximum(c_uv_v, 0.01)
-            c_uv_h = np.maximum(c_uv_h, 0.01)
-            t_vert_r  = np.where(t_vert_mag > 1e-8, t_vert_mag ** (2.0 / c_uv_v), 0.0)
-            t_horiz_r = np.where(t_horiz_mag > 1e-8, t_horiz_mag ** (2.0 / c_uv_h), 0.0)
-            arc_vert  = np.interp(t_vert_r,  t_lut, L_lut)
-            arc_horiz = np.interp(t_horiz_r, t_lut, L_lut)
-        else:
-            arc_vert  = np.interp(curve_remap(t_vert_mag),  t_lut, L_lut)
-            arc_horiz = np.interp(curve_remap(t_horiz_mag), t_lut, L_lut)
+        # Effective UV curve per edge = that edge's curve (+ jitter, if any).
+        cuv_top    = np.maximum(ct + (j_top    if j_top    is not None else 0.0), 0.01)
+        cuv_bottom = np.maximum(cb + (j_bottom if j_bottom is not None else 0.0), 0.01)
+        cuv_left   = np.maximum(cl + (j_left   if j_left   is not None else 0.0), 0.01)
+        cuv_right  = np.maximum(cr + (j_right  if j_right  is not None else 0.0), 0.01)
 
-        # Source coordinate relative to centre edge
-        # For top/bottom edges, horizontal coord is source-relative (x-B).
-        # For left/right  edges, vertical   coord is source-relative (y-B).
+        def arc(t_edge, cuv, L):
+            q = np.where(t_edge > 1e-8, t_edge ** (2.0 / cuv), 0.0)
+            return np.interp(q, t_lut, L)
+
+        arc_vert  = np.where(t_top > 0,  arc(t_top,  cuv_top,  L_top),
+                    np.where(t_bottom > 0, arc(t_bottom, cuv_bottom, L_bottom), 0.0))
+        arc_horiz = np.where(t_left > 0, arc(t_left, cuv_left, L_left),
+                    np.where(t_right > 0,  arc(t_right,  cuv_right,  L_right),  0.0))
+
+        # Source coordinate relative to centre edge. For top/bottom, x is
+        # source-relative (x-bl); for left/right, y is source-relative (y-bt).
         src_yf = np.where(t_top > 0,         -arc_vert,
-                 np.where(t_bottom > 0, N-1 + arc_vert, y_arr - B))
+                 np.where(t_bottom > 0, N-1 + arc_vert, y_arr - bt))
         src_xf = np.where(t_left > 0,         -arc_horiz,
-                 np.where(t_right > 0, N-1 + arc_horiz, x_arr - B))
+                 np.where(t_right > 0, N-1 + arc_horiz, x_arr - bl))
 
         src_yf = np.mod(src_yf, N)
         src_xf = np.mod(src_xf, N)
@@ -232,7 +255,7 @@ def make_frame(input_path, output_path, border_width=None,
         result[:, :, :3][border_region] = interpolated[border_region]
 
     # ── Ensure centre is untouched ───────────────────────────────────────
-    mask[B:B+N, B:B+N] = 0.0
+    mask[bt:bt+N, bl:bl+N] = 0.0
 
     # ── Compose in linear sRGB ───────────────────────────────────────────
     dark_rgb = dark_color[:3]
@@ -251,18 +274,18 @@ def make_frame(input_path, output_path, border_width=None,
     blended_linear = tex_linear * (1.0 - m) + dark_linear * m
     blended_srgb = linear_to_srgb(blended_linear)
     rgb = np.clip(blended_srgb * 255.0, 0, 255)
-    rgb[B:B+N, B:B+N] = original[..., :3]
+    rgb[bt:bt+N, bl:bl+N] = original[..., :3]
 
     if center_transparent:
-        alpha = np.ones((out_size, out_size), dtype=np.float32) * 255
-        alpha[B:B+N, B:B+N] = 0
+        alpha = np.ones((out_h, out_w), dtype=np.float32) * 255
+        alpha[bt:bt+N, bl:bl+N] = 0
         canvas = np.dstack([rgb, alpha])
     else:
         canvas = np.dstack([rgb, result[..., 3:4]])
 
     canvas = np.clip(canvas, 0, 255).astype(np.uint8)
     Image.fromarray(canvas).save(output_path, "PNG")
-    print(f"Saved → {output_path}  ({out_size}×{out_size})")
+    print(f"Saved → {output_path}  ({out_w}×{out_h})  borders T{bt} R{br} B{bb} L{bl}")
 
 
 def main():
@@ -271,12 +294,21 @@ def main():
     p.add_argument("input", help="Input tileable texture")
     p.add_argument("--output", default="frame.png",
                    help="Output PNG path (default: frame.png)")
+    # ── Shape knobs: global default + optional per-edge override ──────────
     p.add_argument("--border", type=int, default=None,
-                   help="Frame width in px (default: auto ~10% of input)")
+                   help="Frame width in px, all edges (default: auto ~10% of input)")
     p.add_argument("--depth", type=float, default=1.0,
                    help="Ellipse depth ratio; 1=quarter-circle, >1=deeper (default: 1.0)")
     p.add_argument("--curve", type=float, default=2.0,
-                   help="Darkening-profile shape; 2=identity (default), <2=more gradual, >2=steeper")
+                   help="Darkening-profile shape; 2=identity (default), <2=gradual, >2=steeper")
+    for edge in ("top", "right", "bottom", "left"):
+        p.add_argument(f"--border-{edge}", type=int, default=None,
+                       help=f"Override border width on the {edge} edge")
+        p.add_argument(f"--depth-{edge}", type=float, default=None,
+                       help=f"Override ellipse depth on the {edge} edge")
+        p.add_argument(f"--curve-{edge}", type=float, default=None,
+                       help=f"Override darkening curve on the {edge} edge")
+    # ── Noise knobs (global — same on every edge) ────────────────────────
     p.add_argument("--boundary-jitter", type=float, default=0.0,
                    help="Wavy edge amplitude in px (default: 0)")
     p.add_argument("--wave-freq", type=float, default=2.0,
@@ -293,12 +325,17 @@ def main():
                    help="Make centre transparent (for CSS border-image)")
     args = p.parse_args()
 
+    # Resolve each edge: per-edge override if given, else the global value.
+    def per_edge(glob, name):
+        return tuple(getattr(args, f"{name}_{e}") if getattr(args, f"{name}_{e}") is not None
+                     else glob for e in ("top", "right", "bottom", "left"))
+
     make_frame(
         input_path=args.input,
         output_path=args.output,
-        border_width=args.border,
-        depth=args.depth,
-        curve=args.curve,
+        border_width=per_edge(args.border, "border"),
+        depth=per_edge(args.depth, "depth"),
+        curve=per_edge(args.curve, "curve"),
         boundary_jitter=args.boundary_jitter,
         wave_freq=args.wave_freq,
         octaves=args.octaves,

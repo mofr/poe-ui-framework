@@ -1,12 +1,5 @@
 /* PoeTab — nav / tab button. CSS-baseline gold plate; `is-selected` = magic-blue glow (the reference's
-   active tab). PoeTabBar lays tabs in a row on a shared baseline rail. */
-.poe-tab-bar {
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--poe-border-dim);
-}
+   active tab). Lives in a PoeTabBar, which owns the shared baseline rail and the selection. */
 .poe-tab {
   display: inline-flex;
   align-items: center;
