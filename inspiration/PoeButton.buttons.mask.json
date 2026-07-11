@@ -1,8 +1,5 @@
 {
-  "name": "buttons",
-  "out": {
-    "toolbar button outline": "src/components/primitives/PoeButton.buttons.png"
-  },
+  "name": "PoeButton.buttons",
   "image": "inspiration/reference-1680.png",
   "contours": [
     {
@@ -73,5 +70,6 @@
       "note": "",
       "round": 0
     }
-  ]
+  ],
+  "comment": "former outputs: toolbar button outline -> src/components/primitives/PoeButton.buttons.png"
 }

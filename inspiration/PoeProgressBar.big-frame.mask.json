@@ -1,9 +1,5 @@
 {
   "name": "PoeProgressBar.big-frame",
-  "out": {
-    "frame": "src/components/primitives/PoeProgressBar.big-frame.png",
-    "segment 1": "src/components/primitives/PoeProgressBar.fill-blue-segment.png"
-  },
   "image": "inspiration/reference-1680.png",
   "contours": [
     {
@@ -251,5 +247,6 @@
       "note": "",
       "round": 0
     }
-  ]
+  ],
+  "comment": "former outputs: frame -> src/components/primitives/PoeProgressBar.big-frame.png; segment 1 -> src/components/primitives/PoeProgressBar.fill-blue-segment.png"
 }

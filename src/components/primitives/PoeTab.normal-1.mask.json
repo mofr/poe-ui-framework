@@ -1,7 +1,7 @@
 {
   "name": "PoeTab.normal-1",
   "image": "inspiration/reference-1680.png",
-  "build": "mask",
+  "build": "sprite",
   "comment": "",
   "contours": [
     {
@@ -72,6 +72,5 @@
       "note": "",
       "round": 0
     }
-  ],
-  "fade": 2
+  ]
 }

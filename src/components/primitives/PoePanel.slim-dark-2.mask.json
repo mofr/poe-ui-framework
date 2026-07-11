@@ -1,12 +1,8 @@
 {
   "name": "PoePanel.slim-dark-2",
-  "out": {
-    "frame": "src/components/primitives/PoePanel.slim-dark-2.png",
-    "integration": "src/components/primitives/PoePanel.slim-dark-2.integration.png"
-  },
   "image": "inspiration/reference-1680.png",
-  "build": "panel",
-  "comment": "Quest Log panel (slim-dark-2): frame (keep\u2212hole, two buttons inpainted) + integration ring.",
+  "build": "frame",
+  "comment": "Quest Log panel (slim-dark-2): frame (keep−hole, two buttons inpainted) + integration ring.",
   "contours": [
     {
       "points": [

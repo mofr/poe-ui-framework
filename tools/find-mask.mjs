@@ -1,7 +1,9 @@
 // Resolve a mask by its internal `name` field, wherever the file now lives. Masks are colocated
-// with the component that owns them (src/components/**/<Component>.<variant>.mask.json); the two
-// cross-cutting reference masks live in inspiration/. The build key is the mask's `name`, NOT its
-// filename, so callers stay stable (`build-mask.mjs panel-slim-dark-1`) across file moves/renames.
+// with the component that owns them (src/components/**/<Component>.<variant>.mask.json); parked and
+// cross-cutting reference masks live in inspiration/. BY CONVENTION the internal `name` equals the
+// file basename (<name>.mask.json), and the colocated output assets share it (<name>.png …) — one
+// name across mask key, JSON file and PNG. Resolution still reads the `name` FIELD, so a stale
+// filename fails loudly (ambiguity/miss) instead of silently building the wrong asset.
 import { readFile, readdir } from 'node:fs/promises';
 import { resolve, dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';

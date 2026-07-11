@@ -1,7 +1,6 @@
 {
   "name": "ref-header-elements",
   "image": "inspiration/reference-1680.png",
-  "build": "",
   "comment": "",
   "contours": [
     {
@@ -59,7 +58,7 @@
           "y": 1.0001932284282609
         },
         {
-          "x": 0.0000021999369712791463,
+          "x": 2.1999369712791463e-06,
           "y": 1.0001005276080868
         }
       ],
@@ -404,6 +403,5 @@
       "note": "sits behind the circular frame",
       "round": 0
     }
-  ],
-  "fade": 2
+  ]
 }

@@ -1,10 +1,10 @@
 // Turn each KEEP region of a backgrounds-style mask into a SEAMLESS tileable texture.
 // Samples the LARGEST axis-aligned rectangle INSCRIBED IN THE POLYGON (so it stays inside the
 // traced clean material — never the bbox, which can spill into neighbouring UI), then mirror-tiles
-// (2×2 reflect) so it repeats with no seam. Output → src/assets/backgrounds/tile-<slug>.png.
-//   node tools/make-bg-tiles.mjs <maskName> [--src=clean-plate] [--inset=0.06] [--out=src/assets/backgrounds]
-// The mask's `out` (object: contour name → path, repo-relative) routes each region; unmapped regions
-// fall back to tile-<slug>.png in --out.
+// (2×2 reflect) so it repeats with no seam.
+//   node tools/make-bg-tiles.mjs <maskName> [--src=clean-plate] [--inset=0.06] [--out=dir]
+// Output → colocated next to the mask: <maskdir>/<name>.png (single keep region), or
+// <maskdir>/<name>.<contour>.png per region. --out overrides the directory (ad-hoc use only).
 import { readFile, mkdir } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,12 +15,12 @@ import { findMaskPath } from './find-mask.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const name = process.argv[2];
 const opt = Object.fromEntries(process.argv.slice(3).map(a => a.replace(/^--/, '').split('=')));
-const mask = JSON.parse(await readFile(await findMaskPath(name), 'utf8'));
+const maskPath = await findMaskPath(name);
+const mask = JSON.parse(await readFile(maskPath, 'utf8'));
 const srcPath = resolve(ROOT, opt.src || mask.image);
 const { width: W, height: H } = await sharp(srcPath).metadata();
 const inset = Number(opt.inset ?? 0.06);
-const outDir = resolve(ROOT, opt.out || `${name}`);
-const outMap = (mask.out && typeof mask.out === 'object') ? mask.out : null;
+const outDir = opt.out ? resolve(ROOT, opt.out) : dirname(maskPath);
 const slug = s => (s || 'region').replace(/[^a-z0-9]+/gi, '-').toLowerCase().replace(/^-+|-+$/g, '');
 
 // largest all-inside axis-aligned rectangle of a binary mask (histogram method)
@@ -42,7 +42,8 @@ function maxRect(m) {
   return best;
 }
 
-for (const c of (mask.contours || []).filter(c => (c.op || 'keep') === 'keep')) {
+const keeps = (mask.contours || []).filter(c => (c.op || 'keep') === 'keep');
+for (const c of keeps) {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><path d="${buildPathD([c], W, H)}" fill="#fff"/></svg>`;
   const m = await sharp(Buffer.from(svg)).flatten({ background: '#000' }).greyscale().toColourspace('b-w').raw().toBuffer();
   const rect = maxRect(m);
@@ -67,7 +68,7 @@ for (const c of (mask.contours || []).filter(c => (c.op || 'keep') === 'keep')) 
       { input: await sharp(crop).flip().toBuffer(), left: 0, top: ch },
       { input: await sharp(crop).flip().flop().toBuffer(), left: cw, top: ch },
     ]).png().toBuffer();
-  const dest = (outMap && outMap[c.name]) ? resolve(ROOT, outMap[c.name]) : resolve(outDir, `tile-${slug(c.name)}.png`);
+  const dest = resolve(outDir, keeps.length === 1 ? `${name}.png` : `${name}.${slug(c.name)}.png`);
   await mkdir(dirname(dest), { recursive: true });
   await sharp(tile).toFile(dest);
   console.log(`${dest.replace(ROOT + '/', '')}  ${cw * 2}x${ch * 2}  (inscribed ${box.width}x${box.height})`);

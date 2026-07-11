@@ -1,12 +1,8 @@
 {
   "name": "PoePanel.slim-dark-1",
-  "out": {
-    "frame": "src/components/primitives/PoePanel.slim-dark-1.png",
-    "integration": "src/components/primitives/PoePanel.slim-dark-1.integration.png"
-  },
   "image": "inspiration/reference-1680.png",
-  "build": "panel",
-  "comment": "Combat Log panel (slim-dark-1): frame (keep\u2212hole, button inpainted) + integration ring (outline\u2212hole, outward fade).",
+  "build": "frame",
+  "comment": "Combat Log panel (slim-dark-1): frame (keep−hole, button inpainted) + integration ring (outline−hole, outward fade).",
   "contours": [
     {
       "points": [

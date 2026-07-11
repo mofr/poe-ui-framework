@@ -36,11 +36,8 @@ mask = json.load(open(mask_path))
 W, H = Image.open(os.path.join(ROOT, mask['image'])).size
 
 integ = next(c for c in mask['contours'] if c.get('op') == 'integration')
-# observed integration crop: mask.out.integration if present, else the colocated <name>.integration.png
-if isinstance(mask.get('out'), dict) and mask['out'].get('integration'):
-    observed_path = os.path.join(ROOT, mask['out']['integration'])
-else:
-    observed_path = glob.glob(os.path.join(ROOT, 'src/**', name + '.integration.png'), recursive=True)[0]
+# observed integration crop: always colocated next to the mask — <name>.integration.png
+observed_path = os.path.join(os.path.dirname(mask_path), name + '.integration.png')
 
 # ── plate: the inpainted source if the mask reconstructs obstacles, else the raw reference ──
 plate = os.path.join(ROOT, f'assets-staging/sources/{name}-inpainted.png')

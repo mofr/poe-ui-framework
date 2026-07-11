@@ -1,7 +1,7 @@
 {
   "name": "PoeTabBar.rail",
   "image": "inspiration/reference-1680.png",
-  "build": "assemble",
+  "build": "frame-assembled",
   "comment": "",
   "contours": [
     {

@@ -1,9 +1,5 @@
 {
   "name": "PoeInput.big-input",
-  "out": {
-    "frame": "src/components/primitives/PoeInput.big-input.png",
-    "integration": "src/components/primitives/PoeInput.big-input.integration.png"
-  },
   "image": "inspiration/reference-1680.png",
   "contours": [
     {
@@ -203,7 +199,7 @@
       "round": 0
     }
   ],
-  "build": "panel",
+  "build": "frame",
   "integration": "neutral",
   "comment": "Big search input: crisp frame (keep − hole) + soft integration halo (integration outline − hole, outward fade) that seats it into the stone. integration:neutral → background-agnostic shadow+highlight maps (panels omit this field ⇒ legacy stone raster).",
   "fade": 1

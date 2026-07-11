@@ -1,7 +1,7 @@
 {
   "name": "PoePanel.slim-dark-5",
   "image": "inspiration/reference-1680.png",
-  "build": "panel",
+  "build": "frame",
   "comment": "",
   "contours": [
     {

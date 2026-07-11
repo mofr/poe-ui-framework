@@ -52,7 +52,7 @@
   #details.hidden { display: none; }
   .hidden { display: none !important; }
   .det { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
-  .det > label { color: #8b919c; width: 60px; flex: none; }
+  .det > label { color: #8b919c; width: 76px; flex: none; }
   .det > select, .det > input:not([type=range]) { flex: 1; min-width: 0; }
   .det > input[type=range] { flex: 1; min-width: 0; }
   .det .rv { color: #6f7682; width: 40px; flex: none; text-align: right; }
@@ -91,17 +91,12 @@
       <div class="det"><label>name</label><input id="name" type="text" placeholder="path/to/mask-name" /></div>
       <div class="det"><label>build</label><select id="build">
         <option value="">(unset — required to rebuild)</option>
-        <option value="assemble">assemble · corner+edge frame (gapless)</option>
-        <option value="panel">panel · frame + integration</option>
-        <option value="mask">mask · silhouette / --each</option>
-        <option value="bg">bg · seamless texture tile</option>
+        <option value="frame">frame · cut whole (+ integration halo)</option>
+        <option value="frame-assembled">frame-assembled · tiled from edge+corner contours (+ halo)</option>
+        <option value="sprite">sprite · trimmed cutout (one per keep contour)</option>
+        <option value="tile">tile · seamless texture tile</option>
       </select></div>
-      <div class="det"><label>fade</label><input id="fade" type="number" min="0" max="20" step="0.5" value="2" /><span class="rv">px</span></div>
-      <div class="det" id="det-out"><label>output</label><input id="out" type="text" /></div>
-      <div id="grp-panel-out">
-        <div class="det"><label>frame</label><input id="out-frame" type="text" /></div>
-        <div class="det"><label>integ.</label><input id="out-integration" type="text" /></div>
-      </div>
+      <div class="det" id="det-fade"><label title="outer feather of the integration halo">integ. fade</label><input id="fade" type="number" min="0" max="20" step="0.5" value="2" /><span class="rv">px</span></div>
       <label class="cfglabel">comment</label>
       <textarea id="comment" rows="2" placeholder="what this mask is / how it's built…"></textarea>
       <div class="btnrow">
@@ -397,14 +392,7 @@ async function loadMask(name) {
   $('build').value = m.build || '';
   $('comment').value = m.comment || '';
   $('fade').value = m.fade != null ? m.fade : 2;
-  toggleOutputFields();
-  updatePlaceholders();
-  if ($('build').value === 'panel' || $('build').value === 'assemble') {
-    $('out-frame').value = (m.out && m.out.frame) || '';
-    $('out-integration').value = (m.out && m.out.integration) || '';
-  } else {
-    $('out').value = m.out ? (typeof m.out === 'object' ? JSON.stringify(m.out) : m.out) : '';
-  }
+  toggleBuildFields();
   $('maskSel').value = name;
   if (m.image && m.image !== $('image').value) { $('image').value = m.image; await setImage(m.image); }
   renderList(); draw(); status();
@@ -416,30 +404,15 @@ $('addc').onclick = newContour;
 $('meye').onclick = toggleOverlay;
 $('fit').onclick = fit;
 $('actual').onclick = actualSize;
-$('name').addEventListener('input', updatePlaceholders);
-function toggleOutputFields() {
-  const showGrp = $('build').value === 'panel' || $('build').value === 'assemble';
-  $('det-out').classList.toggle('hidden', showGrp);
-  $('grp-panel-out').classList.toggle('hidden', !showGrp);
-  $('fade').parentElement.classList.toggle('hidden', false);
+const isFrameBuild = () => $('build').value === 'frame' || $('build').value === 'frame-assembled';
+function toggleBuildFields() {             // fade only applies to the integration halo of frame builds
+  $('det-fade').classList.toggle('hidden', !isFrameBuild());
 }
-function updatePlaceholders() {
-  let base = $('name').value.trim();
-  if (!base) {
-    $('out').placeholder = 'path/to/output.png';
-    $('out-frame').placeholder = 'path/to/frame.png';
-    $('out-integration').placeholder = 'path/to/integration.png';
-    return;
-  }
-  $('out').placeholder = base + '.png';
-  $('out-frame').placeholder = base + '.png';
-  $('out-integration').placeholder = base + '.integration.png';
-}
-$('build').addEventListener('change', () => { toggleOutputFields(); updatePlaceholders(); if ($('build').value === 'panel') { $('fade').value = 2; } });
+$('build').addEventListener('change', toggleBuildFields);
 function newFile() {                       // start a fresh empty mask (file is written on save)
   contours = [blank()]; active = 0; sel = null; history = [];
-  $('name').value = ''; $('maskSel').value = ''; $('build').value = ''; $('comment').value = ''; $('out').value = ''; $('out-frame').value = ''; $('out-integration').value = ''; $('fade').value = 2;
-  toggleOutputFields(); updatePlaceholders();
+  $('name').value = ''; $('maskSel').value = ''; $('build').value = ''; $('comment').value = ''; $('fade').value = 2;
+  toggleBuildFields();
   renderList(); draw(); status(); $('name').focus();
 }
 $('newfile').onclick = newFile;
@@ -452,29 +425,16 @@ $('delfile').onclick = async () => {       // delete the current mask file
   if (r.ok) { await refreshMaskList(); newFile(); $('status').textContent = `deleted ${shortName}.json`; }
   else $('status').textContent = 'delete failed';
 };
-function buildOut() {
-  if ($('build').value === 'panel' || $('build').value === 'assemble') {
-    const out = {};
-    const f = $('out-frame').value.trim();
-    const i = $('out-integration').value.trim();
-    if (f) out.frame = f;
-    if (i) out.integration = i;
-    return Object.keys(out).length ? out : undefined;
-  }
-  const raw = $('out').value.trim();
-  if (!raw) return undefined;
-  if (raw.startsWith('{') || raw.startsWith('[')) {
-    try { return JSON.parse(raw); } catch { /* fall through to string */ }
-  }
-  return raw;
-}
+// Outputs are pure convention (colocated, named after the mask) — the payload carries no paths.
+// fade is persisted only for frame builds; other builds never read it.
+const savePayload = name => JSON.stringify({
+  name, image: $('image').value, build: $('build').value, comment: $('comment').value, contours,
+  fade: isFrameBuild() && $('fade').value !== '' ? Number($('fade').value) : undefined,
+});
 $('save').onclick = async () => {
   const name = $('name').value.trim();
   if (!name) { alert('name the mask first'); return; }
-  const out = buildOut();
-  const fade = parseFloat($('fade').value) || undefined;
-  const body = JSON.stringify({ name, image: $('image').value, build: $('build').value, comment: $('comment').value, contours, out, fade });
-  const r = await fetch('/save', { method: 'POST', body });
+  const r = await fetch('/save', { method: 'POST', body: savePayload(name) });
   const shortName = name.split('/').pop();
   if (r.ok) { await refreshMaskList(shortName); $('status').textContent = `saved — rebuild: node tools/build-mask.mjs ${shortName}`; }
   else $('status').textContent = 'save failed';
@@ -485,10 +445,7 @@ $('savecut').onclick = async () => {
   if (!name) { alert('name the mask first'); return; }
   const btn = $('savecut');
   btn.disabled = true; btn.textContent = 'saving…';
-  const out = buildOut();
-  const fade = parseFloat($('fade').value) || undefined;
-  const body = JSON.stringify({ name, image: $('image').value, build: $('build').value, comment: $('comment').value, contours, out, fade });
-  const r = await fetch('/save', { method: 'POST', body });
+  const r = await fetch('/save', { method: 'POST', body: savePayload(name) });
   if (!r.ok) { btn.disabled = false; btn.textContent = 'save and cut'; $('status').textContent = 'save failed'; return; }
   const shortName = name.split('/').pop();
   await refreshMaskList(shortName);
@@ -518,7 +475,7 @@ $('modal').onclick = e => { if (e.target === $('modal')) $('modal').classList.re
   $('image').innerHTML = imgs.map(p => `<option${/ref-master-w1680/.test(p) ? ' selected' : ''}>${p}</option>`).join('');
   await refreshMaskList();
   setMeye();
-  resize(); renderList(); toggleOutputFields(); updatePlaceholders();
+  resize(); renderList(); toggleBuildFields();
   if (imgs.length) await setImage($('image').value);
 })();
 </script>

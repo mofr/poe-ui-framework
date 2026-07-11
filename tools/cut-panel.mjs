@@ -1,7 +1,7 @@
-// Cut a PANEL mask into two layers locked together: the FRAME and the INTEGRATION halo.
-// Two modes:
-//   panel   — frame from keep contours via SVG rasterisation (single continuous shape).
-//   assemble — frame from separate edge+corner contours, assembled gapless via tiling.
+// Cut a FRAME mask into two layers locked together: the FRAME and the INTEGRATION halo.
+// Two modes (the mask's `build` field):
+//   frame           — frame from keep contours via SVG rasterisation (single continuous shape).
+//   frame-assembled — frame from separate edge+corner contours, assembled gapless via tiling.
 // Both modes share the same integration (op:integration) rendering pipeline.
 //
 // Integration (op:integration) — the soft TRANSITION HALO that blends the frame into the surface it
@@ -13,8 +13,8 @@
 // Integration is NOT clipped by the frame — overlap is intentional (frame draws over it at runtime;
 // the integration is made semi-transparent so they mix).
 //   node tools/cut-panel.mjs <maskName> [--src=plate] [--fade=N] [--out-frame=] [--out-integration=]
-// Output paths: --out-frame / --out-integration CLI args, then mask's `out` object
-// (out.frame / out.integration), then <name>.png / <name>.integration.png at repo root.
+// Output paths: colocated next to the mask — <maskdir>/<name>.png / <name>.integration.png
+// (--out-frame / --out-integration CLI args override, for ad-hoc use only).
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -28,12 +28,13 @@ const name = process.argv[2];
 if (!name) { console.error('usage: node tools/cut-panel.mjs <maskName> [--src=] [--fade=N] [--out-frame=] [--out-integration=]'); process.exit(1); }
 const opt = Object.fromEntries(process.argv.slice(3).map(a => a.replace(/^--/, '').split('=')));
 
-const mask = JSON.parse(await readFile(await findMaskPath(name), 'utf8'));
+const maskPath = await findMaskPath(name);
+const maskDir = dirname(maskPath);
+const mask = JSON.parse(await readFile(maskPath, 'utf8'));
 const srcPath = resolve(ROOT, opt.src || mask.image);
 const { width: W, height: H } = await sharp(srcPath).metadata();
 const all = mask.contours || [];
 const fade = Number(opt.fade ?? 2);
-const maskOut = (mask.out && typeof mask.out === 'object') ? mask.out : {};
 
 const has = op => all.some(c => (c.op || 'keep') === op);
 
@@ -107,18 +108,15 @@ async function writeIntegration(frameBox) {
 
 // ── Output paths ──────────────────────────────────────────────
 
-const framePath = opt['out-frame'] ? resolve(ROOT, opt['out-frame'])
-  : maskOut.frame ? resolve(ROOT, maskOut.frame)
-  : resolve(ROOT, `${name}.png`);
+const framePath = opt['out-frame'] ? resolve(ROOT, opt['out-frame']) : resolve(maskDir, `${name}.png`);
 const integPath = opt['out-integration'] ? resolve(ROOT, opt['out-integration'])
-  : maskOut.integration ? resolve(ROOT, maskOut.integration)
-  : resolve(ROOT, `${name}.integration.png`);   // neutral: integration = shadow AND/OR highlight, not "-shadow"
+  : resolve(maskDir, `${name}.integration.png`);   // neutral: integration = shadow AND/OR highlight, not "-shadow"
 const rel = p => p.replace(ROOT + '/', '');
 
 // ── Build mode dispatch ──────────────────────────────────────
 
-if (mask.build === 'assemble') {
-  // ──────── ASSEMBLE mode: frame from separate edge+corner contours ────────
+if (mask.build === 'frame-assembled') {
+  // ──────── ASSEMBLED mode: frame from separate edge+corner contours ────────
 
   const src = await sharp(srcPath).ensureAlpha().raw().toBuffer();
   const assembled = Buffer.alloc(W * H * 4);
@@ -182,12 +180,12 @@ if (mask.build === 'assemble') {
 
   await mkdir(dirname(framePath), { recursive: true });
   await sharp(assembled, { raw: { width: W, height: H, channels: 4 } }).extract(frameBox).png().toFile(framePath);
-  console.log(`frame  -> ${rel(framePath)}  ${frameBox.width}x${frameBox.height} (assemble)`);
+  console.log(`frame  -> ${rel(framePath)}  ${frameBox.width}x${frameBox.height} (assembled)`);
 
   if (has('integration')) await writeIntegration(frameBox);
 
 } else {
-  // ──────── PANEL mode: frame from keep contours via SVG rasterisation ────────
+  // ──────── FRAME mode: frame from keep contours via SVG rasterisation ────────
 
   const frameA = await alphaOf(all.filter(c => (c.op || 'keep') === 'keep'), 0);
   const frameBox = bboxOf(127, frameA);

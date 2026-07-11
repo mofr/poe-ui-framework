@@ -39,7 +39,7 @@ createServer(async (req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
   try {
     if (req.method === 'POST' && url.pathname === '/save') {
-      const { name: fullName, image, contours, build = '', comment = '', out, fade } = JSON.parse(await readBody(req));
+      const { name: fullName, image, contours, build = '', comment = '', fade } = JSON.parse(await readBody(req));
       if (!fullName) return send(res, 400, 'text/plain', 'bad name');
       // The name input carries a path-like value:  dir/dir/name  — split into directory and internal name.
       const parts = fullName.split('/');
@@ -58,8 +58,8 @@ createServer(async (req, res) => {
       let prev = {};
       try { prev = JSON.parse(await readFile(target, 'utf8')); } catch {}
       const merged = { ...prev, name, image, build, comment, contours };
-      if (out !== undefined) merged.out = out;
-      if (fade !== undefined) merged.fade = fade;
+      delete merged.out;                                        // retired — outputs are colocated by convention
+      if (fade !== undefined) merged.fade = fade; else delete merged.fade;   // frame builds only
       await writeFile(target, JSON.stringify(merged, null, 2));
       return send(res, 200, 'application/json', JSON.stringify({ ok: true }));
     }

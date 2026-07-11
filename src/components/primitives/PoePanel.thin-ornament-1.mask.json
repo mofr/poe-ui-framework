@@ -1,7 +1,7 @@
 {
   "name": "PoePanel.thin-ornament-1",
   "image": "inspiration/reference-1680.png",
-  "build": "assemble",
+  "build": "frame-assembled",
   "comment": "",
   "contours": [
     {

@@ -1,9 +1,6 @@
 {
   "name": "PoeCircleFrame.big-ornate-1",
-  "build": "mask",
-  "out": {
-    "big-ornate-1": "src/components/primitives/PoeCircleFrame.big-ornate-1.png"
-  },
+  "build": "sprite",
   "image": "inspiration/reference-1680.png",
   "comment": "Circular frame ring, cut as a trimmed annulus. keep = ring OUTER silhouette; hole = CONTENT CIRCLE (a clean disc, not the irregular painted opening) placed so the portrait tucks under the ring lip everywhere — its centre IS the frame centre, so asymmetry is absorbed by the lip. Seeded (circularised) from inspiration/ref-header-elements.mask.json. Nudge points in the editor, then:  node tools/cut-mask.mjs PoeCircleFrame.big-ornate-1 --each",
   "contours": [
@@ -595,6 +592,5 @@
       "note": "content disc — portrait sits here BEHIND the ring. Drag centre to the visual centre of the opening (= frame centre); scale to tuck under the lip.",
       "round": 0
     }
-  ],
-  "fade": 2
+  ]
 }
