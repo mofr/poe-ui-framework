@@ -10,7 +10,7 @@
 //
 // OUTPUT CONVENTION (fixed — no per-mask paths): every asset lands next to its mask,
 //   <mask-dir>/<name>.png   (+ <name>.integration.png for frames; <name>.<contour>.png per multi-sprite region)
-// and the mask's internal `name` equals its file basename, so mask, JSON and PNG always share one name.
+// and the mask's name IS its file basename, so JSON and PNG always share one name.
 //
 // If the mask has any op:'inpaint' contours, the cleaned plate is produced FIRST (LaMa) and passed as
 // --src to the build tool, so painted-over obstacles are reconstructed before cutting.

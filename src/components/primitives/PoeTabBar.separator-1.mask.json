@@ -1,5 +1,4 @@
 {
-  "name": "PoeTabBar.separator-1",
   "image": "inspiration/reference-1680.png",
   "build": "sprite",
   "comment": "Vertical divider between tabs. Extracted from the rail mask (tab-separator-1). Numbered so slightly-different siblings (separator-2, …) can be added and round-robined by PoeTabBar.",

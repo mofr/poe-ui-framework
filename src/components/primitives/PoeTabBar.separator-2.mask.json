@@ -1,5 +1,4 @@
 {
-  "name": "PoeTabBar.separator-2",
   "image": "inspiration/reference-1680.png",
   "build": "sprite",
   "comment": "Second, slightly-different tab divider. Extracted from the rail mask (tab-separator-2). PoeTabBar round-robins separator-1..N between tabs.",

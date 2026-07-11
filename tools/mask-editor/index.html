@@ -378,7 +378,7 @@ async function setImage(path) {
 }
 async function refreshMaskList(selected) {
   const masks = await (await fetch('/api/masks')).json();
-  $('maskSel').innerHTML = `<option value="">(new)</option>` + masks.map(m => `<option value="${m.name}"${m.name === selected ? ' selected' : ''}>${m.name} — ${m.path}</option>`).join('');
+  $('maskSel').innerHTML = `<option value="">(new)</option>` + masks.map(m => `<option value="${m.name}"${m.name === selected ? ' selected' : ''}>${m.path}</option>`).join('');
 }
 async function loadMask(name) {
   const m = await (await fetch(`/api/mask?name=${name}`)).json();
@@ -388,7 +388,7 @@ async function loadMask(name) {
   // Show the full relative path (without .mask.json) in the name field
   const masks = await (await fetch('/api/masks')).json();
   const entry = masks.find(e => e.name === name);
-  $('name').value = entry ? entry.path.replace(/\.mask\.json$/, '') : (m.name || name);
+  $('name').value = entry ? entry.path.replace(/\.mask\.json$/, '') : name;
   $('build').value = m.build || '';
   $('comment').value = m.comment || '';
   $('fade').value = m.fade != null ? m.fade : 2;

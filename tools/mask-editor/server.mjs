@@ -1,7 +1,7 @@
 // Serves the in-repo mask editor and saves traced masks straight into the repo.
 //   node tools/mask-editor/server.mjs   ->   http://localhost:5174
 // Backdrop images are scanned from inspiration + assets-staging/sources + asset-review.
-// Masks are resolved by their `name` field wherever they live (colocated next to the component
+// Masks are resolved by file basename wherever they live (colocated next to the component
 // that owns them, or in inspiration/); brand-new masks default to inspiration/<name>.mask.json.
 import { createServer } from 'node:http';
 import { readFile, writeFile, mkdir, readdir, unlink } from 'node:fs/promises';
@@ -57,8 +57,9 @@ createServer(async (req, res) => {
       // Merge over existing file so fields the editor doesn't manage survive a save.
       let prev = {};
       try { prev = JSON.parse(await readFile(target, 'utf8')); } catch {}
-      const merged = { ...prev, name, image, build, comment, contours };
+      const merged = { ...prev, image, build, comment, contours };
       delete merged.out;                                        // retired — outputs are colocated by convention
+      delete merged.name;                                       // retired — name IS the file basename
       if (fade !== undefined) merged.fade = fade; else delete merged.fade;   // frame builds only
       await writeFile(target, JSON.stringify(merged, null, 2));
       return send(res, 200, 'application/json', JSON.stringify({ ok: true }));

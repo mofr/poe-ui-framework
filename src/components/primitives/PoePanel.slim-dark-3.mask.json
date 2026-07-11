@@ -1,5 +1,4 @@
 {
-  "name": "PoePanel.slim-dark-3",
   "image": "inspiration/reference-1680.png",
   "build": "frame-assembled",
   "comment": "Contribution Health panel (slim-dark-3): wide, separate corner+edge contours → assemble (gapless), small corners. integration.png is a MANUAL COPY of slim-dark-2's neutral map — slim-dark-3's own contact is too obstructed in the reference to extract, and it has no integration/baseline contour. Re-copy from slim-dark-2 if that changes.",

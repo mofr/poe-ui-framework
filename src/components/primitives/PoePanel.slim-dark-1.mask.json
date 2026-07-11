@@ -1,5 +1,4 @@
 {
-  "name": "PoePanel.slim-dark-1",
   "image": "inspiration/reference-1680.png",
   "build": "frame",
   "comment": "Combat Log panel (slim-dark-1): frame (keep−hole, button inpainted) + integration ring (outline−hole, outward fade).",
